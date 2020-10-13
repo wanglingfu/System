@@ -1,6 +1,6 @@
 package Main;
 
-import frame.FileFrame;
+import frame.ProcessFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,7 +9,6 @@ import java.awt.event.MouseListener;
 
 public class main extends JFrame {
     private static final long serialVersionUID=1L;
-    private FileFrame fileIndex;
     public main(){
         setResizable(false);
         setBounds(250,17,900,700);
@@ -27,12 +26,12 @@ public class main extends JFrame {
             JOptionPane.showMessageDialog(null, e);
         }
         frame.setVisible(true);
-        JPanel time = new JPanel();
-        time.setBounds(800,12,200,20);
-        frame.add(time);
+       // JPanel time = new JPanel();
+      //  time.setBounds(800,12,200,20);
+       // frame.add(time);
         frame.setLayout(null);
-        time.setForeground(Color.white);
-        time.setBackground(Color.white);
+        //time.setForeground(Color.white);
+        //time.setBackground(Color.white);
         //背景
         ImageIcon img = new ImageIcon("src/frame/bg.jpg");
         JLabel imgLabel=new JLabel(img);
@@ -141,9 +140,7 @@ public class main extends JFrame {
         button3.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(e.getClickCount()==2){
-
-                }
+                    new ProcessFrame();
             }
 
             @Override
