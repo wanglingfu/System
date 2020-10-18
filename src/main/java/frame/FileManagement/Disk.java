@@ -9,10 +9,6 @@ public class Disk {
     private byte[][] disk;
     public Disk() throws Exception {
         readDisk();
-        printDisk();
-        disk[0][1] = (byte)234;
-        writeDisk();
-        printDisk();
     };
 
     /**
@@ -46,6 +42,14 @@ public class Disk {
         this.disk = (byte[][]) OIS.readObject();
         OIS.close();
     };
+
+    public byte[][] getDisk() {
+        return disk;
+    }
+
+    public void getCharDisk(){
+        
+    }
 
     public void printDisk(){
         for(byte i:disk[0]){

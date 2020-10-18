@@ -1,4 +1,5 @@
 import frame.FileManagement.Disk;
+import frame.FileManagement.FileUtil;
 import org.junit.Test;
 
 /**
@@ -11,5 +12,8 @@ public class TestFile {
     public void testDisk() throws Exception{
         Disk disk;
         disk = new Disk();
+        FileUtil FILE_UTIL= new FileUtil(disk.getDisk());
+        String S = "/ad/cc.e";
+        FILE_UTIL.makeDirectory(S);
     }
 }
