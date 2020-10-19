@@ -1,8 +1,4 @@
-import frame.process.Util;
 import org.junit.Test;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * @description: 测试类
