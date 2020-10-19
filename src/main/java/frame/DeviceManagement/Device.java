@@ -1,5 +1,7 @@
 package frame.DeviceManagement;
 
+import java.util.Queue;
+
 /**
  * @ClassName Device
  * @Description TODO
@@ -9,14 +11,17 @@ package frame.DeviceManagement;
  **/
 public class Device {
     private  int A ;
-    private  int B ;
-    private  int C ;
+    Queue queue;
 
-    public Device(int A, int B, int C){
+    public Device(int A){
         this.A = A;
-        this.B = B;
-        this.C = C;
     }
+
+    /**
+     *
+     * @return
+     */
+
 
     public int getA() {
         return A;
@@ -26,19 +31,11 @@ public class Device {
         A = a;
     }
 
-    public int getB() {
-        return B;
+    public Queue getQueue() {
+        return queue;
     }
 
-    public void setB(int b) {
-        B = b;
-    }
-
-    public int getC() {
-        return C;
-    }
-
-    public void setC(int c) {
-        C = c;
+    public void setQueue(Queue queue) {
+        this.queue = queue;
     }
 }
