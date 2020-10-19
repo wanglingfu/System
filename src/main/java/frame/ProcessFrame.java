@@ -1,12 +1,9 @@
 package frame;
 
 import Main.main;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class ProcessFrame extends JFrame {
     private static final long serialVersionUID = 1L;
@@ -45,10 +42,10 @@ public class ProcessFrame extends JFrame {
         JLabel jLabel14=new JLabel(); //cpu
 
         //系统时钟
-        jLabel1.setBounds(10,20,760,310);
+        jLabel1.setBounds(10,20,200,50);
         jLabel1.setLayout(null);
         add(jLabel1);
-        /*final JTextArea p1_info=new JTextArea(15,50);
+        final JTextArea p1_info=new JTextArea(" abc",1,5);
         p1_info.setBounds(10,20,740,280);
         p1_info.setFont(new Font("宋体", Font.BOLD, 30));
         p1_info.setEditable(false);
@@ -56,11 +53,14 @@ public class ProcessFrame extends JFrame {
         JScrollPane p1_jscroll=new JScrollPane();
         p1_jscroll.setViewportView(p1_info);
         p1_jscroll.setBounds(10,20,740,280);
-        jLabel1.add(p1_jscroll);*/
+        jLabel1.add(p1_jscroll);
+
 
 
     }
+
     public static void main(String[] args) {
+
         new ProcessFrame();
     }
 }

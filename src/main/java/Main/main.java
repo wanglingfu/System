@@ -1,4 +1,4 @@
-import frame.FileFrame;
+package Main;
 
 import javax.swing.*;
 import java.awt.*;
@@ -7,7 +7,6 @@ import java.awt.event.MouseListener;
 
 public class main extends JFrame {
     private static final long serialVersionUID=1L;
-    private FileFrame fileIndex;
     public main(){
         setResizable(false);
         setBounds(250,17,900,700);
@@ -32,7 +31,7 @@ public class main extends JFrame {
         time.setForeground(Color.white);
         time.setBackground(Color.white);
         //背景
-        ImageIcon img = new ImageIcon("src/frame/bg.jpg");
+        ImageIcon img = new ImageIcon("src/main/resources/bg.jpg");
         JLabel imgLabel=new JLabel(img);
         frame.getLayeredPane().add(imgLabel, new Integer(Integer.MIN_VALUE));
         imgLabel.setBounds(0,0,img.getIconWidth(), img.getIconHeight());
@@ -41,7 +40,7 @@ public class main extends JFrame {
         //文件管理图标
         JButton button1=new JButton();
         button1.setBounds(20, 20, 50, 50);
-        ImageIcon logo1=new ImageIcon("src/frame/file.png");
+        ImageIcon logo1=new ImageIcon("src/main/resources/file.png");
         button1.setIcon(logo1);
         frame.add(button1);
         button1.setBackground(Color.white);
@@ -83,7 +82,7 @@ public class main extends JFrame {
         //存储管理
         JButton button2=new JButton();
         button2.setBounds(20, 120, 50, 50);
-        ImageIcon logo2=new ImageIcon("src/frame/bt1.jpg");
+        ImageIcon logo2=new ImageIcon("src/main/resources/bt1.jpg");
         button2.setIcon(logo2);
         frame.add(button2);
         button2.setBackground(Color.white);
@@ -125,7 +124,7 @@ public class main extends JFrame {
         //设备管理
         JButton button3=new JButton();
         button3.setBounds(20, 220, 50, 50);
-        ImageIcon logo3=new ImageIcon("src/frame/jc.jpg");
+        ImageIcon logo3=new ImageIcon("src/main/resources/jc.jpg");
         button3.setIcon(logo3);
         frame.add(button3);
         button3.setBackground(Color.white);
@@ -167,7 +166,7 @@ public class main extends JFrame {
         //进程管理
         JButton button4=new JButton();
         button4.setBounds(20, 320, 50, 50);
-        ImageIcon logo4=new ImageIcon("src/frame/sb.jpg");
+        ImageIcon logo4=new ImageIcon("src/main/resources/sb.jpg");
         button4.setIcon(logo4);
         frame.add(button4);
         button4.setBackground(Color.white);
@@ -206,5 +205,11 @@ public class main extends JFrame {
 
             }
         });
+
+
+
+
+
+        //
     }
 }
