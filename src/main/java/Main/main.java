@@ -1,3 +1,5 @@
+package Main;
+
 import frame.FileFrame;
 
 import javax.swing.*;
@@ -32,7 +34,7 @@ public class main extends JFrame {
         time.setForeground(Color.white);
         time.setBackground(Color.white);
         //背景
-        ImageIcon img = new ImageIcon("src/frame/bg.jpg");
+        ImageIcon img = new ImageIcon("src/main/resources/bg.jpg");
         JLabel imgLabel=new JLabel(img);
         frame.getLayeredPane().add(imgLabel, new Integer(Integer.MIN_VALUE));
         imgLabel.setBounds(0,0,img.getIconWidth(), img.getIconHeight());
