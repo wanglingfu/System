@@ -1,5 +1,8 @@
-import frame.Process.PCB;
+import frame.process.Util;
 import org.junit.Test;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * @description: 测试类
@@ -9,7 +12,5 @@ import org.junit.Test;
 public class test {
     @Test
     public void test1(){
-        PCB pcb = new PCB(1,"sbdni");
-        System.out.println(pcb);
     }
 }
