@@ -1,7 +1,5 @@
 package Main;
 
-import frame.FileFrame;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -9,7 +7,6 @@ import java.awt.event.MouseListener;
 
 public class main extends JFrame {
     private static final long serialVersionUID=1L;
-    private FileFrame fileIndex;
     public main(){
         setResizable(false);
         setBounds(250,17,900,700);
