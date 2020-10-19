@@ -17,7 +17,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../Desktop/lombok-1.18.12.jar!/" />
+          <root url="jar://$MODULE_DIR$/../Desktop/lombok-1.18.12.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
