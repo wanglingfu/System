@@ -2,6 +2,9 @@ import frame.FileManagement.Disk;
 import frame.FileManagement.FileUtil;
 import org.junit.Test;
 
+import java.lang.System;
+import java.util.Arrays;
+
 /**
  * @author ：Vizzk
  * @description：文件测试类
@@ -10,10 +13,14 @@ import org.junit.Test;
 public class TestFile {
     @Test
     public void testDisk() throws Exception{
-        Disk disk;
-        disk = new Disk();
-        FileUtil FILE_UTIL= new FileUtil(disk.getDisk());
-        String S = "/ad/cc.e";
-        FILE_UTIL.makeDirectory(S);
+
+        FileUtil fileUtil= new FileUtil();
+        String S = "/ad/sdf/cc.e";
+        fileUtil.makeDirectory(S);
+        /*byte[][] bytes = fileUtil.formatPath(S);
+        for(byte[] b:bytes){
+            System.out.println(Arrays.toString(b));
+            System.out.println(fileUtil.bytesToString(b));
+        }*/
     }
 }

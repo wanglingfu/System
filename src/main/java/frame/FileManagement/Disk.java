@@ -17,43 +17,45 @@ public class Disk {
      * @param BYTE
      * @return int
      */
-    private int byteToUnigned(byte BYTE){
+    public static int byteToUnsigned(byte BYTE){
         int UNSIGNED_NUM = BYTE;
         UNSIGNED_NUM &= 0XFF;
         return UNSIGNED_NUM;
     }
 
+    /**
+     * @author: Vizzk
+     * @description: 将磁盘模拟信息写入文件
+     * @param
+     * @return void
+     */
     public void writeDisk() throws Exception{
-        FileOutputStream DISK_FILE = new FileOutputStream("disk.sim");
-        ObjectOutputStream OOS = new ObjectOutputStream(DISK_FILE);
-        OOS.writeObject(this.disk);
-        OOS.close();
+        FileOutputStream disk = new FileOutputStream("disk.sim");
+        ObjectOutputStream oos = new ObjectOutputStream(disk);
+        oos.writeObject(this.disk);
+        oos.close();
     };
 
     /**
      * @author: Vizzk
-     * @description: 读取磁盘所有信息
+     * @description: 读取文件中的磁盘信息
      * @param
      * @return void
      */
     public void readDisk()throws Exception{
-        FileInputStream DISK_FILE = new FileInputStream("disk.sim");
-        ObjectInputStream OIS = new ObjectInputStream(DISK_FILE);
-        this.disk = (byte[][]) OIS.readObject();
-        OIS.close();
+        FileInputStream disk = new FileInputStream("disk.sim");
+        ObjectInputStream ois = new ObjectInputStream(disk);
+        this.disk = (byte[][]) ois.readObject();
+        ois.close();
     };
 
     public byte[][] getDisk() {
         return disk;
     }
 
-    public void getCharDisk(){
-        
-    }
-
     public void printDisk(){
         for(byte i:disk[0]){
-            System.out.println(byteToUnigned(i));
+            System.out.println(byteToUnsigned(i));
         }
     }
 }
