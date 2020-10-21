@@ -13,9 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PCB {
-    private String uuid;
-    private Register register;
-    private Integer state;
-    private String reason;
-
+    private String uuid;//进程标识符
+    private Register register;//寄存器
+    private String reason;//阻塞原因， 哪个设备
+    private int size;//进程大小
 }
