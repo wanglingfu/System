@@ -6,9 +6,7 @@ package frame.processManagement;
  * @create: 2020-10-16 22:51
  **/
 public class ProcessScheduling {
-    public static PCB[] readyPCB;//就绪PCB队列
-    public static PCB runPCB;//运行中的进程
-    public static PCB[] blockPCB;//阻塞PCB队列
+
 
     /**
      * 创建进程
@@ -20,21 +18,21 @@ public class ProcessScheduling {
     /**
      * 销毁进程
      */
-    public synchronized void destroy(){
+    public synchronized void destroy(PCB pcb){
 
     }
 
     /**
      * 阻塞进程
      */
-    public synchronized void block(){
+    public synchronized void block(PCB pcb){
 
     }
 
     /**
      * 唤醒进程
      */
-    public synchronized void awake(){
+    public synchronized void awake(PCB pcb){
 
     }
 }

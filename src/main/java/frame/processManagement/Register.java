@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class Register {
-    private Integer AX;
-    private Integer PSW;
-    private String IR;
-    private String PC;
+    private Integer AX;//数据
+    private Integer PSW;//程序状态，中断状态，1、程序结束 2、时间片结束 3、I/O中断
+    private String IR;//指令寄存器
+    private int PC;//程序计数器
 }
