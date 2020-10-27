@@ -2,6 +2,7 @@ package frame.processManagement.Runnable;
 
 import frame.processManagement.Runnable.CPU;
 
+import java.sql.Timestamp;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -21,9 +22,12 @@ public class TimeSchedul implements Runnable{
                 public void run() {
                     CPU.SystemTime++;
                     CPU.TimeSlice--;
-                    for (int i = 0; i < CPU.DeviceTime.length; i++) {
-                        CPU.DeviceTime[i]--;
+                    if(CPU.DeviceTime!=null){
+                        for (int i = 0; i < CPU.DeviceTime.length; i++) {
+                            CPU.DeviceTime[i]--;
+                        }
                     }
+                    System.out.println(new Timestamp(System.currentTimeMillis())+" "+CPU.SystemTime);
                 }
             }, 0, 1000);
         } finally {

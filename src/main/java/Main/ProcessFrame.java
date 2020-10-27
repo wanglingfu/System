@@ -1,6 +1,4 @@
-package frame;
-
-import Main.main;
+package Main;
 
 import javax.swing.*;
 import java.awt.*;
