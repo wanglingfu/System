@@ -1,4 +1,4 @@
-package frame.StorageManagement;
+package frame.storageManagement;
 
 import java.util.LinkedList;
 

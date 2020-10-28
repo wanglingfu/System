@@ -1,4 +1,4 @@
-package frame.DeviceManagement;
+package frame.deviceManagement;
 
 import java.util.LinkedList;
 
@@ -20,7 +20,7 @@ public class DeviceBC {
     }
 
     public DeviceBC getDevice(String Uid, int time, int size ){
-        DeviceWaitQueue deviceWaitQueue =new DeviceWaitQueue(Uid,size,time);
+        deviceWaitQueue =new DeviceWaitQueue(Uid,size,time);
         if (deviceTable.getB1() != null){
             deviceTable.setB1(Uid);
             return this;

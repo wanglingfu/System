@@ -1,4 +1,4 @@
-package frame.DeviceManagement;
+package frame.deviceManagement;
 
 /**
  * @ClassName deviceTableBC

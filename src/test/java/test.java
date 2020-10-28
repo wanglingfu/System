@@ -1,5 +1,4 @@
-import frame.DeviceManagement.DeviceA;
-import frame.processManagement.Runnable.TimeSchedul;
+import frame.deviceManagement.DeviceA;
 import org.junit.Test;
 
 /**

@@ -1,7 +1,6 @@
-package frame.DeviceManagement;
+package frame.deviceManagement;
 
 import java.util.LinkedList;
-import java.util.concurrent.Semaphore;
 
 /**
  * @ClassName Device
@@ -20,7 +19,7 @@ public class DeviceA {
         this.deviceTable = new DeviceTable();
     }
     public DeviceA getDevice(String Uid, int time, int size ){
-        DeviceWaitQueue deviceWaitQueue =new DeviceWaitQueue(Uid,size,time);
+         deviceWaitQueue =new DeviceWaitQueue(Uid,size,time);
         if (deviceTable.getA1() == null){
             deviceTable.setA1(Uid);
             return this;
