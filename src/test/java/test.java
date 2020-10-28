@@ -1,8 +1,4 @@
-import com.sun.beans.editors.ByteEditor;
-import frame.processManagement.PCB;
-import frame.processManagement.Register;
 import frame.processManagement.Runnable.CPU;
-import frame.processManagement.Util;
 import org.junit.Test;
 
 /**
@@ -13,11 +9,11 @@ import org.junit.Test;
 public class test {
     @Test
     public void test(){
-        Byte[] bytes = new Byte[10];
-        CPU.runPCB=new PCB("1",new Register(1,1,"1",1),"1",1,bytes);
-        byte b= (byte) ;
-        Util.compiler(b);
-        System.out.println(CPU.runPCB.getRegister().getAX());
+        Byte[] bytes = {-55};
+        CPU cpu = new CPU(0,bytes);
+        cpu.setPSW(0);
+        cpu.run();
+        System.out.println(cpu.getAX());
     }
     @Test
     public void test2(){

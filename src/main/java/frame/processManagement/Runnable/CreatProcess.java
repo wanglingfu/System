@@ -1,5 +1,6 @@
 package frame.processManagement.Runnable;
 
+import Main.main;
 import frame.processManagement.ProcessScheduling;
 
 /**
@@ -11,12 +12,11 @@ public class CreatProcess implements Runnable{
     @Override
     public void run() {
         try {
-            CPU.lockCreate.lock();
+            main.lockCreate.lock();
             Byte[] bytes = new Byte[10];
-            ProcessScheduling processScheduling = new ProcessScheduling();
-            processScheduling.create(bytes);
+            ProcessScheduling.create(bytes);
         } finally {
-            CPU.lockCreate.unlock();
+            main.lockCreate.unlock();
         }
     }
 }
