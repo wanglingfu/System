@@ -12,8 +12,9 @@ public class CreatProcess implements Runnable{
     public void run() {
         try {
             CPU.lockCreate.lock();
+            Byte[] bytes = new Byte[10];
             ProcessScheduling processScheduling = new ProcessScheduling();
-            processScheduling.create();
+            processScheduling.create(bytes);
         } finally {
             CPU.lockCreate.unlock();
         }

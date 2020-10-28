@@ -18,7 +18,10 @@ public class Interrupt{
         ProcessScheduling processScheduling = new ProcessScheduling();
         switch (PSW){
             case 1:{
-                processScheduling.destroy(CPU.runPCB);
+                processScheduling.destroy();
+                if(CPU.readyPCB.size()!=0){
+                    CPU.runPCB = CPU.readyPCB.remove();
+                }
                 break;
             }
             case 2:{
@@ -28,7 +31,7 @@ public class Interrupt{
             }
             case 3:{
                 CPU.runPCB.getRegister().setPSW(0);
-
+                processScheduling.block();
             }
             default:break;
         }

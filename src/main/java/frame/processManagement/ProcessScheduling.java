@@ -1,5 +1,7 @@
 package frame.processManagement;
 
+import frame.processManagement.Runnable.CPU;
+
 /**
  * @description: 进程调度
  * @author: whj
@@ -11,21 +13,22 @@ public class ProcessScheduling {
     /**
      * 创建进程
      */
-    public synchronized void create(){
-
+    public synchronized void create(Byte[] file){
+        PCB pcb = new PCB(file);
+        CPU.readyPCB.add(pcb);
     }
 
     /**
      * 销毁进程
      */
-    public synchronized void destroy(PCB pcb){
+    public synchronized void destroy(){
 
     }
 
     /**
      * 阻塞进程
      */
-    public synchronized void block(PCB pcb){
+    public synchronized void block(){
 
     }
 
