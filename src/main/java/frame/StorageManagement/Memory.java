@@ -47,15 +47,14 @@ public class Memory {
         System.out.println("成功分配大小为" + size + "的内存");
         return this;
     }
-
     /**
      *
      * @param memory
      * @param size
      * @param id
+     * @Description  最佳适应算法
      * @return
      */
-    //最佳适应算法
     public Memory BestFit(Memory memory,int size,String id){
         int findIndex = -1;  //最佳分区的下标
         int min = memory.getSize();
