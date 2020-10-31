@@ -1,6 +1,9 @@
 package frame.FileManagement;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+
 /**
  * @author ：Vizzk
  * @description：磁盘管理
@@ -8,6 +11,11 @@ import java.io.*;
 public class Disk {
     private byte[][] disk;
     public Disk() throws Exception {
+        /*disk = new byte[256][64];
+        for(int i=0; i<5; i++){
+            disk[0][i] = 1;
+        }
+        writeDisk();*/
         readDisk();
     };
 
@@ -53,9 +61,61 @@ public class Disk {
         return disk;
     }
 
+    /**
+     * @author: Vizzk
+     * @description: 字符串转换为字节数组
+     * @param string
+     * @return byte[]
+     */
+    public byte[] stringToBytes(String string){
+        byte[] bytes = string.getBytes(Charset.forName("UTF-8"));
+        return bytes;
+    }
+
+    /**
+     * @author: Vizzk
+     * @description: 字节数组转换为字符串
+     * @param bytes
+     * @return java.lang.String
+     */
+    public String bytesToString(byte[] bytes){
+        String string = new String(bytes, Charset.forName("UTF-8"));
+        return string;
+    }
+
+    /**
+     * @author: Vizzk
+     * @description: 将路径字符串格式化为字节型并返回一个二维字节数组,数组每行为文件或目录名字数据
+     * @param path
+     * @return byte[][]
+     */
+    public byte[][] formatPath(String path){
+        String temp= path.split("\\.")[0];
+        String[] directory;
+        byte[][] bytePath;
+        directory = temp.split("/");
+        if(directory[0].equals("")){
+            directory = Arrays.copyOfRange(directory,1,directory.length);
+        }
+        bytePath = new byte[directory.length][3];
+        for(int i=0; i<directory.length; i++){
+            byte[] bytes = this.stringToBytes(directory[i]);
+            int destPos = 0;
+            if(bytes.length!=3){
+                destPos=3-bytes.length;
+            }
+            System.arraycopy(bytes,0, bytePath[i], destPos,bytes.length);
+        }
+        return bytePath;
+    }
+
     public void printDisk(){
-        for(byte i:disk[0]){
-            System.out.println(byteToUnsigned(i));
+        for(int i=0; i<256; i++){
+            for(byte b:disk[i]){
+                System.out.print(byteToUnsigned(b) + " ");
+            }
+            System.out.println();
         }
     }
+
 }
