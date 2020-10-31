@@ -1,4 +1,6 @@
 import frame.deviceManagement.DeviceA;
+import frame.storageManagement.Memory;
+import frame.storageManagement.Sleep;
 import org.junit.Test;
 
 /**
@@ -27,6 +29,22 @@ public class test {
             deviceA.gerFirstNode();
             System.out.println(deviceA.getDeviceTable().getA1());
         }
+    }
+
+    @Test
+    public void test2(){}{
+        Memory memory = new Memory(512);
+        memory.BestFit(memory,10,"1");
+        Sleep sleep = new Sleep();
+        sleep.Sleep();
+        memory.BestFit(memory,10,"2");
+        sleep.Sleep();
+        memory.test(memory);
+        sleep.Sleep();
+        memory.releaseMemory("2");
+        sleep.Sleep();
+        memory.BestFit(memory,200,"23");
+        memory.test(memory);
     }
 
 

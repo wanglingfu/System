@@ -18,33 +18,28 @@ public class DeviceA {
         this.block = new LinkedList<DeviceWaitQueue>();
         this.deviceTable = new DeviceTable();
     }
-    public DeviceA getDevice(String Uid, int time, int size ){
+    public void getDevice(String Uid, int time, int size ){
          deviceWaitQueue =new DeviceWaitQueue(Uid,size,time);
         if (deviceTable.getA1() == null){
             deviceTable.setA1(Uid);
-            return this;
         }
         else if(deviceTable.getA2() == null){
             deviceTable.setA2(Uid);
-            return this;
+
         }
         else {
             block.add(deviceWaitQueue);
-            return this;
         }
 
     }
 
-    public DeviceA removeDevice(String Uid){
+    public void removeDevice(String Uid){
         if (Uid.equals(deviceTable.getA1())){
             deviceTable.setA1(null);
-            return this;
         }else if (Uid.equals(deviceTable.getA2())){
             deviceTable.setA2(null);
-            return this;
+
         }
-        else
-        return this;
     }
 
     public DeviceA gerFirstNode(){

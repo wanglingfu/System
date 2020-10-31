@@ -33,7 +33,7 @@ public class Memory {
      * @param hole
      * @return
      */
-    public Memory getMemory(int size,int location,String id,Hole hole) {  //size为申请大小 location为分配分区的下标
+    public void getMemory(int size,int location,String id,Hole hole) {  //size为申请大小 location为分配分区的下标
                                                                 // hole为location对应的分区
         if (hole.getSize() - size >= MIN_SIZE) {
             Hole newHole = new Hole(hole.getHead() + size, hole.getSize() - size);
@@ -45,7 +45,6 @@ public class Memory {
         pcbs.add(new ProcessAddress(id, hole));
         hole.setFree(false);
         System.out.println("成功分配大小为" + size + "的内存");
-        return this;
     }
     /**
      *
@@ -55,7 +54,7 @@ public class Memory {
      * @Description  最佳适应算法
      * @return
      */
-    public Memory BestFit(Memory memory,int size,String id){
+    public boolean BestFit(Memory memory,int size,String id){
         int findIndex = -1;  //最佳分区的下标
         int min = memory.getSize();
         for (int i = 0; i < memory.getHoles().size();i++){
@@ -68,10 +67,13 @@ public class Memory {
             }
         }
         if (findIndex != -1) {  //若存在合适分区
-            return memory.getMemory(size, findIndex, id,memory.getHoles().get(findIndex));
+           memory.getMemory(size, findIndex, id,memory.getHoles().get(findIndex));
+           return true;
         }
-        System.err.println("OUT OF MEMORY!");
-        return memory;
+        else {
+            System.err.println("OUT OF MEMORY!");
+            return false;
+        }
     }
 
     /**
@@ -80,7 +82,7 @@ public class Memory {
      * @return
      */
     // 内存回收
-    public Memory releaseMemory(String id){
+    public void releaseMemory(String id){
         ProcessAddress pcb = null;
             boolean flag = false;
             for(int i =0; i < pcbs.size(); i++){
@@ -105,7 +107,6 @@ public class Memory {
             Hole hole = holes.get(id1);
             if(hole.isFree()){
                 System.out.println("此空间空闲，无需释放：\t" + id);
-                return  this;
             }
             for (int i = 0; i < pcbs.size(); i++){
                 ProcessAddress pcb2 = pcbs.get(i);
@@ -130,7 +131,6 @@ public class Memory {
         }
             holes.get(id1).setFree(true);
             System.out.println("回收内存成功");
-            return this;
     }
     //测试
 

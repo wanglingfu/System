@@ -19,45 +19,60 @@ public class DeviceBC {
         this.deviceTable = new deviceTableBC();
     }
 
-    public DeviceBC getDevice(String Uid, int time, int size ){
+    public void getDevice(String Uid, int time, int size ){
         deviceWaitQueue =new DeviceWaitQueue(Uid,size,time);
         if (deviceTable.getB1() != null){
             deviceTable.setB1(Uid);
-            return this;
         }
         else if(deviceTable.getB2() != null){
             deviceTable.setB2(Uid);
-            return this;
         }
         else if(deviceTable.getB3() != null){
             deviceTable.setB3(Uid);
-            return this;
         }
         else{
             block.add(deviceWaitQueue);
-            return this;
         }
     }
 
-    public DeviceBC removeDevice(String Uid){
+    public void removeDevice(String Uid){
         if (Uid.equals(deviceTable.getB1())){
             deviceTable.setB1(null);
-            return this;
-        }else if (Uid.equals(deviceTable.getB2())){
-            deviceTable.setB2(null);
-            return this;
+        }else if (Uid.equals(deviceTable.getB2())){ deviceTable.setB2(null);
+
         }
         else if (Uid.equals(deviceTable.getB3())){
             deviceTable.setB3(null);
-            return this;
         }
-        else
-            return this;
+
     }
 
-    public DeviceBC gerFirstNode(){
+    public void gerFirstNode(){
         deviceWaitQueue = block.removeFirst();
         getDevice(deviceWaitQueue.getUid(),deviceWaitQueue.getTime(),deviceWaitQueue.getSize());
-        return this;
+    }
+
+    public LinkedList<DeviceWaitQueue> getBlock() {
+        return block;
+    }
+
+    public void setBlock(LinkedList<DeviceWaitQueue> block) {
+        this.block = block;
+    }
+
+    public deviceTableBC getDeviceTable() {
+        return deviceTable;
+    }
+
+    public void setDeviceTable(deviceTableBC deviceTable) {
+        this.deviceTable = deviceTable;
+    }
+
+    public DeviceWaitQueue getDeviceWaitQueue() {
+        return deviceWaitQueue;
+    }
+
+    public void setDeviceWaitQueue(DeviceWaitQueue deviceWaitQueue) {
+        this.deviceWaitQueue = deviceWaitQueue;
     }
 }
