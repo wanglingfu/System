@@ -18,14 +18,6 @@ public class PCB {
     private Byte[] file;//文件
     private Integer AX;//数据
     private Integer PC;//程序计数器
-    public PCB(Byte[] file){
-        uuid = UUID.randomUUID().toString();
-        reason = null;
-        time = 0;
-        this.file =file;
-        AX = 0;
-        PC = 0;
-    }
 
     public String getUuid() {
         return uuid;
@@ -75,43 +67,14 @@ public class PCB {
         this.PC = PC;
     }
 
-    public String getUuid() {
-        return uuid;
+    public PCB(Byte[] file){
+        uuid = UUID.randomUUID().toString();
+        reason = null;
+        time = 0;
+        this.file =file;
+        AX = 0;
+        PC = 0;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
 
-    public Register getRegister() {
-        return register;
-    }
-
-    public void setRegister(Register register) {
-        this.register = register;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
-
-    public int getTime() {
-        return time;
-    }
-
-    public void setTime(int time) {
-        this.time = time;
-    }
-
-    public Byte[] getFile() {
-        return file;
-    }
-
-    public void setFile(Byte[] file) {
-        this.file = file;
-    }
 }

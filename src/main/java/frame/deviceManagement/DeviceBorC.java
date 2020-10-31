@@ -9,14 +9,14 @@ import java.util.LinkedList;
  * @Date 2020/10/27 20:07
  * @Version 1.0
  **/
-public class DeviceBC {
+public class DeviceBorC {
     private LinkedList<DeviceWaitQueue> block ;
-    private deviceTableBC deviceTable;
+    private deviceTableBorC deviceTable;
     DeviceWaitQueue deviceWaitQueue;
 
-    public DeviceBC() {
+    public DeviceBorC() {
         this.block = new LinkedList<DeviceWaitQueue>();
-        this.deviceTable = new deviceTableBC();
+        this.deviceTable = new deviceTableBorC();
     }
 
     public void getDevice(String Uid, int time, int size ){
@@ -60,11 +60,11 @@ public class DeviceBC {
         this.block = block;
     }
 
-    public deviceTableBC getDeviceTable() {
+    public deviceTableBorC getDeviceTable() {
         return deviceTable;
     }
 
-    public void setDeviceTable(deviceTableBC deviceTable) {
+    public void setDeviceTable(deviceTableBorC deviceTable) {
         this.deviceTable = deviceTable;
     }
 
