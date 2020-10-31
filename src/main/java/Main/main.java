@@ -4,8 +4,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class main extends JFrame {
+    public static final ReentrantLock lockTime = new ReentrantLock();
+    public static final ReentrantLock lockCreate = new ReentrantLock();
+    public static int SystemTime=0;//系统时间
+    public static int TimeSlice=6;//时间片
+    public static int[] DeviceTime;//设备时间
     private static final long serialVersionUID=1L;
     public main(){
         setResizable(false);

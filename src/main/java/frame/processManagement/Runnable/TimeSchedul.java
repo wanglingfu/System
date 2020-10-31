@@ -1,5 +1,6 @@
 package frame.processManagement.Runnable;
 
+import Main.main;
 import frame.processManagement.Runnable.CPU;
 
 import java.sql.Timestamp;
@@ -14,24 +15,23 @@ import java.util.TimerTask;
 public class TimeSchedul implements Runnable{
     @Override
     public void run() {
-        try {
-            CPU.lockTime.lock();
-            Timer t = new Timer();
-            t.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    CPU.SystemTime++;
-                    CPU.TimeSlice--;
-                    if(CPU.DeviceTime!=null){
-                        for (int i = 0; i < CPU.DeviceTime.length; i++) {
-                            CPU.DeviceTime[i]--;
+        Timer t = new Timer();
+        t.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    main.lockTime.lock();
+                    main.SystemTime++;
+                    main.TimeSlice--;
+                    if (main.DeviceTime != null) {
+                        for (int i = 0; i < main.DeviceTime.length; i++) {
+                            main.DeviceTime[i]--;
                         }
                     }
-                    System.out.println(new Timestamp(System.currentTimeMillis())+" "+CPU.SystemTime);
+                } finally {
+                    main.lockTime.unlock();
                 }
-            }, 0, 1000);
-        } finally {
-            CPU.lockTime.unlock();
-        }
+            }
+        }, 0, 1000);
     }
 }

@@ -4,25 +4,75 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 /**
  * @description: 程序控制块
  * @author: whj
  * @create: 2020-10-13 23:51
  **/
-@Data
-@AllArgsConstructor
 public class PCB {
     private String uuid;//进程标识符
-    private Register register;//寄存器
     private String reason;//阻塞原因， 哪个设备
-    private int time;
+    private Integer time;
     private Byte[] file;//文件
+    private Integer AX;//数据
+    private Integer PC;//程序计数器
     public PCB(Byte[] file){
-        uuid=Util.getUUid();
-        register=new Register();
-        reason=null;
-        time=0;
+        uuid = UUID.randomUUID().toString();
+        reason = null;
+        time = 0;
         this.file =file;
+        AX = 0;
+        PC = 0;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public Integer getTime() {
+        return time;
+    }
+
+    public void setTime(Integer time) {
+        this.time = time;
+    }
+
+    public Byte[] getFile() {
+        return file;
+    }
+
+    public void setFile(Byte[] file) {
+        this.file = file;
+    }
+
+    public Integer getAX() {
+        return AX;
+    }
+
+    public void setAX(Integer AX) {
+        this.AX = AX;
+    }
+
+    public Integer getPC() {
+        return PC;
+    }
+
+    public void setPC(Integer PC) {
+        this.PC = PC;
     }
 
     public String getUuid() {
