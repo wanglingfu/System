@@ -1,5 +1,6 @@
-import frame.processManagement.Runnable.CPU;
-import frame.processManagement.Runnable.CreatProcess;
+import frame.deviceManagement.DeviceA;
+import frame.storageManagement.Memory;
+import frame.storageManagement.Sleep;
 import org.junit.Test;
 
 /**
@@ -9,18 +10,42 @@ import org.junit.Test;
  **/
 public class test {
     @Test
-    public void test(){
-        Byte[] bytes = {-55};
-        CPU cpu = new CPU(0,bytes);
-        cpu.setPSW(0);
-        cpu.run();
-        System.out.println(cpu.getAX());
+    public void Test(){
+        DeviceA deviceA =new DeviceA();
+        deviceA.getDevice("1",5,10);
+        deviceA.getDevice("2",5,10);
+        deviceA.getDevice("3",5,10);
+        deviceA.getDevice("4",5,10);
+        System.out.println(deviceA.getDeviceTable().getA1());
+        System.out.println(deviceA.getDeviceTable().getA2());
+        //System.out.println(deviceA.getBlock().get(1));
+        deviceA.removeDevice("2");
+        if (deviceA.getBlock() != null) {
+            deviceA.gerFirstNode();
+            System.out.println(deviceA.getDeviceTable().getA2());
+        }
+        deviceA.removeDevice("1");
+        if (deviceA.getBlock() != null) {
+            deviceA.gerFirstNode();
+            System.out.println(deviceA.getDeviceTable().getA1());
+        }
     }
 
-    public static void main(String[] args) {
-        Byte[][] bytes ={{1,1,1},{2,2,2}};
-        CreatProcess creatProcess = new CreatProcess(bytes);
-        new Thread(creatProcess).run();
-        System.out.println(creatProcess.getFile(1));
+    @Test
+    public void test2(){}{
+        Memory memory = new Memory(512);
+        memory.BestFit(memory,10,"1");
+        Sleep sleep = new Sleep();
+        sleep.Sleep();
+        memory.BestFit(memory,10,"2");
+        sleep.Sleep();
+        memory.test(memory);
+        sleep.Sleep();
+        memory.releaseMemory("2");
+        sleep.Sleep();
+        memory.BestFit(memory,200,"23");
+        memory.test(memory);
     }
+
+
 }

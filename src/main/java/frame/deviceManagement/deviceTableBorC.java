@@ -1,4 +1,4 @@
-package frame.DeviceManagement;
+package frame.deviceManagement;
 
 /**
  * @ClassName deviceTableBC
@@ -7,12 +7,12 @@ package frame.DeviceManagement;
  * @Date 2020/10/27 20:04
  * @Version 1.0
  **/
-public class deviceTableBC {
+public class deviceTableBorC {
     private String B1;
     private String B2;
     private String B3;
 
-    public deviceTableBC() {
+    public deviceTableBorC() {
         B1 = null;
         B2 = null;
         B3 = null;
