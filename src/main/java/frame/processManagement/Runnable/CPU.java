@@ -15,7 +15,7 @@ public class CPU implements Runnable{
     private String IR;
     private Integer PC;
     private Byte[] file;
-    private static Boolean flag ;
+    private int flag ;
 
     public CPU(Integer PC, Byte[] file) {
         this.PC = PC;
@@ -62,12 +62,12 @@ public class CPU implements Runnable{
         this.file = file;
     }
 
-    public static Boolean getFlag() {
+    public int getFlag() {
         return flag;
     }
 
-    public static void setFlag(Boolean flag) {
-        CPU.flag = flag;
+    public void setFlag(int flag) {
+        this.flag = flag;
     }
 
     /**
@@ -101,7 +101,7 @@ public class CPU implements Runnable{
          * end:01100000
          * x=?:1xxxxxxx
          */
-//        while(flag){
+       while(flag>0){
             /**
              * 判断中断
              */
@@ -151,5 +151,5 @@ public class CPU implements Runnable{
             }
         }
 
-//    }
+    }
 }

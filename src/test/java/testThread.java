@@ -10,12 +10,16 @@ import java.util.TimerTask;
  * @create: 2020-10-19 20:38
  **/
 public class testThread extends Thread{
-    public class test{
+    private boolean flag = true;
+
+    public void setFlag(boolean flag) {
+        this.flag = flag;
     }
+
     @Override
     public void run() {
-        for (int i = 0; i < 10000; i++) {
-            System.out.println(new Timestamp(System.currentTimeMillis())+"  "+i);
+        while(flag){
+            System.out.println(1);
         }
     }
 }

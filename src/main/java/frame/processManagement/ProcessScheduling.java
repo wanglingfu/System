@@ -17,8 +17,9 @@ public class ProcessScheduling {
     /**
      * 创建进程
      */
-    public static void create(Byte[] file){
-
+    public static boolean create(Byte[] file){
+        PCB pcb = new PCB(file);
+        return true;
     }
 
     /**

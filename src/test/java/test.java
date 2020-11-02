@@ -1,4 +1,5 @@
 import frame.processManagement.Runnable.CPU;
+import frame.processManagement.Runnable.CreatProcess;
 import org.junit.Test;
 
 /**
@@ -15,7 +16,11 @@ public class test {
         cpu.run();
         System.out.println(cpu.getAX());
     }
-    @Test
-    public void test2(){
+
+    public static void main(String[] args) {
+        Byte[][] bytes ={{1,1,1},{2,2,2}};
+        CreatProcess creatProcess = new CreatProcess(bytes);
+        new Thread(creatProcess).run();
+        System.out.println(creatProcess.getFile(1));
     }
 }
