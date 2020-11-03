@@ -2,6 +2,7 @@ package frame.processManagement.Runnable;
 
 import Main.main;
 import frame.processManagement.ProcessScheduling;
+import frame.storageManagement.Memory;
 
 import java.util.Random;
 
@@ -11,12 +12,14 @@ import java.util.Random;
  * @create: 2020-10-21 21:52
  **/
 public class CreatProcess implements Runnable{
-    private Byte[][] file;
-    private int flag;
+    private Byte[][] file;//全部文件
+    private int flag;//是否执行完所有文件
+    private ProcessScheduling processScheduling;//进程调度
 
-    public CreatProcess(Byte[][] file) {
+    public CreatProcess(Byte[][] file,ProcessScheduling processScheduling) {
         this.file = file;
         flag = file.length;
+        this.processScheduling = processScheduling;
     }
 
     public Byte[] getFile(int i) {
@@ -35,10 +38,11 @@ public class CreatProcess implements Runnable{
         this.flag = flag;
     }
 
+
     @Override
     public void run() {
         while(flag>0){
-            while(ProcessScheduling.readyPCB.size()+ProcessScheduling.blockPCB.size()+(ProcessScheduling.runPCB==null?0:1)>=10){
+            while(processScheduling.getProcessNum()>=10){
             }
             try {
                 main.lockCreate.lock();
@@ -47,7 +51,7 @@ public class CreatProcess implements Runnable{
                 while(file[i] == null){
                     i = random.nextInt(file.length);
                 }
-                boolean b = ProcessScheduling.create(file[i]);
+                boolean b = processScheduling.create(file[i]);
                 if(b){
                     file[i] = null;
                     flag--;

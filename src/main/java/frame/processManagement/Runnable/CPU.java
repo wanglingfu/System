@@ -10,16 +10,20 @@ import frame.processManagement.ProcessScheduling;
  * @create: 2020-10-19 22:30
  **/
 public class CPU implements Runnable{
-    private Integer AX;
-    private Integer PSW;
-    private String IR;
-    private Integer PC;
-    private Byte[] file;
-    private int flag ;
+    private Integer AX;//数据寄存器
+    private Integer PSW;//中断标志寄存器
+    private String IR;//指令寄存器
+    private Integer PC;//程序计数器
+    private Byte[] file;//运行中的进程文件
+    private int flag ;//是否运行完
+    private int finalAX;//运行结束之后显示进程的AX
 
-    public CPU(Integer PC, Byte[] file) {
+    private ProcessScheduling processScheduling;
+
+    public CPU(Integer PC, Byte[] file,ProcessScheduling processScheduling) {
         this.PC = PC;
         this.file = file;
+        this.processScheduling = processScheduling;
     }
 
     public Integer getAX() {
@@ -106,19 +110,29 @@ public class CPU implements Runnable{
              * 判断中断
              */
             switch(PSW){
+                /**
+                 * 程序停止
+                 */
                 case 1:{
                     PSW = 0;
-                    ProcessScheduling.destroy();
-                    ProcessScheduling.runPCB = ProcessScheduling.readyPCB.remove();
-                    recovery(ProcessScheduling.runPCB);
+                    processScheduling.destroy(processScheduling.getRunPCB());
+                    finalAX = processScheduling.getRunPCB().getAX();
+                    processScheduling.setRunPCB(processScheduling.getReadyPCB().remove());
+                    recovery(processScheduling.getRunPCB());
                     break;
                 }
+                /**
+                 * 时间片结束
+                 */
                 case 2:{
                     PSW = 0;
-                    ProcessScheduling.runPCB = preservation(ProcessScheduling.runPCB);
-                    ProcessScheduling.readyPCB.add(ProcessScheduling.runPCB);
-                    ProcessScheduling.runPCB = ProcessScheduling.readyPCB.remove();
-                    recovery(ProcessScheduling.runPCB);
+                    processScheduling.setRunPCB(preservation(processScheduling.getRunPCB()));
+                    processScheduling.getReadyPCB().add(processScheduling.getRunPCB());
+                    processScheduling.setRunPCB(processScheduling.getReadyPCB().remove());
+                    if(processScheduling.getRunPCB() == null){
+                        processScheduling.setRunPCB(processScheduling.getIdlePCB());
+                    }
+                    recovery(processScheduling.getRunPCB());
                     break;
                 }
                 case 3:{
