@@ -13,6 +13,12 @@ import java.util.TimerTask;
  * @create: 2020-10-21 21:24
  **/
 public class TimeSchedul implements Runnable{
+    private CPU cpu;
+
+    public TimeSchedul(CPU cpu) {
+        this.cpu = cpu;
+    }
+
     @Override
     public void run() {
         Timer t = new Timer();
@@ -23,9 +29,16 @@ public class TimeSchedul implements Runnable{
                     main.lockTime.lock();
                     main.SystemTime++;
                     main.TimeSlice--;
+                    if(main.TimeSlice == 0){
+                        main.TimeSlice = 6;
+                        cpu.setPSW(2);
+                    }
                     if (main.DeviceTime != null) {
                         for (int i = 0; i < main.DeviceTime.length; i++) {
                             main.DeviceTime[i]--;
+                            if(main.DeviceTime[i]==0){
+                                cpu.setPSW(3);
+                            }
                         }
                     }
                 } finally {

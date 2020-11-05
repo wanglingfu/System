@@ -12,17 +12,8 @@ import java.util.Arrays;
  */
 public class TestFile {
     @Test
-    public void testDisk() throws Exception{
-
-        FileUtil fileUtil= new FileUtil();
-        String S = "/ad/sdf/cc.e";
-        System.out.println((byte)150);
-        //fileUtil.makeDirectory(S);
-        /*byte[][] bytes = fileUtil.formatPath(S);
-        for(byte[] b:bytes){
-            System.out.println(Arrays.toString(b));
-            System.out.println(fileUtil.bytesToString(b));
-        }*/
+    public int[][] testDisk() throws Exception{
+        return null;
     }
     @Test
     public void testFormate() throws Exception{

@@ -1,5 +1,12 @@
 package Main;
 
+import frame.deviceManagement.Device;
+import frame.processManagement.ProcessScheduling;
+import frame.processManagement.Runnable.CPU;
+import frame.processManagement.Runnable.CreatProcess;
+import frame.processManagement.Runnable.TimeSchedul;
+import frame.storageManagement.Memory;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -11,7 +18,7 @@ public class main extends JFrame {
     public static final ReentrantLock lockCreate = new ReentrantLock();
     public static int SystemTime=0;//系统时间
     public static int TimeSlice=6;//时间片
-    public static int[] DeviceTime;//设备时间
+    public static int[] DeviceTime = {-1,-1,-1,-1,-1,-1,-1,-1};//设备时间
     private static final long serialVersionUID=1L;
     public main(){
         setResizable(false);
@@ -211,7 +218,15 @@ public class main extends JFrame {
 
             }
         });
-
-
+        Memory memory = new Memory(512);
+        Device device = new Device();
+        ProcessScheduling processScheduling = new ProcessScheduling(memory,device);
+        Byte[][] files = new Byte[10][];
+        CPU cpu = new CPU(files.length, processScheduling);
+        CreatProcess creatProcess = new CreatProcess(files,processScheduling);
+        TimeSchedul timeSchedul = new TimeSchedul(cpu);
+        new Thread(cpu).start();
+        new Thread(creatProcess).start();
+        new Thread(timeSchedul).start();
     }
 }
