@@ -10,6 +10,15 @@ import java.util.LinkedList;
  * @Version 1.0
  **/
 public class Device {
+      int returnIndexA1 = 1;
+      int returnIndexA2 = 2;
+      int returnIndexB1 = 3;
+      int returnIndexB2 = 4;
+      int returnIndexB3 = 5;
+      int returnIndexC1 = 6;
+      int returnIndexC2 = 7;
+      int returnIndexC3 = 8;
+      int c;
       private LinkedList<DeviceWaitQueue> blockA ;
       private LinkedList<DeviceWaitQueue> blockB ;
       private LinkedList<DeviceWaitQueue> blockC ;
@@ -29,16 +38,23 @@ public class Device {
      * @param time
      * @param size
      */
-    public void getDeviceA(String Uid, int time, int size ){
+    public int getDeviceA(String Uid, int time, int size ){
          deviceWaitQueueA =new DeviceWaitQueue(Uid,size,time);
-        if (deviceTable.getA1() == null){
+        if (deviceTable.getA1() == null ){
             deviceTable.setA1(Uid);
+            c = returnIndexA1;
+            returnIndexA1 = 9;
+            return c;
         }
-        else if(deviceTable.getA2() == null){
+        else if(deviceTable.getA2() == null ){
             deviceTable.setA2(Uid);
+            c = returnIndexA2;
+            returnIndexA2 = 9;
+            return c;
         }
         else {
             blockA.add(deviceWaitQueueA);
+            return 9;
         }
 
     }
@@ -56,6 +72,7 @@ public class Device {
                 re[1] = deviceWaitQueueA.getTime();
                 return re;
             }
+            returnIndexA1 = 1;
             return null;
         }else if (Uid.equals(deviceTable.getA2())){
             deviceTable.setA2(null);
@@ -65,6 +82,7 @@ public class Device {
                 re[1] = deviceWaitQueueA.getTime();
                 return re;
             }
+            returnIndexA2 = 2;
             return null;
         }else
             return null;
@@ -83,19 +101,29 @@ public class Device {
      * @param time
      * @param size
      */
-    public void getDeviceB(String Uid, int time, int size ){
+    public int getDeviceB(String Uid, int time, int size ){
         deviceWaitQueueB =new DeviceWaitQueue(Uid,size,time);
-        if (deviceTable.getB1() == null){
+        if (deviceTable.getB1().equals(null)){
             deviceTable.setB1(Uid);
+            c = returnIndexB1;
+            returnIndexB1 = 9;
+            return c;
         }
-        else if(deviceTable.getB2() == null){
+        else if(deviceTable.getB2().equals(null)){
             deviceTable.setB2(Uid);
+            c = returnIndexB2;
+            returnIndexB2 = 9;
+            return c;
         }
-        else if(deviceTable.getB3() == null){
+        else if(deviceTable.getB3().equals(null)){
             deviceTable.setB3(Uid);
+            c = returnIndexB3;
+            returnIndexB3 = 9;
+            return c;
         }
         else{
             blockB.add(deviceWaitQueueB);
+            return 9;
         }
     }
     /**
@@ -113,6 +141,7 @@ public class Device {
                 re[1] = deviceWaitQueueB.getTime();
                 return re;
             }
+            returnIndexB1 = 3;
             return null;
         }else if (Uid.equals(deviceTable.getB2())){
             deviceTable.setB2(null);
@@ -122,6 +151,7 @@ public class Device {
                 re[1] = deviceWaitQueueB.getTime();
                 return re;
             }
+            returnIndexB2 = 4;
             return null;
         }
         else if (Uid.equals(deviceTable.getB3())){
@@ -132,6 +162,7 @@ public class Device {
                 re[1] = deviceWaitQueueB.getTime();
                 return re;
             }
+            returnIndexB3= 5;
             return null;
         }else
             return null;
@@ -149,19 +180,29 @@ public class Device {
      * @param time
      * @param size
      */
-    public void getDeviceC(String Uid, int time, int size ){
+    public int getDeviceC(String Uid, int time, int size ){
         deviceWaitQueueC = new DeviceWaitQueue(Uid,size,time);
-        if (deviceTable.getC1() == null){
+        if ( deviceTable.getC1().equals(null) ){
             deviceTable.setC1(Uid);
+            c = returnIndexC1;
+            returnIndexC1 = 9;
+            return c;
         }
-        else if(deviceTable.getC2() == null){
+        else if( deviceTable.getC2().equals(null) ){
             deviceTable.setC2(Uid);
+            c = returnIndexC2;
+            returnIndexC2 = 9;
+            return c;
         }
-        else if(deviceTable.getC3() == null){
+        else if( deviceTable.getC3().equals(null) ){
             deviceTable.setC3(Uid);
+            c = returnIndexC3;
+            returnIndexC3 = 9;
+            return c;
         }
         else{
             blockC.add(deviceWaitQueueC);
+            return 9;
         }
     }
     /**
@@ -178,6 +219,7 @@ public class Device {
                 re[1] = deviceWaitQueueC.getTime();
                 return re;
             }
+            returnIndexC1 = 6;
             return null;
         }else if (Uid.equals(deviceTable.getB2())){
             deviceTable.setC2(null);
@@ -187,6 +229,7 @@ public class Device {
                 re[1] = deviceWaitQueueC.getTime();
                 return re;
             }
+            returnIndexC2 = 7;
             return null;
         }
         else if (Uid.equals(deviceTable.getB3())){
@@ -197,6 +240,7 @@ public class Device {
                 re[1] = deviceWaitQueueC.getTime();
                 return re;
             }
+            returnIndexC3 = 8;
             return null;
         }else
             return  null;
