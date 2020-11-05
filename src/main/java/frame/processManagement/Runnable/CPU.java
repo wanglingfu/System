@@ -254,6 +254,8 @@ public class CPU implements Runnable{
                 //！？？指令
                 else if (i>0&&code == 2){
                     preservation(processScheduling.getRunPCB());
+                    int i1 = code % 4;
+                    processScheduling.getRunPCB().setTime(i1);
                     if(code/4 == 0){
                         processScheduling.getRunPCB().setReason("A");
                         processScheduling.block("A");

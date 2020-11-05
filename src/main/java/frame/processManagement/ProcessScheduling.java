@@ -1,5 +1,6 @@
 package frame.processManagement;
 
+import Main.main;
 import frame.deviceManagement.Device;
 import frame.storageManagement.Memory;
 
@@ -136,12 +137,16 @@ public class ProcessScheduling {
      * 阻塞进程
      */
     public void block(String reason){
+        int device = 9;
         if(reason == "A"){
-            deviceA.getDeviceA(runPCB.getUuid(),runPCB.getTime(),runPCB.getFile().length);
+            device = deviceA.getDeviceA(runPCB.getUuid(),runPCB.getTime(),runPCB.getFile().length);
         }else if(reason == "B"){
-            deviceB.getDeviceB(runPCB.getUuid(),runPCB.getTime(),runPCB.getFile().length);
+            device = deviceB.getDeviceB(runPCB.getUuid(),runPCB.getTime(),runPCB.getFile().length);
         }else if(reason == "C"){
-            deviceC.getDeviceC(runPCB.getUuid(),runPCB.getTime(),runPCB.getFile().length);
+            device = deviceC.getDeviceC(runPCB.getUuid(),runPCB.getTime(),runPCB.getFile().length);
+        }
+        if(device <9){
+            main.DeviceTime[device-1] = runPCB.getTime();
         }
         util(1);
     }
@@ -151,13 +156,16 @@ public class ProcessScheduling {
      */
     public void awake(PCB pcb){
         String reason = pcb.getReason();
+        int[] ints = new int[0];
         if(reason == "A"){
-            deviceA.removeDeviceA(runPCB.getUuid());
+            ints = deviceA.removeDeviceA(runPCB.getUuid());
         }else if(reason == "B"){
-            deviceB.removeDeviceB(runPCB.getUuid());
+            ints = deviceB.removeDeviceB(runPCB.getUuid());
         }else if(reason == "C"){
-            deviceC.removeDeviceC(runPCB.getUuid());
+            ints = deviceC.removeDeviceC(runPCB.getUuid());
         }
+        if(ints != null)
+        main.DeviceTime[ints[0]-1] = ints[1];
         /**
          * 是否为闲置进程
          */
