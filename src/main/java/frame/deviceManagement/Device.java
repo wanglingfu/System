@@ -60,7 +60,7 @@ public class Device {
             return null;
         }else if (Uid.equals(deviceTable.getA2())){
             deviceTable.setA2(null);
-            if(!blockA.isEmpty()) {
+            if( !blockA.isEmpty()) {
                 gerFirstNodeA();
                 re[0] = 2;
                 re[1] = deviceWaitQueueA.getTime();
@@ -108,7 +108,7 @@ public class Device {
         if (Uid.equals(deviceTable.getB1())){
 
             deviceTable.setB1(null);
-            if(blockB.isEmpty()) {
+            if(!blockB.isEmpty()) {
                 gerFirstNodeB();
                 re[0] = 3;
                 re[1] = deviceWaitQueueB.getTime();
@@ -117,7 +117,7 @@ public class Device {
             return null;
         }else if (Uid.equals(deviceTable.getB2())){
             deviceTable.setB2(null);
-            if(blockB.isEmpty()) {
+            if(!blockB.isEmpty()) {
                 gerFirstNodeB();
                 re[0] = 4;
                 re[1] = deviceWaitQueueB.getTime();
@@ -127,7 +127,7 @@ public class Device {
         }
         else if (Uid.equals(deviceTable.getB3())){
             deviceTable.setB3(null);
-            if(blockB.isEmpty()) {
+            if(!blockB.isEmpty()) {
                 gerFirstNodeB();
                 re[0] = 5;
                 re[1] = deviceWaitQueueB.getTime();
@@ -173,7 +173,7 @@ public class Device {
         int[] re = new int[2];
         if (Uid.equals(deviceTable.getB1())){
             deviceTable.setC1(null);
-            if(blockC.isEmpty()) {
+            if(!blockC.isEmpty()) {
                 gerFirstNodeC();
                 re[0] = 6;
                 re[1] = deviceWaitQueueC.getTime();
@@ -182,7 +182,7 @@ public class Device {
             return null;
         }else if (Uid.equals(deviceTable.getB2())){
             deviceTable.setC2(null);
-            if(blockC.isEmpty()) {
+            if(!blockC.isEmpty()) {
                 gerFirstNodeC();
                 re[0] = 7;
                 re[1] = deviceWaitQueueC.getTime();
@@ -192,7 +192,7 @@ public class Device {
         }
         else if (Uid.equals(deviceTable.getB3())){
             deviceTable.setC3(null);
-            if(blockC.isEmpty()) {
+            if(!blockC.isEmpty()) {
                 gerFirstNodeC();
                 re[0] = 8;
                 re[1] = deviceWaitQueueC.getTime();
