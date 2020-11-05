@@ -11,7 +11,7 @@ public class main extends JFrame {
     public static final ReentrantLock lockCreate = new ReentrantLock();
     public static int SystemTime=0;//系统时间
     public static int TimeSlice=6;//时间片
-    public static int[] DeviceTime;//设备时间
+    public static int[] DeviceTime = {-1,-1,-1,-1,-1,-1,-1,-1};//设备时间
     private static final long serialVersionUID=1L;
     public main(){
         setResizable(false);

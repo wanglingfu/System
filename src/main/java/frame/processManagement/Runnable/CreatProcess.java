@@ -46,6 +46,9 @@ public class CreatProcess implements Runnable{
             }
             try {
                 main.lockCreate.lock();
+                /**
+                 * 随机从文件中获取得到进程
+                 */
                 Random random = new Random();
                 int i = random.nextInt(file.length);
                 while(file[i] == null){

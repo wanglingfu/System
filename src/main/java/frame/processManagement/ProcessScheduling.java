@@ -1,11 +1,11 @@
 package frame.processManagement;
 
-import frame.deviceManagement.DeviceA;
-import frame.deviceManagement.DeviceBorC;
-import frame.processManagement.Runnable.CPU;
+import frame.deviceManagement.Device;
 import frame.storageManagement.Memory;
 
+import java.util.ArrayList;
 import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * @description: 进程调度
@@ -13,17 +13,17 @@ import java.util.Queue;
  * @create: 2020-10-16 22:51
  **/
 public class ProcessScheduling {
-    private Integer ProcessNum = 0;//现有进程数
+    private Integer ProcessNum = 0;//现有进程数，只允许最多10个
     private Queue<PCB> readyPCB;//就绪PCB队列
-    private Queue<PCB> blockPCB;//阻塞PCB队列
-    private PCB runPCB;//运行中的进程
+    private ArrayList<PCB> blockPCB;//阻塞PCB队列
+    private PCB runPCB = null;//运行中的进程
     private PCB idlePCB = new PCB(null);//闲置进程
     private Memory memory;
-    private DeviceA deviceA;
-    private DeviceBorC deviceB;
-    private DeviceBorC deviceC;
+    private Device deviceA;
+    private Device deviceB;
+    private Device deviceC;
 
-    public ProcessScheduling(Memory memory, DeviceA deviceA, DeviceBorC deviceB, DeviceBorC deviceC) {
+    public ProcessScheduling(Memory memory, Device deviceA, Device deviceB, Device deviceC) {
         this.memory = memory;
         this.deviceA = deviceA;
         this.deviceB = deviceB;
@@ -46,11 +46,11 @@ public class ProcessScheduling {
         this.readyPCB = readyPCB;
     }
 
-    public Queue<PCB> getBlockPCB() {
+    public ArrayList<PCB> getBlockPCB() {
         return blockPCB;
     }
 
-    public void setBlockPCB(Queue<PCB> blockPCB) {
+    public void setBlockPCB(ArrayList<PCB> blockPCB) {
         this.blockPCB = blockPCB;
     }
 
@@ -78,27 +78,27 @@ public class ProcessScheduling {
         this.memory = memory;
     }
 
-    public DeviceA getDeviceA() {
+    public Device getDeviceA() {
         return deviceA;
     }
 
-    public void setDeviceA(DeviceA deviceA) {
+    public void setDeviceA(Device deviceA) {
         this.deviceA = deviceA;
     }
 
-    public DeviceBorC getDeviceB() {
+    public Device getDeviceB() {
         return deviceB;
     }
 
-    public void setDeviceB(DeviceBorC deviceB) {
+    public void setDeviceB(Device deviceB) {
         this.deviceB = deviceB;
     }
 
-    public DeviceBorC getDeviceC() {
+    public Device getDeviceC() {
         return deviceC;
     }
 
-    public void setDeviceC(DeviceBorC deviceC) {
+    public void setDeviceC(Device deviceC) {
         this.deviceC = deviceC;
     }
 
@@ -106,44 +106,95 @@ public class ProcessScheduling {
      * 创建进程
      */
     public boolean create(Byte[] file){
-        PCB pcb = new PCB(file);
-        boolean b = memory.BestFit(memory, file.length, pcb.getUuid());
-        ProcessNum++;
-        readyPCB.add(pcb);
-        return b;
+        if(ProcessNum < 10){
+            PCB pcb = new PCB(file);
+            boolean b = memory.BestFit(file.length, pcb.getUuid());
+            if(b){
+                ProcessNum++;
+                if(readyPCB.size() == 0){
+                    runPCB = pcb;
+                }
+                else{
+                    readyPCB.add(pcb);
+                }
+            }
+            return b;
+        }
+        return false;
     }
 
     /**
      * 销毁进程
      */
-    public void destroy(PCB pcb){
-        memory.releaseMemory(pcb.getUuid());
+    public void destroy(){
+        memory.releaseMemory(runPCB.getUuid());
+        util(0);
         ProcessNum--;
     }
 
     /**
-     * 阻塞进程(还没写完)
+     * 阻塞进程
      */
     public void block(String reason){
         if(reason == "A"){
-            deviceA.getDevice(runPCB.getUuid(),runPCB.getTime(),runPCB.getFile().length);
+            deviceA.getDeviceA(runPCB.getUuid(),runPCB.getTime(),runPCB.getFile().length);
         }else if(reason == "B"){
-            deviceB.getDevice(runPCB.getUuid(),runPCB.getTime(),runPCB.getFile().length);
+            deviceB.getDeviceB(runPCB.getUuid(),runPCB.getTime(),runPCB.getFile().length);
         }else if(reason == "C"){
-            deviceC.getDevice(runPCB.getUuid(),runPCB.getTime(),runPCB.getFile().length);
+            deviceC.getDeviceC(runPCB.getUuid(),runPCB.getTime(),runPCB.getFile().length);
         }
+        util(1);
     }
 
     /**
      * 唤醒进程
      */
-    public void awake(PCB pcb,String reason){
+    public void awake(PCB pcb){
+        String reason = pcb.getReason();
         if(reason == "A"){
-            deviceA.removeDevice(runPCB.getUuid());
+            deviceA.removeDeviceA(runPCB.getUuid());
         }else if(reason == "B"){
-            deviceB.removeDevice(runPCB.getUuid());
+            deviceB.removeDeviceB(runPCB.getUuid());
         }else if(reason == "C"){
-            deviceC.removeDevice(runPCB.getUuid());
+            deviceC.removeDeviceC(runPCB.getUuid());
+        }
+        /**
+         * 是否为闲置进程
+         */
+        if(runPCB != idlePCB){
+            readyPCB.add(pcb);
+        }else{
+            runPCB = pcb;
         }
     }
+
+    /**
+     * 工具类 替换现有进程
+     */
+    public void util(int select){
+        /**
+         * 阻塞
+         */
+        if(select == 1){
+            blockPCB.add(runPCB);
+        }
+        /**
+         * 时间片截止
+         */
+        else if(select == 2){
+            readyPCB.add(runPCB);
+        }
+        /**
+         *程序结束
+         */
+        else{
+        }
+        if(readyPCB.size()>0){
+            runPCB = readyPCB.remove();
+        }
+        else{
+            runPCB = idlePCB;
+        }
+    }
+
 }
