@@ -104,19 +104,19 @@ public class Device {
      */
     public int getDeviceB(String Uid, int time, int size ){
         deviceWaitQueueB =new DeviceWaitQueue(Uid,size,time);
-        if (deviceTable.getB1().equals(null)){
+        if (deviceTable.getB1() == null ){
             deviceTable.setB1(Uid);
             c = returnIndexB1;
             returnIndexB1 = 9;
             return c;
         }
-        else if(deviceTable.getB2().equals(null)){
+        else if(deviceTable.getB2() == null ){
             deviceTable.setB2(Uid);
             c = returnIndexB2;
             returnIndexB2 = 9;
             return c;
         }
-        else if(deviceTable.getB3().equals(null)){
+        else if(deviceTable.getB3() == null ){
             deviceTable.setB3(Uid);
             c = returnIndexB3;
             returnIndexB3 = 9;
@@ -183,19 +183,19 @@ public class Device {
      */
     public int getDeviceC(String Uid, int time, int size ){
         deviceWaitQueueC = new DeviceWaitQueue(Uid,size,time);
-        if ( deviceTable.getC1().equals(null) ){
+        if ( deviceTable.getC1() == null ){
             deviceTable.setC1(Uid);
             c = returnIndexC1;
             returnIndexC1 = 9;
             return c;
         }
-        else if( deviceTable.getC2().equals(null) ){
+        else if( deviceTable.getC2() == null ){
             deviceTable.setC2(Uid);
             c = returnIndexC2;
             returnIndexC2 = 9;
             return c;
         }
-        else if( deviceTable.getC3().equals(null) ){
+        else if( deviceTable.getC3() == null ){
             deviceTable.setC3(Uid);
             c = returnIndexC3;
             returnIndexC3 = 9;
