@@ -17,18 +17,14 @@ public class ProcessScheduling {
     private Integer ProcessNum = 0;//现有进程数，只允许最多10个
     private Queue<PCB> readyPCB;//就绪PCB队列
     private ArrayList<PCB> blockPCB;//阻塞PCB队列
-    private PCB runPCB = null;//运行中的进程
     private PCB idlePCB = new PCB(null);//闲置进程
+    private PCB runPCB = idlePCB;//运行中的进程
     private Memory memory;
-    private Device deviceA;
-    private Device deviceB;
-    private Device deviceC;
+    private Device device;
 
-    public ProcessScheduling(Memory memory, Device deviceA, Device deviceB, Device deviceC) {
+    public ProcessScheduling(Memory memory, Device device) {
         this.memory = memory;
-        this.deviceA = deviceA;
-        this.deviceB = deviceB;
-        this.deviceC = deviceC;
+        this.device = device;
     }
 
     public Integer getProcessNum() {
@@ -79,34 +75,19 @@ public class ProcessScheduling {
         this.memory = memory;
     }
 
-    public Device getDeviceA() {
-        return deviceA;
+    public Device getDevice() {
+        return device;
     }
 
-    public void setDeviceA(Device deviceA) {
-        this.deviceA = deviceA;
-    }
-
-    public Device getDeviceB() {
-        return deviceB;
-    }
-
-    public void setDeviceB(Device deviceB) {
-        this.deviceB = deviceB;
-    }
-
-    public Device getDeviceC() {
-        return deviceC;
-    }
-
-    public void setDeviceC(Device deviceC) {
-        this.deviceC = deviceC;
+    public void setDevice(Device device) {
+        this.device = device;
     }
 
     /**
      * 创建进程
      */
     public boolean create(Byte[] file){
+        main.lockCreate.lock();
         if(ProcessNum < 10){
             PCB pcb = new PCB(file);
             boolean b = memory.BestFit(file.length, pcb.getUuid());
@@ -119,8 +100,10 @@ public class ProcessScheduling {
                     readyPCB.add(pcb);
                 }
             }
+            main.lockCreate.unlock();
             return b;
         }
+        main.lockCreate.unlock();
         return false;
     }
 
@@ -137,16 +120,16 @@ public class ProcessScheduling {
      * 阻塞进程
      */
     public void block(String reason){
-        int device = 9;
+        int deviceTime = 9;
         if(reason == "A"){
-            device = deviceA.getDeviceA(runPCB.getUuid(),runPCB.getTime(),runPCB.getFile().length);
+            deviceTime = device.getDeviceA(runPCB.getUuid(),runPCB.getTime(),runPCB.getFile().length);
         }else if(reason == "B"){
-            device = deviceB.getDeviceB(runPCB.getUuid(),runPCB.getTime(),runPCB.getFile().length);
+            deviceTime = device.getDeviceB(runPCB.getUuid(),runPCB.getTime(),runPCB.getFile().length);
         }else if(reason == "C"){
-            device = deviceC.getDeviceC(runPCB.getUuid(),runPCB.getTime(),runPCB.getFile().length);
+            deviceTime = device.getDeviceC(runPCB.getUuid(),runPCB.getTime(),runPCB.getFile().length);
         }
-        if(device <9){
-            main.DeviceTime[device-1] = runPCB.getTime();
+        if(deviceTime <9){
+            main.DeviceTime[deviceTime-1] = runPCB.getTime();
         }
         util(1);
     }
@@ -158,11 +141,11 @@ public class ProcessScheduling {
         String reason = pcb.getReason();
         int[] ints = new int[0];
         if(reason == "A"){
-            ints = deviceA.removeDeviceA(runPCB.getUuid());
+            ints = device.removeDeviceA(runPCB.getUuid());
         }else if(reason == "B"){
-            ints = deviceB.removeDeviceB(runPCB.getUuid());
+            ints = device.removeDeviceB(runPCB.getUuid());
         }else if(reason == "C"){
-            ints = deviceC.removeDeviceC(runPCB.getUuid());
+            ints = device.removeDeviceC(runPCB.getUuid());
         }
         if(ints != null)
         main.DeviceTime[ints[0]-1] = ints[1];

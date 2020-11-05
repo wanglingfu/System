@@ -16,20 +16,16 @@ public class CPU implements Runnable{
     private Integer AX;//数据寄存器
     private Integer PSW;//中断标志寄存器
     private String IR;//指令寄存器
-    private Integer PC;//程序计数器
+    private Integer PC = 0;//程序计数器
     private Byte[] file;//运行中的进程文件
     private int flag ;//是否运行完
     private int finalAX;//运行结束之后显示进程的AX
     private int SystemTime = 0;//系统时间
 
     private ProcessScheduling processScheduling;
-    private DeviceTable deviceTable;
 
-    public CPU(int flag, Integer PC, Byte[] file, ProcessScheduling processScheduling, DeviceTable deviceTable) {
+    public CPU(int flag, ProcessScheduling processScheduling) {
         this.flag = flag;
-        this.deviceTable = deviceTable;
-        this.PC = PC;
-        this.file = file;
         this.processScheduling = processScheduling;
     }
 
@@ -103,6 +99,9 @@ public class CPU implements Runnable{
     @Override
     public void run() {
        while(flag>0){
+           if(processScheduling.getRunPCB().getFile() != file){
+               recovery(processScheduling.getRunPCB());
+           }
            /**
             * 一个系统时间执行一条指令
             */
@@ -143,7 +142,7 @@ public class CPU implements Runnable{
                      * 判断哪个设备已使用完
                      */
                     if(main.DeviceTime[0] ==0){
-                        String a1 = deviceTable.getA1();
+                        String a1 = processScheduling.getDevice().getDeviceTable().getA1();
                         for (int i = 0; i < processScheduling.getBlockPCB().size(); i++) {
                             if(processScheduling.getBlockPCB().get(i).getUuid() == a1){
                                 PCB remove = processScheduling.getBlockPCB().remove(i);
@@ -153,7 +152,7 @@ public class CPU implements Runnable{
                         }
                     }
                     else if(main.DeviceTime[0] ==1){
-                        String a1 = deviceTable.getA2();
+                        String a1 = processScheduling.getDevice().getDeviceTable().getA2();
                         for (int i = 0; i < processScheduling.getBlockPCB().size(); i++) {
                             if(processScheduling.getBlockPCB().get(i).getUuid() == a1){
                                 PCB remove = processScheduling.getBlockPCB().remove(i);
@@ -163,7 +162,7 @@ public class CPU implements Runnable{
                         }
                     }
                     else if(main.DeviceTime[0] ==2){
-                        String a1 = deviceTable.getB1();
+                        String a1 = processScheduling.getDevice().getDeviceTable().getB1();
                         for (int i = 0; i < processScheduling.getBlockPCB().size(); i++) {
                             if(processScheduling.getBlockPCB().get(i).getUuid() == a1){
                                 PCB remove = processScheduling.getBlockPCB().remove(i);
@@ -173,7 +172,7 @@ public class CPU implements Runnable{
                         }
                     }
                     else if(main.DeviceTime[0] ==3){
-                        String a1 = deviceTable.getB2();
+                        String a1 = processScheduling.getDevice().getDeviceTable().getB2();
                         for (int i = 0; i < processScheduling.getBlockPCB().size(); i++) {
                             if(processScheduling.getBlockPCB().get(i).getUuid() == a1){
                                 PCB remove = processScheduling.getBlockPCB().remove(i);
@@ -183,7 +182,7 @@ public class CPU implements Runnable{
                         }
                     }
                     else if(main.DeviceTime[0] ==4){
-                        String a1 = deviceTable.getB3();
+                        String a1 = processScheduling.getDevice().getDeviceTable().getB3();
                         for (int i = 0; i < processScheduling.getBlockPCB().size(); i++) {
                             if(processScheduling.getBlockPCB().get(i).getUuid() == a1){
                                 PCB remove = processScheduling.getBlockPCB().remove(i);
@@ -193,7 +192,7 @@ public class CPU implements Runnable{
                         }
                     }
                     else if(main.DeviceTime[0] ==5){
-                        String a1 = deviceTable.getC1();
+                        String a1 = processScheduling.getDevice().getDeviceTable().getC1();
                         for (int i = 0; i < processScheduling.getBlockPCB().size(); i++) {
                             if(processScheduling.getBlockPCB().get(i).getUuid() == a1){
                                 PCB remove = processScheduling.getBlockPCB().remove(i);
@@ -203,7 +202,7 @@ public class CPU implements Runnable{
                         }
                     }
                     else if(main.DeviceTime[0] ==6){
-                        String a1 = deviceTable.getA2();
+                        String a1 = processScheduling.getDevice().getDeviceTable().getA2();
                         for (int i = 0; i < processScheduling.getBlockPCB().size(); i++) {
                             if(processScheduling.getBlockPCB().get(i).getUuid() == a1){
                                 PCB remove = processScheduling.getBlockPCB().remove(i);
@@ -213,7 +212,7 @@ public class CPU implements Runnable{
                         }
                     }
                     else if(main.DeviceTime[0] ==7){
-                        String a1 = deviceTable.getA2();
+                        String a1 = processScheduling.getDevice().getDeviceTable().getA2();
                         for (int i = 0; i < processScheduling.getBlockPCB().size(); i++) {
                             if(processScheduling.getBlockPCB().get(i).getUuid() == a1){
                                 PCB remove = processScheduling.getBlockPCB().remove(i);
@@ -246,10 +245,12 @@ public class CPU implements Runnable{
                 //x++指令
                 if (i>0&&code == 0){
                     AX++;
+                    IR = "x++";
                 }
                 //x--指令
                 else if (i>0&&code == 1){
                     AX--;
+                    IR = "x--";
                 }
                 //！？？指令
                 else if (i>0&&code == 2){
@@ -259,24 +260,29 @@ public class CPU implements Runnable{
                     if(code/4 == 0){
                         processScheduling.getRunPCB().setReason("A");
                         processScheduling.block("A");
+                        IR = "!A"+i1;
                     }
                     if(code/4 == 1){
                         processScheduling.getRunPCB().setReason("B");
                         processScheduling.block("B");
+                        IR = "!B"+i1;
                     }
                     if(code/4 == 2){
                         processScheduling.getRunPCB().setReason("C");
                         processScheduling.block("C");
+                        IR = "!C"+i1;
                     }
                     recovery(processScheduling.getRunPCB());
                 }
                 //end指令
                 else if (i>0&&code == 3){
                     PSW = 1;
+                    IR = "end";
                 }
                 //x=?指令
                 else {
                     AX = i + 128;
+                    IR = "x="+AX;
                 }
             }
         }
