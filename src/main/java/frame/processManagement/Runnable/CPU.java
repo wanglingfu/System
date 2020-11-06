@@ -238,51 +238,59 @@ public class CPU implements Runnable{
                 * !C?:01010xxx
                 * end:01100000
                 * x=?:1xxxxxxx
+                * 特殊：
+                * !A8:00001000
+                * !A9:00001001
+                * !B8:00011000
+                * !B9:00011001
+                * !C8:00101000
+                * !C9:00101001
                 */
                 int i = file[PC];
-                int code = i/32; //前三位
-                int time = i%8;
+                int code = i/64;//是否为特殊
+                int[] device = {(i % 64) / 16, (i % 64) / 8};
+                int[] time = {i%16,i%8};
                 //x++指令
-                if (i>0&&code == 0){
+                if (i==0){
                     AX++;
                     IR = "x++";
                 }
                 //x--指令
-                else if (i>0&&code == 1){
+                else if (i==32){
                     AX--;
                     IR = "x--";
                 }
-                //！？？指令
-                else if (i>0&&code == 2){
-                    preservation(processScheduling.getRunPCB());
-                    int i1 = code % 4;
-                    processScheduling.getRunPCB().setTime(i1);
-                    if(code/4 == 0){
-                        processScheduling.getRunPCB().setReason("A");
-                        processScheduling.block("A");
-                        IR = "!A"+i1;
-                    }
-                    if(code/4 == 1){
-                        processScheduling.getRunPCB().setReason("B");
-                        processScheduling.block("B");
-                        IR = "!B"+i1;
-                    }
-                    if(code/4 == 2){
-                        processScheduling.getRunPCB().setReason("C");
-                        processScheduling.block("C");
-                        IR = "!C"+i1;
-                    }
-                    recovery(processScheduling.getRunPCB());
-                }
                 //end指令
-                else if (i>0&&code == 3){
+                else if (i == 96){
                     PSW = 1;
                     IR = "end";
                 }
+
                 //x=?指令
-                else {
+                else if (i<0){
                     AX = i + 128;
                     IR = "x="+AX;
+                }
+                //！？？指令
+                else {
+                    preservation(processScheduling.getRunPCB());
+                    processScheduling.getRunPCB().setTime(time[code]);
+                    if(device[code] == 0){
+                        processScheduling.getRunPCB().setReason("A");
+                        processScheduling.block("A");
+                        IR = "!A"+time[code];
+                    }
+                    if(device[code] == 1){
+                        processScheduling.getRunPCB().setReason("B");
+                        processScheduling.block("B");
+                        IR = "!B"+time[code];
+                    }
+                    if(device[code] == 2){
+                        processScheduling.getRunPCB().setReason("C");
+                        processScheduling.block("C");
+                        IR = "!C"+time[code];
+                    }
+                    recovery(processScheduling.getRunPCB());
                 }
             }
         }
