@@ -5,6 +5,7 @@ import frame.deviceManagement.Device;
 import frame.storageManagement.Memory;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -25,6 +26,8 @@ public class ProcessScheduling {
     public ProcessScheduling(Memory memory, Device device) {
         this.memory = memory;
         this.device = device;
+        readyPCB = new LinkedList<PCB>();
+        blockPCB = new ArrayList<PCB>();
     }
 
     public Integer getProcessNum() {
@@ -90,10 +93,17 @@ public class ProcessScheduling {
         main.lockCreate.lock();
         if(ProcessNum < 10){
             PCB pcb = new PCB(file);
-            boolean b = memory.BestFit(file.length, pcb.getUuid());
+            int size = 0;
+            for (Byte aByte : file) {
+                if(aByte == null){
+                    break;
+                }
+                size++;
+            }
+            boolean b = memory.BestFit(size, pcb.getUuid());
             if(b){
                 ProcessNum++;
-                if(readyPCB.size() == 0){
+                if(runPCB.getUuid() == idlePCB.getUuid()){
                     runPCB = pcb;
                 }
                 else{
@@ -141,11 +151,11 @@ public class ProcessScheduling {
         String reason = pcb.getReason();
         int[] ints = new int[0];
         if(reason == "A"){
-            ints = device.removeDeviceA(runPCB.getUuid());
+            ints = device.removeDeviceA(pcb.getUuid());
         }else if(reason == "B"){
-            ints = device.removeDeviceB(runPCB.getUuid());
+            ints = device.removeDeviceB(pcb.getUuid());
         }else if(reason == "C"){
-            ints = device.removeDeviceC(runPCB.getUuid());
+            ints = device.removeDeviceC(pcb.getUuid());
         }
         if(ints != null)
         main.DeviceTime[ints[0]-1] = ints[1];
@@ -186,6 +196,7 @@ public class ProcessScheduling {
         else{
             runPCB = idlePCB;
         }
+        main.TimeSlice = 6;
     }
 
 }

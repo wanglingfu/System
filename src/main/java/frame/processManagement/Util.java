@@ -25,11 +25,11 @@ public class Util {
          * !C8:00101000
          * !C9:00101001
          */
-        if (IR == "x++") {
+        if (IR.equals("x++")) {
             return 0;
-        }else if (IR == "x--") {
+        }else if (IR.equals("x--")) {
             return 32;
-        }else if (IR == "end") {
+        }else if (IR.equals("end")) {
             return 96;
         }else if (chars[0] == '!') {
             if(chars[2] == '8' || chars[2] == '9'){

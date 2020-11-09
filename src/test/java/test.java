@@ -1,8 +1,17 @@
 
+import Main.main;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
+import frame.deviceManagement.Device;
 import frame.processManagement.PCB;
+import frame.processManagement.ProcessScheduling;
+import frame.processManagement.Runnable.CPU;
+import frame.processManagement.Runnable.CreatProcess;
+import frame.processManagement.Runnable.TimeSchedul;
 import frame.processManagement.Util;
+import frame.storageManagement.Memory;
 import org.junit.Test;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -70,10 +79,54 @@ public class test {
         System.out.println(IR);
     }
 
-    @Test
-    public void test2(){}{
+    public static void main(String[] args) throws IOException, InterruptedException {
+        File test = new File("D:\\yiban\\System\\src\\test\\java\\test");
+        Reader reader = new FileReader(test);
+        char[] s = new char[10000];
+        reader.read(s);
+        String s1 = String.valueOf(s);
+        String[] split = s1.split("\r\n");
+        Byte[][] files = new Byte[split.length-1][1000];
+        for (int i = 0; i < split.length-1; i++) {
+            String[] s2 = split[i].split(" ");
+            for (int j = 0; j < s2.length; j++) {
+                files[i][j] = Util.compile(s2[j]);
+            }
+        }
+        Memory memory = new Memory(150);
+        Device device = new Device();
+        ProcessScheduling processScheduling = new ProcessScheduling(memory,device);
+        CPU cpu = new CPU(files.length, processScheduling,processScheduling.getIdlePCB().getUuid());
+        CreatProcess creatProcess = new CreatProcess(files,processScheduling);
+        TimeSchedul timeSchedul = new TimeSchedul(cpu);
+        Thread thread = new Thread(creatProcess);
+        Thread thread1 = new Thread(timeSchedul);
+        Thread thread2 = new Thread(cpu);
+        thread.start();
+        thread1.start();
+        thread2.start();
 
     }
-
-
+    @Test
+    public void test3() throws IOException {
+        File test = new File("D:\\yiban\\System\\src\\test\\java\\test");
+        Reader reader = new FileReader(test);
+        char[] s = new char[10000];
+        reader.read(s);
+        String s1 = String.valueOf(s);
+        String[] split = s1.split("\r\n");
+        System.out.println(split.length);
+        Byte[][] files = new Byte[split.length-1][1000];
+        for (int i = 0; i < split.length-1; i++) {
+            String[] s2 = split[i].split(" ");
+            for (int j = 0; j < s2.length; j++) {
+                files[i][j] = Util.compile(s2[j]);
+            }
+        }
+        for (int i = 0; i < files.length; i++) {
+            for (int i1 = 0; i1 < files[i].length; i1++) {
+                System.out.println(files[i][i1]);
+            }
+        }
+    }
 }
