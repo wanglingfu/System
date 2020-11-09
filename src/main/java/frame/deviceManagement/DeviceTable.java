@@ -91,4 +91,18 @@ public class DeviceTable {
     public void setC3(String c3) {
         C3 = c3;
     }
+
+    @Override
+    public String toString() {
+        return "DeviceTable{\n" +
+                "A1='" + A1 + '\'' +
+                ",A2='" + A2 + '\'' +
+                ", \nB1='" + B1 + '\'' +
+                ",B2='" + B2 + '\'' +
+                ",\nB3='" + B3 + '\'' +
+                ",C1='" + C1 + '\'' +
+                ",\nC2='" + C2 + '\'' +
+                ",C3='" + C3 + '\'' +
+                "\n}";
+    }
 }

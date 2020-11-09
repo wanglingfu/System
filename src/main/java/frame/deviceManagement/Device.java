@@ -11,15 +11,15 @@ import java.util.LinkedList;
  * @Version 1.0
  **/
 public class Device {
-      int returnIndexA1 = 1;
-      int returnIndexA2 = 2;
-      int returnIndexB1 = 3;
-      int returnIndexB2 = 4;
-      int returnIndexB3 = 5;
-      int returnIndexC1 = 6;
-      int returnIndexC2 = 7;
-      int returnIndexC3 = 8;
-      int c;
+      private int returnIndexA1 = 1;
+      private int returnIndexA2 = 2;
+      private int returnIndexB1 = 3;
+      private int returnIndexB2 = 4;
+      private int returnIndexB3 = 5;
+      private int returnIndexC1 = 6;
+      private int returnIndexC2 = 7;
+      private int returnIndexC3 = 8;
+      private int c;
       private LinkedList<DeviceWaitQueue> blockA ;
       private LinkedList<DeviceWaitQueue> blockB ;
       private LinkedList<DeviceWaitQueue> blockC ;

@@ -14,7 +14,7 @@ import frame.processManagement.ProcessScheduling;
  **/
 public class CPU implements Runnable{
     private Integer AX;//数据寄存器
-    private Integer PSW;//中断标志寄存器
+    private Integer PSW = 0;//中断标志寄存器
     private String IR;//指令寄存器
     private Integer PC = 0;//程序计数器
     private Byte[] file;//运行中的进程文件
