@@ -45,6 +45,6 @@ public class TimeSchedul implements Runnable{
                     main.lockTime.unlock();
                 }
             }
-        }, 0, 1000);
+        }, 0, 2000);
     }
 }

@@ -3,6 +3,7 @@ package frame.processManagement.Runnable;
 import Main.main;
 import frame.processManagement.ProcessScheduling;
 import frame.storageManagement.Memory;
+import lombok.SneakyThrows;
 
 import java.util.Random;
 
@@ -39,29 +40,26 @@ public class CreatProcess implements Runnable{
     }
 
 
+    @SneakyThrows
     @Override
     public void run() {
         while(flag>0){
+            main.lockCreate.lock();
             while(processScheduling.getProcessNum()>=10){
+                Thread.sleep(100);
             }
-            try {
-                main.lockCreate.lock();
-                /**
-                 * 随机从文件中获取得到进程
-                 */
-                Random random = new Random();
-                int i = random.nextInt(file.length);
-                while(file[i] == null){
-                    i = random.nextInt(file.length);
-                }
-                boolean b = processScheduling.create(file[i]);
-                if(b){
-                    file[i] = null;
-                    flag--;
-                }
-            } finally {
-                main.lockCreate.unlock();
+            main.lockCreate.unlock();
+            Random random = new Random();
+            int i = random.nextInt(file.length);
+            while(file[i] == null){
+                i = random.nextInt(file.length);
             }
+            boolean b = processScheduling.create(file[i]);
+            if(b){
+                file[i] = null;
+                flag--;
+            }
+            Thread.sleep(1000);
         }
     }
 }
