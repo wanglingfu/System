@@ -159,15 +159,16 @@ public class ProcessFrame extends JFrame {
         jLabel9.add(jTextArea9);
 
         //主存区使用情况
-        jLabel10.setBounds(50,530,300,120);
+        jLabel10.setBounds(580,20,520,120);
         jLabel10.setLayout(null);
-        //add(jLabel10);
-        jTextArea10 = new JTextArea(3,20);
+        add(jLabel10);
+        jLabel10.setBorder(BorderFactory.createTitledBorder("主存区使用情况"));
+       /* jTextArea10 = new JTextArea(3,20);
         jTextArea10.setBounds(10,20,280,90);
         jTextArea10.setEditable(false);
         jTextArea10.setFont(new Font("宋体",Font.BOLD,25));
-        jLabel10.setBorder(BorderFactory.createTitledBorder("主存区使用情况"));
-        jLabel10.add(jTextArea10);
+        */
+        //jLabel10.add(jTextArea10);
 
         //设备使用情况
         jLabel11.setBounds(230,360,600,300);
@@ -208,14 +209,17 @@ public class ProcessFrame extends JFrame {
         jLabel2.add(jTextArea2);
 
 
+
+
     }
-    public  void printScreen(String a, String b, String c, String d,String e,String f){
+    public  void printScreen(String a, String b, String c, String d,String e,String f,String g){
             jTextArea1.setText(a);
             jTextArea3.setText(b);
             jTextArea7.setText(c);
             jTextArea9.setText(d);
             jTextArea12.setText(e);
             jTextArea11.setText(f);
+            jTextArea2.setText(g);
     }
     public  void printScreen2(ProcessScheduling processScheduling){
         if ( !processScheduling.getReadyPCB().isEmpty()) {
@@ -240,6 +244,9 @@ public class ProcessFrame extends JFrame {
                 jTextArea6.setText(pcb.getUuid());
             }
         }
+    }
+    public void printScreen4(){
+
     }
     public static void main(String[] args) throws IOException {
         ProcessFrame processFrame = new ProcessFrame();
@@ -269,7 +276,7 @@ public class ProcessFrame extends JFrame {
         thread1.start();
         thread2.start();
         while (true) {
-            processFrame.printScreen(String.valueOf(main.SystemTime),String.valueOf(main.TimeSlice),String.valueOf(cpu.getAX()),cpu.getIR(),String.valueOf(cpu.getFinalAX()),device.getDeviceTable().toString());
+            processFrame.printScreen(String.valueOf(main.SystemTime),String.valueOf(main.TimeSlice),String.valueOf(cpu.getAX()),cpu.getIR(),String.valueOf(cpu.getFinalAX()),device.getDeviceTable().toString(),processScheduling.getRunPCB().getUuid());
             processFrame.printScreen2(processScheduling);
             processFrame.printScreen3(processScheduling);
         }
