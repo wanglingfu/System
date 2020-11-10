@@ -18,14 +18,14 @@ public class DeviceTable {
     private String C3;
 
     public DeviceTable() {
-        A1 = null;
-        A2 = null;
-        B1 = null;
-        B2 = null;
-        B3 = null;
-        C1 = null;
-        C2 = null;
-        C3 = null;
+        A1 = "设备空闲";
+        A2 = "设备空闲";
+        B1 = "设备空闲";
+        B2 = "设备空闲";
+        B3 = "设备空闲";
+        C1 = "设备空闲";
+        C2 = "设备空闲";
+        C3 = "设备空闲";
     }
 
     public String getA1() {
@@ -94,15 +94,14 @@ public class DeviceTable {
 
     @Override
     public String toString() {
-        return "DeviceTable{\n" +
-                "A1='" + A1 + '\'' +
-                ",A2='" + A2 + '\'' +
-                ", \nB1='" + B1 + '\'' +
-                ",B2='" + B2 + '\'' +
-                ",\nB3='" + B3 + '\'' +
-                ",C1='" + C1 + '\'' +
-                ",\nC2='" + C2 + '\'' +
-                ",C3='" + C3 + '\'' +
-                "\n}";
+        return "DeviceTable:\n" +
+                "A='" + A1 + '\'' +
+                "\nA='" + A2 + '\'' +
+                "\nB='" + B1 + '\'' +
+                "\nB='" + B2 + '\'' +
+                "\nB='" + B3 + '\'' +
+                "\nC='" + C1 + '\'' +
+                "\nC='" + C2 + '\'' +
+                "\nC='" + C3 + '\'';
     }
 }
