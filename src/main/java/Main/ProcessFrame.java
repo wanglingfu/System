@@ -36,6 +36,7 @@ public class ProcessFrame extends JFrame {
     JLabel jLabel14=new JLabel(); //cpu
 
     JTextArea jTextArea1;
+    JTextArea jTextArea2;
     JTextArea jTextArea3;
     JTextArea jTextArea5;
     JTextArea jTextArea6;
@@ -63,12 +64,12 @@ public class ProcessFrame extends JFrame {
         container.setLayout(null);
 
         //系统时钟
-        jLabel1.setBounds(45,50,230,120);
+        jLabel1.setBounds(850,360,100,100);
         jLabel1.setLayout(null);
         add(jLabel1);
 
         jTextArea1= new JTextArea(3,15);
-        jTextArea1.setBounds(10,20,210,92);
+        jTextArea1.setBounds(10,20,80,70);
         jTextArea1.setFont(new Font("宋体",Font.BOLD,25));
         jTextArea1.setEditable(false);
 
@@ -79,7 +80,7 @@ public class ProcessFrame extends JFrame {
         jLabel1.add(jTextArea1);
 
         //cpu
-        jLabel14.setBounds(350,50,130,130);
+        jLabel14.setBounds(25,500,130,130);
         jLabel14.setLayout(null);
         add(jLabel14);
         jLabel14.setBorder(BorderFactory.createTitledBorder("CPU"));
@@ -88,11 +89,11 @@ public class ProcessFrame extends JFrame {
         jLabel14.add(button);
 
         //时间片
-        jLabel3.setBounds(550,50,300,120);
+        jLabel3.setBounds(960,360,100,100);
         jLabel3.setLayout(null);
         add(jLabel3);
         jTextArea3 = new JTextArea(3,20);
-        jTextArea3.setBounds(10,20,280,90);
+        jTextArea3.setBounds(10,20,80,70);
         jTextArea3.setEditable(false);
         jTextArea3.setFont(new Font("宋体",Font.BOLD,25));
         jLabel3.setBorder(BorderFactory.createTitledBorder("时间片"));
@@ -105,7 +106,7 @@ public class ProcessFrame extends JFrame {
         jTextArea5 = new JTextArea(10,20);
         jTextArea5.setBounds(10,20,530,118);
         jTextArea5.setFont(new Font("宋体",Font.BOLD,25));
-        jTextArea5.setEditable(true);
+        jTextArea5.setEditable(false);
         JScrollPane jScrollPane1 = new JScrollPane();
         jScrollPane1.setBounds(10,20,530,118);
         jLabel5.setBorder(BorderFactory.createTitledBorder("就绪队列进程id"));
@@ -131,27 +132,27 @@ public class ProcessFrame extends JFrame {
         jLabel6.add(jScrollPane2);
 
         //执行进程中间结果
-        jLabel7.setBounds(900,50,150,150);
+        jLabel7.setBounds(850,470,100,100);
         jLabel7.setLayout(null);
         add(jLabel7);
         jTextArea7 = new JTextArea(10,20);
-        jTextArea7.setBounds(10,20,130,130);
+        jTextArea7.setBounds(10,20,80,70);
         jTextArea7.setFont(new Font("宋体",Font.BOLD,25));
         jTextArea7.setEditable(false);
-        JScrollPane jScrollPane3 = new JScrollPane();
-        jScrollPane3.setBounds(10,20,130,130);
+       /* JScrollPane jScrollPane3 = new JScrollPane();
+        jScrollPane3.setBounds(10,20,80,60);*/
         jLabel7.setBorder(BorderFactory.createTitledBorder("执行中间结果"));
-        jScrollPane3.setViewportView(jTextArea7);
+       /* jScrollPane3.setViewportView(jTextArea7);
         jScrollPane3.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane3.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-        jLabel7.add(jScrollPane3);
+        jScrollPane3.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);*/
+        jLabel7.add(jTextArea7);
 
         //正在执行的指令
-        jLabel9.setBounds(50,400,300,120);
+        jLabel9.setBounds(25,370,200,80);
         jLabel9.setLayout(null);
         add(jLabel9);
         jTextArea9 = new JTextArea(3,20);
-        jTextArea9.setBounds(10,20,280,90);
+        jTextArea9.setBounds(10,20,180,50);
         jTextArea9.setEditable(false);
         jTextArea9.setFont(new Font("宋体",Font.BOLD,25));
         jLabel9.setBorder(BorderFactory.createTitledBorder("正在执行的指令"));
@@ -160,7 +161,7 @@ public class ProcessFrame extends JFrame {
         //主存区使用情况
         jLabel10.setBounds(50,530,300,120);
         jLabel10.setLayout(null);
-        add(jLabel10);
+        //add(jLabel10);
         jTextArea10 = new JTextArea(3,20);
         jTextArea10.setBounds(10,20,280,90);
         jTextArea10.setEditable(false);
@@ -169,40 +170,52 @@ public class ProcessFrame extends JFrame {
         jLabel10.add(jTextArea10);
 
         //设备使用情况
-        jLabel11.setBounds(400,425,400,200);
+        jLabel11.setBounds(230,360,600,300);
         jLabel11.setLayout(null);
         add(jLabel11);
         jTextArea11 = new JTextArea(10,20);
-        jTextArea11.setBounds(10,20,375,175);
+        jTextArea11.setBounds(10,20,580,270);
         jTextArea11.setFont(new Font("宋体",Font.BOLD,25));
         jTextArea11.setEditable(false);
-        JScrollPane jScrollPane4 = new JScrollPane();
-        jScrollPane4.setBounds(10,20,380,170);
+        /*JScrollPane jScrollPane4 = new JScrollPane();
+        jScrollPane4.setBounds(10,20,380,170);*/
         jLabel11.setBorder(BorderFactory.createTitledBorder("设备使用情况"));
-        jScrollPane4.setViewportView(jTextArea11);
+        /*jScrollPane4.setViewportView(jTextArea11);
         jScrollPane4.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane4.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-        jLabel11.add(jScrollPane4);
+        jScrollPane4.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);*/
+        jLabel11.add(jTextArea11);
 
         //显示结果
-        jLabel12.setBounds(850,420,200,200);
+        jLabel12.setBounds(960,470,100,100);
         jLabel12.setLayout(null);
         add(jLabel12);
         jTextArea12 = new JTextArea(3,20);
-        jTextArea12.setBounds(10,20,180,170);
+        jTextArea12.setBounds(10,20,80,70);
         jTextArea12.setEditable(false);
         jTextArea12.setFont(new Font("宋体",Font.BOLD,25));
         jLabel12.setBorder(BorderFactory.createTitledBorder("结果"));
         jLabel12.add(jTextArea12);
 
+        //正在运行的uid
+        jLabel2.setBounds(20,20,550,150);
+        jLabel2.setLayout(null);
+        add(jLabel2);
+        jTextArea2 = new JTextArea(10, 20);
+        jTextArea2.setBounds(10,20,530,118);
+        jTextArea2.setFont(new Font("宋体",Font.BOLD,25));
+        jTextArea2.setEditable(false);
+        jLabel2.setBorder(BorderFactory.createTitledBorder("正在运行的Uid"));
+        jLabel2.add(jTextArea2);
+
+
     }
-    public  void printScreen(String a, String b, String c, String d,String e){
+    public  void printScreen(String a, String b, String c, String d,String e,String f){
             jTextArea1.setText(a);
             jTextArea3.setText(b);
             jTextArea7.setText(c);
             jTextArea9.setText(d);
             jTextArea12.setText(e);
-
+            jTextArea11.setText(f);
     }
     public  void printScreen2(ProcessScheduling processScheduling){
         if ( !processScheduling.getReadyPCB().isEmpty()) {
@@ -260,7 +273,7 @@ public class ProcessFrame extends JFrame {
         thread2.start();
         System.out.println(processScheduling.getIdlePCB().getUuid());
         while (true) {
-            processFrame.printScreen(String.valueOf(main.SystemTime),String.valueOf(main.TimeSlice),String.valueOf(cpu.getAX()),cpu.getIR(),String.valueOf(cpu.getFinalAX()));
+            processFrame.printScreen(String.valueOf(main.SystemTime),String.valueOf(main.TimeSlice),String.valueOf(cpu.getAX()),cpu.getIR(),String.valueOf(cpu.getFinalAX()),device.getDeviceTable().toString());
             processFrame.printScreen2(processScheduling);
             processFrame.printScreen3(processScheduling);
         }

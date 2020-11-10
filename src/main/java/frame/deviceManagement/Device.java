@@ -41,13 +41,13 @@ public class Device {
      */
     public int getDeviceA(String Uid, int time, int size ){
          deviceWaitQueueA =new DeviceWaitQueue(Uid,size,time);
-        if (deviceTable.getA1() == null ){
+        if (deviceTable.getA1().equals("设备空闲") ){
             deviceTable.setA1(Uid);
             c = returnIndexA1;
             returnIndexA1 = 9;
             return c;
         }
-        else if(deviceTable.getA2() == null ){
+        else if(deviceTable.getA2().equals("设备空闲") ){
             deviceTable.setA2(Uid);
             c = returnIndexA2;
             returnIndexA2 = 9;
@@ -66,7 +66,7 @@ public class Device {
     public int[] removeDeviceA(String Uid){
         int[] re =new int[2];
         if (Uid.equals(deviceTable.getA1())){
-            deviceTable.setA1(null);
+            deviceTable.setA1("设备空闲");
             if(!blockA.isEmpty()) {
                 gerFirstNodeA();
                 re[0] = 1;
@@ -76,7 +76,7 @@ public class Device {
             returnIndexA1 = 1;
             return null;
         }else if (Uid.equals(deviceTable.getA2())){
-            deviceTable.setA2(null);
+            deviceTable.setA2("设备空闲");
             if( !blockA.isEmpty()) {
                 gerFirstNodeA();
                 re[0] = 2;
@@ -104,19 +104,19 @@ public class Device {
      */
     public int getDeviceB(String Uid, int time, int size ){
         deviceWaitQueueB =new DeviceWaitQueue(Uid,size,time);
-        if (deviceTable.getB1() == null ){
+        if (deviceTable.getB1().equals("设备空闲") ){
             deviceTable.setB1(Uid);
             c = returnIndexB1;
             returnIndexB1 = 9;
             return c;
         }
-        else if(deviceTable.getB2() == null ){
+        else if(deviceTable.getB2().equals("设备空闲") ){
             deviceTable.setB2(Uid);
             c = returnIndexB2;
             returnIndexB2 = 9;
             return c;
         }
-        else if(deviceTable.getB3() == null ){
+        else if(deviceTable.getB3().equals("设备空闲") ){
             deviceTable.setB3(Uid);
             c = returnIndexB3;
             returnIndexB3 = 9;
@@ -135,7 +135,7 @@ public class Device {
         int[] re =new int[2];
         if (Uid.equals(deviceTable.getB1())){
 
-            deviceTable.setB1(null);
+            deviceTable.setB1("设备空闲");
             if(!blockB.isEmpty()) {
                 gerFirstNodeB();
                 re[0] = 3;
@@ -145,7 +145,7 @@ public class Device {
             returnIndexB1 = 3;
             return null;
         }else if (Uid.equals(deviceTable.getB2())){
-            deviceTable.setB2(null);
+            deviceTable.setB2("设备空闲");
             if(!blockB.isEmpty()) {
                 gerFirstNodeB();
                 re[0] = 4;
@@ -156,7 +156,7 @@ public class Device {
             return null;
         }
         else if (Uid.equals(deviceTable.getB3())){
-            deviceTable.setB3(null);
+            deviceTable.setB3("设备空闲");
             if(!blockB.isEmpty()) {
                 gerFirstNodeB();
                 re[0] = 5;
@@ -183,19 +183,19 @@ public class Device {
      */
     public int getDeviceC(String Uid, int time, int size ){
         deviceWaitQueueC = new DeviceWaitQueue(Uid,size,time);
-        if ( deviceTable.getC1() == null ){
+        if ( deviceTable.getC1().equals("设备空闲") ){
             deviceTable.setC1(Uid);
             c = returnIndexC1;
             returnIndexC1 = 9;
             return c;
         }
-        else if( deviceTable.getC2() == null ){
+        else if( deviceTable.getC2().equals("设备空闲") ){
             deviceTable.setC2(Uid);
             c = returnIndexC2;
             returnIndexC2 = 9;
             return c;
         }
-        else if( deviceTable.getC3() == null ){
+        else if( deviceTable.getC3().equals("设备空闲") ){
             deviceTable.setC3(Uid);
             c = returnIndexC3;
             returnIndexC3 = 9;
@@ -213,7 +213,7 @@ public class Device {
     public int[] removeDeviceC(String Uid){
         int[] re = new int[2];
         if (Uid.equals(deviceTable.getB1())){
-            deviceTable.setC1(null);
+            deviceTable.setC1("设备空闲");
             if(!blockC.isEmpty()) {
                 gerFirstNodeC();
                 re[0] = 6;
@@ -223,7 +223,7 @@ public class Device {
             returnIndexC1 = 6;
             return null;
         }else if (Uid.equals(deviceTable.getB2())){
-            deviceTable.setC2(null);
+            deviceTable.setC2("设备空闲");
             if(!blockC.isEmpty()) {
                 gerFirstNodeC();
                 re[0] = 7;
@@ -234,7 +234,7 @@ public class Device {
             return null;
         }
         else if (Uid.equals(deviceTable.getB3())){
-            deviceTable.setC3(null);
+            deviceTable.setC3("设备空闲");
             if(!blockC.isEmpty()) {
                 gerFirstNodeC();
                 re[0] = 8;
