@@ -48,17 +48,17 @@ public class Memory {
     }
     /**
      *
-     * @param memory
+     * @param
      * @param size
      * @param id
      * @Description  最佳适应算法
      * @return
      */
-    public boolean BestFit(Memory memory,int size,String id){
+    public boolean BestFit(int size,String id){
         int findIndex = -1;  //最佳分区的下标
-        int min = memory.getSize();
-        for (int i = 0; i < memory.getHoles().size();i++){
-            Hole hole = memory.getHoles().get(i);
+        int min = this.getSize();
+        for (int i = 0; i < this.getHoles().size();i++){
+            Hole hole = this.getHoles().get(i);
             if(hole.isFree() && hole.getSize()>=size){
                 if(min >hole.getSize() - size){
                     min = hole.getSize();
@@ -67,7 +67,7 @@ public class Memory {
             }
         }
         if (findIndex != -1) {  //若存在合适分区
-           memory.getMemory(size, findIndex, id,memory.getHoles().get(findIndex));
+            this.getMemory(size, findIndex, id,this.getHoles().get(findIndex));
            return true;
         }
         else {
