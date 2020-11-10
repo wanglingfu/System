@@ -109,7 +109,7 @@ public class test {
     }
     @Test
     public void test3() throws IOException {
-        File test = new File("D:\\yiban\\System\\src\\test\\java\\test");
+        File test = new File("test");
         Reader reader = new FileReader(test);
         char[] s = new char[10000];
         reader.read(s);

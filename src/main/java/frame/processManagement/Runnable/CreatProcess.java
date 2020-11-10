@@ -46,7 +46,11 @@ public class CreatProcess implements Runnable{
         while(flag>0){
             main.lockCreate.lock();
             while(processScheduling.getProcessNum()>=10){
-                Thread.sleep(100);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             main.lockCreate.unlock();
             Random random = new Random();
@@ -59,7 +63,11 @@ public class CreatProcess implements Runnable{
                 file[i] = null;
                 flag--;
             }
-            Thread.sleep(1000);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

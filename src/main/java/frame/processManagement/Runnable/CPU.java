@@ -132,7 +132,11 @@ public class CPU implements Runnable{
             * 一个系统时间执行一条指令
             */
            while(main.SystemTime == SystemTime){
-               Thread.sleep(200);
+               try {
+                   Thread.sleep(200);
+               } catch (InterruptedException e) {
+                   e.printStackTrace();
+               }
            }
            SystemTime = main.SystemTime;
 
