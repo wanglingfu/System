@@ -94,6 +94,7 @@ public class Disk {
         String[] directory;
         byte[][] bytePath;
         directory = temp.split("/");
+        ///directory = path.split("/");
         if(directory[0].equals("")){
             directory = Arrays.copyOfRange(directory,1,directory.length);
         }
