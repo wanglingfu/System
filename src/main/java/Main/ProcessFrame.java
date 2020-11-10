@@ -229,13 +229,17 @@ public class ProcessFrame extends JFrame {
                 PCB next = iterator.next();
                 jTextArea5.setText(next.getUuid());
             }
+            ArrayList<PCB> blockPCB = processScheduling.getBlockPCB();
+            iterator = blockPCB.iterator();
+            while (iterator.hasNext()){
+                PCB next = iterator.next();
+                jTextArea6.setText(next.getUuid());
+            }
         }
-        /*ArrayList<PCB> blockPCB = processScheduling.getBlockPCB();
-        iterator = blockPCB.iterator();
-        while (iterator.hasNext()){
-            PCB next = iterator.next();
-            jTextArea6.setText(next.getUuid());
-        }*/
+        else{
+            jTextArea5.setText(" ");
+            jTextArea6.setText(" ");
+        }
 
     }
     public void printScreen3(ProcessScheduling processScheduling){

@@ -135,9 +135,11 @@ public class test {
         Queue<PCB> pcbs = new LinkedList<PCB>();
         pcbs.add(new PCB(null));
         pcbs.add(new PCB(null));
-        for (PCB pcb : pcbs) {
-            System.out.println(pcb.getUuid());
+        System.out.println(pcbs.size());
+        for (int i = 0; i < pcbs.size();) {
+            PCB p = pcbs.remove();
         }
+        System.out.println(pcbs.size());
     }
     @Test
     public void test5() throws IOException {

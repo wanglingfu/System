@@ -162,7 +162,7 @@ public class ProcessScheduling {
         /**
          * 是否为闲置进程
          */
-        if(runPCB != idlePCB){
+        if(runPCB.getUuid() != idlePCB.getUuid()){
             readyPCB.add(pcb);
         }else{
             runPCB = pcb;
@@ -185,7 +185,6 @@ public class ProcessScheduling {
         else if(select == 2){
             readyPCB.add(runPCB);
         }
-
         if(readyPCB.size()>0){
             runPCB = readyPCB.remove();
         }
