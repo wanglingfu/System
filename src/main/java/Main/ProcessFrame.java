@@ -281,7 +281,7 @@ public class ProcessFrame extends JFrame {
         ProcessScheduling processScheduling = new ProcessScheduling(memory,device);
         CPU cpu = new CPU(files.length, processScheduling,processScheduling.getIdlePCB().getUuid());
         CreatProcess creatProcess = new CreatProcess(files,processScheduling);
-        TimeSchedul timeSchedul = new TimeSchedul(cpu);
+        TimeSchedul timeSchedul = new TimeSchedul(cpu,processScheduling);
         Thread thread = new Thread(creatProcess);
         Thread thread1 = new Thread(timeSchedul);
         Thread thread2 = new Thread(cpu);
