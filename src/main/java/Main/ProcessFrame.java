@@ -7,6 +7,7 @@ import frame.processManagement.Runnable.CPU;
 import frame.processManagement.Runnable.CreatProcess;
 import frame.processManagement.Runnable.TimeSchedul;
 import frame.processManagement.Util;
+import frame.storageManagement.Hole;
 import frame.storageManagement.Memory;
 import frame.storageManagement.Sleep;
 
@@ -15,6 +16,7 @@ import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Queue;
 
 public class ProcessFrame extends JFrame {
@@ -163,12 +165,16 @@ public class ProcessFrame extends JFrame {
         jLabel10.setLayout(null);
         add(jLabel10);
         jLabel10.setBorder(BorderFactory.createTitledBorder("主存区使用情况"));
-       /* jTextArea10 = new JTextArea(3,20);
-        jTextArea10.setBounds(10,20,280,90);
+        jTextArea10 = new JTextArea(10,20);
+        jTextArea10.setBounds(10,20,493,90);
         jTextArea10.setEditable(false);
         jTextArea10.setFont(new Font("宋体",Font.BOLD,25));
-        */
-        //jLabel10.add(jTextArea10);
+        JScrollPane jScrollPane3 = new JScrollPane();
+        jScrollPane3.setBounds(10,20,493,90);
+        jScrollPane3.setViewportView(jTextArea10);
+     //   jScrollPane3.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+      //  jScrollPane3.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        jLabel10.add(jScrollPane3);
 
         //设备使用情况
         jLabel11.setBounds(230,360,600,300);
@@ -229,14 +235,17 @@ public class ProcessFrame extends JFrame {
                 PCB next = iterator.next();
                 jTextArea5.setText(next.getUuid());
             }
-        }
-        /*ArrayList<PCB> blockPCB = processScheduling.getBlockPCB();
+        ArrayList<PCB> blockPCB = processScheduling.getBlockPCB();
         iterator = blockPCB.iterator();
         while (iterator.hasNext()){
             PCB next = iterator.next();
             jTextArea6.setText(next.getUuid());
-        }*/
-
+        }
+        }else
+        {
+            jTextArea5.setText(" ");
+            jTextArea6.setText(" ");
+        }
     }
     public void printScreen3(ProcessScheduling processScheduling){
         if (!processScheduling.getBlockPCB().isEmpty()) {
@@ -245,8 +254,12 @@ public class ProcessFrame extends JFrame {
             }
         }
     }
-    public void printScreen4(){
 
+    public void printScreen4(String a){
+            /*Button button = new Button();
+            button.setBounds(ss,20,holes.getSize(),50);
+            jLabel10.add(button);*/
+        jTextArea10.append(a);
     }
     public static void main(String[] args) throws IOException {
         ProcessFrame processFrame = new ProcessFrame();
@@ -275,11 +288,15 @@ public class ProcessFrame extends JFrame {
         thread.start();
         thread1.start();
         thread2.start();
+       /* for (Hole hole : memory.getHoles()) {
+            processFrame.printScreen4(String.valueOf(hole.getHead())+" "+String.valueOf(hole.getSize())+" "+String.valueOf(hole.isFree()));
+        }*/
         while (true) {
-            processFrame.printScreen(String.valueOf(main.SystemTime),String.valueOf(main.TimeSlice),String.valueOf(cpu.getAX()),cpu.getIR(),String.valueOf(cpu.getFinalAX()),device.getDeviceTable().toString(),processScheduling.getRunPCB().getUuid());
+            int ss = 10;
+            processFrame.printScreen(String.valueOf(main.SystemTime), String.valueOf(main.TimeSlice), String.valueOf(cpu.getAX()), cpu.getIR(), String.valueOf(cpu.getFinalAX()), device.getDeviceTable().toString(), processScheduling.getRunPCB().getUuid());
             processFrame.printScreen2(processScheduling);
             processFrame.printScreen3(processScheduling);
-        }
 
+        }
     }
 }
