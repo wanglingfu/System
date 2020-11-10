@@ -185,11 +185,7 @@ public class ProcessScheduling {
         else if(select == 2){
             readyPCB.add(runPCB);
         }
-        /**
-         *程序结束
-         */
-        else{
-        }
+
         if(readyPCB.size()>0){
             runPCB = readyPCB.remove();
         }

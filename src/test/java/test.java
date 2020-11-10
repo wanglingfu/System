@@ -98,13 +98,14 @@ public class test {
         ProcessScheduling processScheduling = new ProcessScheduling(memory,device);
         CPU cpu = new CPU(files.length, processScheduling,processScheduling.getIdlePCB().getUuid());
         CreatProcess creatProcess = new CreatProcess(files,processScheduling);
-        TimeSchedul timeSchedul = new TimeSchedul(cpu);
+        TimeSchedul timeSchedul = new TimeSchedul(cpu,processScheduling);
         Thread thread = new Thread(creatProcess);
         Thread thread1 = new Thread(timeSchedul);
         Thread thread2 = new Thread(cpu);
         thread.start();
         thread1.start();
         thread2.start();
+
 
     }
     @Test
@@ -127,6 +128,31 @@ public class test {
             for (int i1 = 0; i1 < files[i].length; i1++) {
                 System.out.println(files[i][i1]);
             }
+        }
+    }
+    @Test
+    public void test4(){
+        Queue<PCB> pcbs = new LinkedList<PCB>();
+        pcbs.add(new PCB(null));
+        pcbs.add(new PCB(null));
+        for (PCB pcb : pcbs) {
+            System.out.println(pcb.getUuid());
+        }
+    }
+    @Test
+    public void test5() throws IOException {
+        File test = new File("D:\\yiban\\System\\src\\test\\java\\test2");
+        Reader reader = new FileReader(test);
+        char[] s = new char[10000];
+        reader.read(s);
+        String s1 = String.valueOf(s);
+        String[] split = s1.split("d");
+        split[0] = split[0] + 'd';
+        String[] split1 = split[0].split("\r\n");
+        Byte[] bytes = new Byte[split1.length];
+        for (int i = 0; i < split1.length; i++) {
+            System.out.println(split1[i]);
+            bytes[i] = Util.compile(split1[i]);
         }
     }
 }

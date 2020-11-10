@@ -223,8 +223,11 @@ public class ProcessFrame extends JFrame {
     }
     public void printScreen3(ProcessScheduling processScheduling){
         if (!processScheduling.getBlockPCB().isEmpty()) {
-            for (PCB pcb : processScheduling.getBlockPCB()) {
-                jTextArea6.setText(pcb.getUuid());
+            ArrayList<PCB> blockPCB = processScheduling.getBlockPCB();
+            Iterator<PCB> iterator = blockPCB.iterator();
+            while (iterator.hasNext()) {
+                PCB next = iterator.next();
+                jTextArea5.setText(next.getUuid());
             }
         }
     }
@@ -248,13 +251,14 @@ public class ProcessFrame extends JFrame {
         ProcessScheduling processScheduling = new ProcessScheduling(memory,device);
         CPU cpu = new CPU(files.length, processScheduling,processScheduling.getIdlePCB().getUuid());
         CreatProcess creatProcess = new CreatProcess(files,processScheduling);
-        TimeSchedul timeSchedul = new TimeSchedul(cpu);
+        TimeSchedul timeSchedul = new TimeSchedul(cpu,processScheduling);
         Thread thread = new Thread(creatProcess);
         Thread thread1 = new Thread(timeSchedul);
         Thread thread2 = new Thread(cpu);
         thread.start();
         thread1.start();
         thread2.start();
+        System.out.println(processScheduling.getIdlePCB().getUuid());
         while (true) {
             processFrame.printScreen(String.valueOf(main.SystemTime),String.valueOf(main.TimeSlice),String.valueOf(cpu.getAX()),cpu.getIR(),String.valueOf(cpu.getFinalAX()));
             processFrame.printScreen2(processScheduling);

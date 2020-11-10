@@ -131,6 +131,10 @@ public class CPU implements Runnable{
            /**
             * 一个系统时间执行一条指令
             */
+           if(processScheduling.getRunPCB().getUuid() != uuid){
+               main.TimeSlice = 6;
+               recovery(processScheduling.getRunPCB());
+           }
            while(main.SystemTime == SystemTime){
                try {
                    Thread.sleep(200);
@@ -139,11 +143,6 @@ public class CPU implements Runnable{
                }
            }
            SystemTime = main.SystemTime;
-
-           if(processScheduling.getRunPCB().getUuid() != uuid){
-               main.TimeSlice = 6;
-               recovery(processScheduling.getRunPCB());
-           }
             /**
              * 判断中断
              */

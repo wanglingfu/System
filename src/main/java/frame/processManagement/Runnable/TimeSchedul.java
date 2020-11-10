@@ -1,6 +1,7 @@
 package frame.processManagement.Runnable;
 
 import Main.main;
+import frame.processManagement.ProcessScheduling;
 import frame.processManagement.Runnable.CPU;
 
 import java.sql.Timestamp;
@@ -14,9 +15,11 @@ import java.util.TimerTask;
  **/
 public class TimeSchedul implements Runnable{
     private CPU cpu;
+    private ProcessScheduling processScheduling;
 
-    public TimeSchedul(CPU cpu) {
+    public TimeSchedul(CPU cpu,ProcessScheduling processScheduling) {
         this.cpu = cpu;
+        this.processScheduling = processScheduling;
     }
 
     @Override
@@ -28,7 +31,9 @@ public class TimeSchedul implements Runnable{
                 try {
                     main.lockTime.lock();
                     main.SystemTime++;
-                    main.TimeSlice--;
+                    if(processScheduling.getRunPCB().getUuid() != processScheduling.getIdlePCB().getUuid()){
+                        main.TimeSlice--;
+                    }
                     if(main.TimeSlice == 0){
                         main.TimeSlice = 6;
                         cpu.setPSW(2);
