@@ -44,7 +44,7 @@ public class Memory {
         //id 进程名字
         pcbs.add(new ProcessAddress(id, hole));
         hole.setFree(false);
-        System.out.println("成功分配大小为" + size + "的内存");
+        //System.out.println("成功分配大小为" + size + "的内存");
     }
     /**
      *
