@@ -6,6 +6,16 @@ package frame.processManagement;
  * @create: 2020-11-06 15:53
  **/
 public class Util {
+    public static Byte[] getFile(String file){
+        String[] split = file.split("d");
+        split[0] = split[0] + 'd';
+        String[] split1 = split[0].split("\r\n");
+        Byte[] bytes = new Byte[split1.length];
+        for (int i = 0; i < split1.length; i++) {
+            bytes[i] = compile(split1[i]);
+        }
+        return bytes;
+    }
     public static Byte compile(String IR){
         char[] chars = IR.toCharArray();
         /**
