@@ -250,14 +250,16 @@ public class ProcessFrame extends JFrame {
     }
     public static void main(String[] args) throws IOException, InterruptedException {
         ProcessFrame processFrame = new ProcessFrame();
-        File test = new File("src/test/java/test");
+        File test = new File("D:\\yiban\\System\\src\\test\\java\\test");
         Reader reader = new FileReader(test);
         char[] s = new char[10000];
         reader.read(s);
         String s1 = String.valueOf(s);
-        String[] split = s1.split("\r\n");
-        Byte[][] files = new Byte[split.length-1][100];
-        for (int i = 0; i < split.length-1; i++) {
+        String[] ds = s1.split("d");
+        ds[0] = ds[0] + 'd';
+        String[] split = ds[0].split("\r\n");
+        byte[][] files = new byte[split.length][100];
+        for (int i = 0; i < split.length; i++) {
             String[] s2 = split[i].split(" ");
             for (int j = 0; j < s2.length; j++) {
                 files[i][j] = Util.compile(s2[j]);

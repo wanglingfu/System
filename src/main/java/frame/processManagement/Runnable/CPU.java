@@ -18,7 +18,7 @@ public class CPU implements Runnable{
     private Integer PSW = 0;//中断标志寄存器
     private String IR;//指令寄存器
     private Integer PC = 0;//程序计数器
-    private Byte[] file;//运行中的进程文件
+    private byte[] file;//运行中的进程文件
     private int flag ;//是否运行完
     private int finalAX;//运行结束之后显示进程的AX
     private int SystemTime = 0;//系统时间
@@ -64,11 +64,11 @@ public class CPU implements Runnable{
         this.PC = PC;
     }
 
-    public Byte[] getFile() {
+    public byte[] getFile() {
         return file;
     }
 
-    public void setFile(Byte[] file) {
+    public void setFile(byte[] file) {
         this.file = file;
     }
 

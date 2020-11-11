@@ -15,7 +15,7 @@ public class PCB {
     private String uuid;//进程标识符
     private String reason;//阻塞原因， 哪个设备
     private Integer time;
-    private Byte[] file;//文件
+    private byte[] file;//文件
     private Integer AX;//数据
     private Integer PC;//程序计数器
 
@@ -43,11 +43,11 @@ public class PCB {
         this.time = time;
     }
 
-    public Byte[] getFile() {
+    public byte[] getFile() {
         return file;
     }
 
-    public void setFile(Byte[] file) {
+    public void setFile(byte[] file) {
         this.file = file;
     }
 
@@ -67,7 +67,7 @@ public class PCB {
         this.PC = PC;
     }
 
-    public PCB(Byte[] file){
+    public PCB(byte[] file){
         uuid = UUID.randomUUID().toString();
         reason = null;
         time = 0;
