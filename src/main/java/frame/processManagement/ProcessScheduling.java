@@ -89,7 +89,7 @@ public class ProcessScheduling {
     /**
      * 创建进程
      */
-    public boolean create(Byte[] file){
+    public boolean create(byte[] file){
         main.lockCreate.lock();
         if(ProcessNum < 10){
             PCB pcb = new PCB(file);
