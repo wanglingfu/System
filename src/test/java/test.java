@@ -86,8 +86,8 @@ public class test {
         reader.read(s);
         String s1 = String.valueOf(s);
         String[] split = s1.split("\r\n");
-        Byte[][] files = new Byte[split.length-1][1000];
-        for (int i = 0; i < split.length-1; i++) {
+        byte[][] files = new byte[split.length][1000];
+        for (int i = 0; i < split.length; i++) {
             String[] s2 = split[i].split(" ");
             for (int j = 0; j < s2.length; j++) {
                 files[i][j] = Util.compile(s2[j]);
@@ -117,7 +117,7 @@ public class test {
         String s1 = String.valueOf(s);
         String[] split = s1.split("\r\n");
         System.out.println(split.length);
-        Byte[][] files = new Byte[split.length-1][1000];
+        byte[][] files = new byte[split.length-1][1000];
         for (int i = 0; i < split.length-1; i++) {
             String[] s2 = split[i].split(" ");
             for (int j = 0; j < s2.length; j++) {

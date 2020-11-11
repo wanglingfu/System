@@ -21,7 +21,7 @@ public class Memory {
         this.size = size;
         this.holes = new LinkedList<Hole>();
         this.pcbs = new LinkedList<ProcessAddress>();
-        holes.add(new Hole(0, size));
+        holes.add(new Hole(null,0, size));
     }
     //申请内存
 
@@ -39,6 +39,7 @@ public class Memory {
             Hole newHole = new Hole(hole.getHead() + size, hole.getSize() - size);
             holes.add(location + 1, newHole);
             hole.setSize(size);
+            hole.setUid(id);
         }
         //添加一个进程
         //id 进程名字

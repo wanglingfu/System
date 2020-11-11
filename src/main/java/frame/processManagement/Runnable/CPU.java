@@ -250,6 +250,7 @@ public class CPU implements Runnable{
                 //end指令
                 else if (i == 96){
                     PSW = 1;
+                    finalAX = AX;
                     IR = "end";
                 }
 
