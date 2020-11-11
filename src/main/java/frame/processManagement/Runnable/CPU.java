@@ -131,6 +131,10 @@ public class CPU implements Runnable{
            /**
             * 一个系统时间执行一条指令
             */
+           if(processScheduling.getRunPCB().getUuid() != uuid){
+               main.TimeSlice = 6;
+               recovery(processScheduling.getRunPCB());
+           }
            while(main.SystemTime == SystemTime){
                try {
                    Thread.sleep(200);
@@ -139,11 +143,6 @@ public class CPU implements Runnable{
                }
            }
            SystemTime = main.SystemTime;
-
-           if(processScheduling.getRunPCB().getUuid() != uuid){
-               main.TimeSlice = 6;
-               recovery(processScheduling.getRunPCB());
-           }
             /**
              * 判断中断
              */
@@ -182,25 +181,25 @@ public class CPU implements Runnable{
                     if(main.DeviceTime[0] ==0){
                         a1 = processScheduling.getDevice().getDeviceTable().getA1();
                     }
-                    else if(main.DeviceTime[0] ==1){
+                    else if(main.DeviceTime[1] ==0){
                         a1 = processScheduling.getDevice().getDeviceTable().getA2();
                     }
-                    else if(main.DeviceTime[0] ==2){
+                    else if(main.DeviceTime[2] ==0){
                         a1 = processScheduling.getDevice().getDeviceTable().getB1();
                     }
-                    else if(main.DeviceTime[0] ==3){
+                    else if(main.DeviceTime[3] ==0){
                         a1 = processScheduling.getDevice().getDeviceTable().getB2();
                     }
-                    else if(main.DeviceTime[0] ==4){
+                    else if(main.DeviceTime[4] ==0){
                         a1 = processScheduling.getDevice().getDeviceTable().getB3();
                     }
-                    else if(main.DeviceTime[0] ==5){
+                    else if(main.DeviceTime[5] ==0){
                         a1 = processScheduling.getDevice().getDeviceTable().getC1();
                     }
-                    else if(main.DeviceTime[0] ==6){
+                    else if(main.DeviceTime[6] ==0){
                         a1 = processScheduling.getDevice().getDeviceTable().getC2();
                     }
-                    else if(main.DeviceTime[0] ==7){
+                    else if(main.DeviceTime[7] ==0){
                         a1 = processScheduling.getDevice().getDeviceTable().getC3();
                     }
                     for (int i = 0; i < processScheduling.getBlockPCB().size(); i++) {
