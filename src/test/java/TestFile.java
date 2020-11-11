@@ -2,6 +2,7 @@ import frame.FileManagement.Disk;
 import frame.FileManagement.FileUtil;
 import org.junit.Test;
 
+import java.io.File;
 import java.lang.System;
 import java.util.Arrays;
 
@@ -12,10 +13,6 @@ import java.util.Arrays;
  */
 public class TestFile {
     @Test
-    public int[][] testDisk() throws Exception{
-        return null;
-    }
-    @Test
     public void testFormate() throws Exception{
         Disk disk = new Disk();
         String S = "/abc";
@@ -23,6 +20,13 @@ public class TestFile {
         for(byte[] b:bytes) {
             System.out.println(Arrays.toString(b));
         }
+    }
+    @Test
+    public void createfile() throws Exception{
+        FileUtil fileUtil = new FileUtil();
+        String path = "/abc/stm";
+        String content = "abcdefghijklnsssm";
+        fileUtil.createFile(path, content);
     }
     @Test
     public void printDisk() throws Exception{
@@ -36,12 +40,15 @@ public class TestFile {
     @Test
     public void makeDir() throws Exception{
         FileUtil fileUtil = new FileUtil();
-        fileUtil.makeDirectory("/abg/def/hjk");
-        /*for(String s:bytePath){，
-            bytes = stringToBytes(s);
-            System.out.println(Arrays.toString(bytes));
-            bytesToString(bytes);
-        }*/
+        fileUtil.makeDirectory("/abc/def");
+
+    }
+    @Test
+    public void deleteDir() throws Exception{
+        FileUtil fileUtil = new FileUtil();
+        String path = "/abv";
+        fileUtil.removeDirectory(path);
+
     }
     @Test
     public void findDir() throws Exception{

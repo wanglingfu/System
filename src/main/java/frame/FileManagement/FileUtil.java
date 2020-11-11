@@ -179,7 +179,27 @@ public class FileUtil {
         byteFile[5] = (byte)assignedBlock;
         System.arraycopy(byteFile, 0, diskBuffer[blockIndex], itemIndex*8, 8);
     }
+    /**
+     * @author: Vizzk
+     * @description: 将文件长度写入磁盘中，第6位是低位
+     * @param length 长度
+     * @param blockIndex 目录盘块号
+     * @param itemIndex 目录所在盘块位置
+     * @return void
+     */
+    public void writeLength(int length, int blockIndex, int itemIndex){
 
+        byte[] temp = Disk.lengthToBytes(length);
+        diskBuffer[blockIndex][itemIndex*8+6] = temp[0];
+        diskBuffer[blockIndex][itemIndex*8+7] = temp[1];
+    }
+    /**
+     * @author: Vizzk
+     * @description: 将内容写入到以headblock为开头盘块的磁盘中
+     * @param content
+     * @param headBlock
+     * @return void
+     */
     public void writeContent(byte[] content, int headBlock){
         int blockNum = content.length / 64;
         int tailNum = content.length % 64;
@@ -205,14 +225,15 @@ public class FileUtil {
             message = "空间不足";
             return;
         }
-        //
+        //blockIndex是所在的目录盘块，itemIndex是在盘块中哪一片，headBLock是文件所在的第一块盘块
         int blockIndex = getContained(name, (byte)1, dirBlock);
         int itemIndex = getItem(name, (byte)1, blockIndex);
         int headBlock = Disk.byteToUnsigned(diskBuffer[blockIndex][itemIndex*8+5]);
 
         fileAllocationTable.assignBlocks(headBlock,blockNum-1);
         writeContent(bytes, headBlock);
-        System.out.println(blockIndex +"?"+itemIndex+"?"+headBlock);
+        writeLength(length, blockIndex, itemIndex);
+
         disk.writeDisk();
         message = "写入成功";
         System.out.println(message);
