@@ -1,5 +1,7 @@
 package frame.FileManagement;
 
+import frame.processManagement.Util;
+
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
@@ -213,12 +215,19 @@ public class FileUtil {
         }
     }
 
-    public void createExecutableFile(String content){
-
+    public byte[] createByteContent(String content, boolean isExecutable){
+        byte[] bytes = null;
+        if(isExecutable){
+            //bytes = Util.getFile(content);
+        }
+        else{
+            bytes = disk.stringToBytes(content);
+        }
+        return bytes;
     }
-    public void createTextFile(byte[] name, String content, int dirBlock) throws Exception{
+    public void createTextFile(byte[] name, byte[] content, int dirBlock) throws Exception{
         String message;
-        byte[] bytes = disk.stringToBytes(content);
+        byte[] bytes = content;
         int length = bytes.length;
         int blockNum = length / 64 + ((length % 64)==0 ? 0:1);
         if(!fileAllocationTable.isEmptyBlockEnough(blockNum-1)){
@@ -240,6 +249,7 @@ public class FileUtil {
     }
     public void createFile(String path, String content) throws Exception{
         byte[][] bytePath = disk.formatPath(path);
+        byte[] byteContent;
         byte property;
         String message;
         if(path.contains(".e")){
@@ -266,17 +276,39 @@ public class FileUtil {
         }
         if(property == 1){
             assignDirectorySpace(bytePath[bytePath.length-1], property, (byte)0, dirBlock);
-            createTextFile(bytePath[bytePath.length-1], content, dirBlock);
+            byteContent = createByteContent(content, false);
+            createTextFile(bytePath[bytePath.length-1], byteContent, dirBlock);
         }
         else{
             assignDirectorySpace(bytePath[bytePath.length-1], property, (byte)1, dirBlock);
-            createExecutableFile(content);
+            byteContent = createByteContent(content, true);
+            //createExecutableFile(content);
         }
         //disk.writeDisk();
     }
 
-    public void deleteFile(){
+    public void deleteFile(String path){
+        String message;
+        byte[][] bytePath = disk.formatPath(path);
+        byte[][] fatherPath = Arrays.copyOf(bytePath,bytePath.length-1);
+        int parentDirBlock = this.findDirectory(fatherPath);
+        if(parentDirBlock>4){
+            parentDirBlock = this.getContained(bytePath[bytePath.length-1], (byte)3, parentDirBlock);
+        }
+        int dirBlock = this.findDirectory(bytePath);
+        if(dirBlock == -1){
+            message = "路径错误";
+            return;
+        }
 
+        int itemIndex = getItem(bytePath[bytePath.length-1], (byte)3, parentDirBlock);
+        fileAllocationTable.freeBlock(dirBlock);
+        deleteItem(parentDirBlock, itemIndex);
+        if(isBlockEmpty(parentDirBlock)){
+            fileAllocationTable.linkBlock(parentDirBlock);
+        }
+        //disk.writeDisk();
+        System.out.println("delete success");
     }
     /**
      * @author: Vizzk
