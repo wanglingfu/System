@@ -85,7 +85,7 @@ public class FAT {
     }
     /**
      * @author: Vizzk
-     * @description: 将该盘块文件分配表中的位置数据置零
+     * @description: 将该盘块文件分配表中的位置数据置零,并将blockIndex指向盘块释放
      * @param blockIndex
      * @return void
      */
@@ -93,7 +93,34 @@ public class FAT {
         int i = blockIndex / 64;
         int j = blockIndex % 64;
         diskBuffer[i][j] = 0;
+        freeDiskBlock(blockIndex);
         return ;
+    }
+
+    /**
+     * @author: Vizzk
+     * @description: 将以blockIndex为开始盘块的内容都清光
+     * @param blockIndex
+     * @return void
+     */
+    public void freeBlocks(int blockIndex){
+        int nextBlock = blockIndex;
+        int currentBlock = nextBlock;
+        while(currentBlock != 1){
+            nextBlock = getNextBlock(currentBlock);
+            freeBlock(currentBlock);
+            currentBlock = nextBlock;
+        }
+    }
+    /**
+     * @author: Vizzk
+     * @description: 将blockIndex盘块清空
+     * @param blockIndex
+     * @return void
+     */
+    public void freeDiskBlock(int blockIndex){
+        byte[] emptyBlock = new byte[64];
+        System.arraycopy(emptyBlock,0,diskBuffer[blockIndex],0,64);
     }
     /**
      * @author: Vizzk
@@ -113,7 +140,10 @@ public class FAT {
                 }
             }
         }
-        freeBlock(blockIndex);
+        //如果只剩下一块就不释放空间
+        if(!(flag && nextBlock == 1)){
+            freeBlock(blockIndex);
+        }
         return ;
     }
 }

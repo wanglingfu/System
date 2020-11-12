@@ -3,6 +3,8 @@ import frame.FileManagement.FileUtil;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.Reader;
 import java.lang.System;
 import java.util.Arrays;
 
@@ -24,9 +26,29 @@ public class TestFile {
     @Test
     public void createfile() throws Exception{
         FileUtil fileUtil = new FileUtil();
-        String path = "/abc/stm";
+        String path = "/def/def";
         String content = "abcdefghijklnsssm";
         fileUtil.createFile(path, content);
+    }
+    @Test
+    public void createExeFile() throws Exception{
+        File test = new File("H:\\test");
+        Reader reader = new FileReader(test);
+        char[] s = new char[10000];
+        reader.read(s);
+        String s1 = String.valueOf(s);
+        System.out.println(s1);
+        FileUtil fileUtil = new FileUtil();
+
+        String path = "/def/abc.e";
+        String content = s1;
+        fileUtil.createFile(path, s1);
+    }
+    @Test
+    public void delectfile() throws Exception{
+        FileUtil fileUtil = new FileUtil();
+        String path = "/def/abc.e";
+        fileUtil.deleteFile(path);
     }
     @Test
     public void printDisk() throws Exception{
@@ -40,13 +62,13 @@ public class TestFile {
     @Test
     public void makeDir() throws Exception{
         FileUtil fileUtil = new FileUtil();
-        fileUtil.makeDirectory("/abc/def");
+        fileUtil.makeDirectory("/def/abc");
 
     }
     @Test
     public void deleteDir() throws Exception{
         FileUtil fileUtil = new FileUtil();
-        String path = "/abv";
+        String path = "/def/abc";
         fileUtil.removeDirectory(path);
 
     }
