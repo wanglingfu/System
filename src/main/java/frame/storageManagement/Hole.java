@@ -8,6 +8,7 @@ package frame.storageManagement;
  * @Version 1.0
  **/
 public class Hole {
+    private String uid;
     private  int head;  //内存块的起始地址
     private  int size;  //内存块的大小
     private  boolean isFree;  //内存块的空闲状态
@@ -17,6 +18,13 @@ public class Hole {
             this.size=size;
             this.isFree=true;
 
+    }
+
+    public Hole(String uid, int head, int size) {
+        this.uid = uid;
+        this.head = head;
+        this.size = size;
+        this.isFree = true;
     }
 
     public int getHead() {
@@ -41,5 +49,13 @@ public class Hole {
 
     public void setFree(boolean free) {
         isFree = free;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

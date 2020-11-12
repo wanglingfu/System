@@ -7,6 +7,7 @@ import frame.processManagement.Runnable.CPU;
 import frame.processManagement.Runnable.CreatProcess;
 import frame.processManagement.Runnable.TimeSchedul;
 import frame.processManagement.Util;
+import frame.storageManagement.Hole;
 import frame.storageManagement.Memory;
 
 import javax.swing.*;
@@ -14,6 +15,7 @@ import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Queue;
 
 public class ProcessFrame extends JFrame {
@@ -60,7 +62,7 @@ public class ProcessFrame extends JFrame {
         container.setLayout(null);
 
         //系统时钟
-        jLabelTime.setBounds(850,360,100,100);
+        jLabelTime.setBounds(850+50,360,100,100);
         jLabelTime.setLayout(null);
         add(jLabelTime);
 
@@ -85,7 +87,7 @@ public class ProcessFrame extends JFrame {
         jLabelCPU.add(button);
 
         //时间片
-        jLabelTimeSlice.setBounds(960,360,100,100);
+        jLabelTimeSlice.setBounds(960+50,360,100,100);
         jLabelTimeSlice.setLayout(null);
         add(jLabelTimeSlice);
         jTextAreaTimeSlice = new JTextArea(3,20);
@@ -128,7 +130,7 @@ public class ProcessFrame extends JFrame {
         jLabelPCBBlock.add(jScrollPane2);
 
         //执行进程中间结果
-        jLabelIntermediateResults.setBounds(850,470,100,100);
+        jLabelIntermediateResults.setBounds(850+50,470,100,100);
         jLabelIntermediateResults.setLayout(null);
         add(jLabelIntermediateResults);
         jTextAreaIntermediateResults = new JTextArea(10,20);
@@ -159,35 +161,35 @@ public class ProcessFrame extends JFrame {
         jLabel1MainMemory.setLayout(null);
         add(jLabel1MainMemory);
         jLabel1MainMemory.setBorder(BorderFactory.createTitledBorder("主存区使用情况"));
-        jTextAreaMainMemory = new JTextArea(10,20);
-        jTextAreaMainMemory.setBounds(10,20,493,90);
+       /* jTextAreaMainMemory = new JTextArea(10,20);
+        jTextAreaMainMemory.setBounds(10,80,493,90);
         jTextAreaMainMemory.setEditable(false);
         jTextAreaMainMemory.setFont(new Font("宋体",Font.BOLD,25));
         JScrollPane jScrollPane3 = new JScrollPane();
-        jScrollPane3.setBounds(10,20,493,90);
+        jScrollPane3.setBounds(10,80,493,90);
         jScrollPane3.setViewportView(jTextAreaMainMemory);
-     //   jScrollPane3.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-      //  jScrollPane3.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-        jLabel1MainMemory.add(jScrollPane3);
+        jScrollPane3.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane3.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        jLabel1MainMemory.add(jScrollPane3);*/
 
         //设备使用情况
-        jLabelDevice.setBounds(230,360,600,300);
+        jLabelDevice.setBounds(230,360,600+50,300);
         jLabelDevice.setLayout(null);
         add(jLabelDevice);
         jTextAreaDevice = new JTextArea(10,20);
-        jTextAreaDevice.setBounds(10,20,580,270);
+        jTextAreaDevice.setBounds(10,20,580+50,270);
         jTextAreaDevice.setFont(new Font("宋体",Font.BOLD,25));
         jTextAreaDevice.setEditable(false);
-        /*JScrollPane jScrollPane4 = new JScrollPane();
-        jScrollPane4.setBounds(10,20,380,170);*/
+        JScrollPane jScrollPane4 = new JScrollPane();
+        jScrollPane4.setBounds(10,20,580+50,270);
         jLabelDevice.setBorder(BorderFactory.createTitledBorder("设备使用情况"));
-        /*jScrollPane4.setViewportView(jTextArea11);
+        jScrollPane4.setViewportView(jTextAreaDevice);
         jScrollPane4.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane4.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);*/
-        jLabelDevice.add(jTextAreaDevice);
+        jScrollPane4.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        jLabelDevice.add(jScrollPane4);
 
         //显示结果
-        jLabelResult.setBounds(960,470,100,100);
+        jLabelResult.setBounds(960+50,470,100,100);
         jLabelResult.setLayout(null);
         add(jLabelResult);
         jTextAreaResult = new JTextArea(3,20);
@@ -218,7 +220,7 @@ public class ProcessFrame extends JFrame {
             jTextAreaIntermediateResults.setText(c);
             jTextAreaExecuting.setText(d);
             jTextAreaResult.setText(e);
-            jTextAreaDevice.setText(f);
+           // jTextAreaDevice.setText(f);
             jTextAreaPCBRun.setText(g);
     }
     public  void printScreen2(ProcessScheduling processScheduling){
@@ -230,6 +232,7 @@ public class ProcessFrame extends JFrame {
                 PCB next = iterator.next();
                 jTextAreaPCBReady.append(next.getUuid()+"\n");
             }
+            jTextAreaPCBBlock.setText("");
         ArrayList<PCB> blockPCB = processScheduling.getBlockPCB();
         iterator = blockPCB.iterator();
         while (iterator.hasNext()){
@@ -242,26 +245,67 @@ public class ProcessFrame extends JFrame {
             jTextAreaPCBBlock.setText("");
         }
     }
-    public void printScreen4(String a){
-            /*Button button = new Button();
-            button.setBounds(ss,20,holes.getSize(),50);
-            jLabel10.add(button);*/
-        jTextAreaMainMemory.append(a);
+    public void printScreen3(String a1, int a1time,String a2, int a2time,String b1,int b1time, String b2, int b2time,String b3,int b3time, String c1,int c1time, String c2,int c2time, String c3,int c3time){
+        jTextAreaDevice.setText("");
+        if(a1time < 0)
+            a1time = 0;
+        if(a2time < 0)
+            a2time = 0;
+        if(b1time < 0)
+            b1time = 0;
+        if(b2time < 0)
+            b2time = 0;
+        if(b3time < 0)
+            b3time = 0;
+        if(c1time < 0)
+            c1time = 0;
+        if(c2time < 0)
+            c2time = 0;
+        if(c3time < 0)
+            c3time = 0;
+        jTextAreaDevice.append("设备A:"+a1+" "+String.valueOf(a1time)+"\n");
+        jTextAreaDevice.append("设备A:"+a2+" "+String.valueOf(a2time)+"\n");
+        jTextAreaDevice.append("设备B:"+b1+" "+String.valueOf(b1time)+"\n");
+        jTextAreaDevice.append("设备B:"+b2+" "+String.valueOf(b2time)+"\n");
+        jTextAreaDevice.append("设备B:"+b3+" "+String.valueOf(b3time)+"\n");
+        jTextAreaDevice.append("设备C:"+c1+" "+String.valueOf(c1time)+"\n");
+        jTextAreaDevice.append("设备C:"+c2+" "+String.valueOf(c2time)+"\n");
+        jTextAreaDevice.append("设备C:"+c3+" "+String.valueOf(c3time)+"\n");
+    }
+    public void printScreen4(LinkedList<Hole> holes){
+            jLabel1MainMemory.removeAll();
+            int ss = 10;
+            for (int i = 0; i < holes.size(); i++){
+                Hole hole = holes.get(i);
+                Button button = new Button(hole.getUid());
+                if (hole.isFree()){
+                    button.setBackground(Color.BLACK);
+                }
+                else {
+                    button.setBackground(Color.red);
+                }
+                jLabel1MainMemory.add(button);
+                button.setBounds(ss,20,hole.getSize(),50);
+                ss += hole.getSize();
+        }
+
+       //jTextAreaMainMemory.append(a);
     }
     public static void main(String[] args) throws IOException, InterruptedException {
         ProcessFrame processFrame = new ProcessFrame();
-        File test = new File("D:\\yiban\\System\\src\\test\\java\\test");
+        File test = new File("src\\test\\java\\test");
         Reader reader = new FileReader(test);
         char[] s = new char[10000];
         reader.read(s);
         String s1 = String.valueOf(s);
-        String[] ds = s1.split("d");
-        ds[0] = ds[0] + 'd';
-        String[] split = ds[0].split("\r\n");
+        String[] split = s1.split("\r\n");
         byte[][] files = new byte[split.length][100];
         for (int i = 0; i < split.length; i++) {
             String[] s2 = split[i].split(" ");
             for (int j = 0; j < s2.length; j++) {
+                if(i == split.length-1 && j == s2.length-1)
+                files[i][j] = Util.compile("end");
+                else
                 files[i][j] = Util.compile(s2[j]);
             }
         }
@@ -280,11 +324,15 @@ public class ProcessFrame extends JFrame {
        /* for (Hole hole : memory.getHoles()) {
             processFrame.printScreen4(String.valueOf(hole.getHead())+" "+String.valueOf(hole.getSize())+" "+String.valueOf(hole.isFree()));
         }*/
+
         System.out.println(processScheduling.getIdlePCB().getUuid());
         while (true) {
             Thread.sleep(500);
             processFrame.printScreen(String.valueOf(main.SystemTime), String.valueOf(main.TimeSlice), String.valueOf(cpu.getAX()), cpu.getIR(), String.valueOf(cpu.getFinalAX()), device.getDeviceTable().toString(), processScheduling.getRunPCB().getUuid());
             processFrame.printScreen2(processScheduling);
+            processFrame.printScreen4(memory.getHoles());
+            processFrame.printScreen3(device.getDeviceTable().getA1(),main.DeviceTime[0],device.getDeviceTable().getA2(),main.DeviceTime[1],device.getDeviceTable().getB1(),main.DeviceTime[2],device.getDeviceTable().getB2(),main.DeviceTime[3],device.getDeviceTable().getB3(),main.DeviceTime[4],device.getDeviceTable().getC1(),
+                    main.DeviceTime[5],device.getDeviceTable().getC2(),main.DeviceTime[6],device.getDeviceTable().getC3(),main.DeviceTime[7]);
         }
     }
 }

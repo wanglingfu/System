@@ -1,1 +1,3 @@
+x=55 x++ x++ x++ x++ x++ x++ x-- !B8 x++ x++ x-- x=12 !C3 x++ x-- !A3 x++ end
+x=55 x++ x++ !C5 x++ x++ x-- x=12 !B5 x++ x-- !A6 x++ end
 x=55 x++ x++ x++ x++ x++ x++ x-- !A5 x++ x++ x-- x=12 !B5 x++ x-- !A6 x++ end
