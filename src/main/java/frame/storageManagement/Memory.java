@@ -106,6 +106,7 @@ public class Memory {
             }
         }
             Hole hole = holes.get(id1);
+            hole.setUid(null);
             if(hole.isFree()){
                 System.out.println("此空间空闲，无需释放：\t" + id);
             }
