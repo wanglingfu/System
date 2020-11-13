@@ -68,9 +68,8 @@ public class Device {
         if (Uid.equals(deviceTable.getA1())){
             deviceTable.setA1("设备空闲");
             if(!blockA.isEmpty()) {
-                gerFirstNodeA();
                 re[0] = 1;
-                re[1] = deviceWaitQueueA.getTime();
+                re[1] = gerFirstNodeA();
                 return re;
             }
             returnIndexA1 = 1;
@@ -78,9 +77,8 @@ public class Device {
         }else if (Uid.equals(deviceTable.getA2())){
             deviceTable.setA2("设备空闲");
             if( !blockA.isEmpty()) {
-                gerFirstNodeA();
                 re[0] = 2;
-                re[1] = deviceWaitQueueA.getTime();
+                re[1] = gerFirstNodeA();
                 return re;
             }
             returnIndexA2 = 2;
@@ -92,9 +90,10 @@ public class Device {
     /**
      * @Description 获取等待队列第一个节点
      */
-    public void gerFirstNodeA(){
+    public int gerFirstNodeA(){
         deviceWaitQueueA = blockA.removeFirst();
         getDeviceA(deviceWaitQueueA.getUid(),deviceWaitQueueA.getTime(),deviceWaitQueueA.getSize());
+        return deviceWaitQueueA.getTime();
     }
     /**
      * @Description 申请B设备
@@ -137,9 +136,8 @@ public class Device {
 
             deviceTable.setB1("设备空闲");
             if(!blockB.isEmpty()) {
-                gerFirstNodeB();
                 re[0] = 3;
-                re[1] = deviceWaitQueueB.getTime();
+                re[1] = gerFirstNodeB();;
                 return re;
             }
             returnIndexB1 = 3;
@@ -147,9 +145,8 @@ public class Device {
         }else if (Uid.equals(deviceTable.getB2())){
             deviceTable.setB2("设备空闲");
             if(!blockB.isEmpty()) {
-                gerFirstNodeB();
                 re[0] = 4;
-                re[1] = deviceWaitQueueB.getTime();
+                re[1] = gerFirstNodeB();;
                 return re;
             }
             returnIndexB2 = 4;
@@ -158,9 +155,8 @@ public class Device {
         else if (Uid.equals(deviceTable.getB3())){
             deviceTable.setB3("设备空闲");
             if(!blockB.isEmpty()) {
-                gerFirstNodeB();
                 re[0] = 5;
-                re[1] = deviceWaitQueueB.getTime();
+                re[1] = gerFirstNodeB();;
                 return re;
             }
             returnIndexB3= 5;
@@ -171,9 +167,10 @@ public class Device {
     /**
      * @Description 获取B设备等待队列第一个节点
      */
-    public void gerFirstNodeB(){
+    public int gerFirstNodeB(){
         deviceWaitQueueB = blockB.removeFirst();
         getDeviceB(deviceWaitQueueB.getUid(),deviceWaitQueueB.getTime(),deviceWaitQueueB.getSize());
+        return deviceWaitQueueB.getTime();
     }
     /**
      * @Description 申请C设备
@@ -212,33 +209,30 @@ public class Device {
      */
     public int[] removeDeviceC(String Uid){
         int[] re = new int[2];
-        if (Uid.equals(deviceTable.getB1())){
+        if (Uid.equals(deviceTable.getC1())){
             deviceTable.setC1("设备空闲");
             if(!blockC.isEmpty()) {
-                gerFirstNodeC();
                 re[0] = 6;
-                re[1] = deviceWaitQueueC.getTime();
+                re[1] = gerFirstNodeC();;
                 return re;
             }
             returnIndexC1 = 6;
             return null;
-        }else if (Uid.equals(deviceTable.getB2())){
+        }else if (Uid.equals(deviceTable.getC2())){
             deviceTable.setC2("设备空闲");
             if(!blockC.isEmpty()) {
-                gerFirstNodeC();
                 re[0] = 7;
-                re[1] = deviceWaitQueueC.getTime();
+                re[1] = gerFirstNodeC();;
                 return re;
             }
             returnIndexC2 = 7;
             return null;
         }
-        else if (Uid.equals(deviceTable.getB3())){
+        else if (Uid.equals(deviceTable.getC3())){
             deviceTable.setC3("设备空闲");
             if(!blockC.isEmpty()) {
-                gerFirstNodeC();
                 re[0] = 8;
-                re[1] = deviceWaitQueueC.getTime();
+                re[1] = gerFirstNodeC();;
                 return re;
             }
             returnIndexC3 = 8;
@@ -249,9 +243,10 @@ public class Device {
     /**
      * @Description 获取B设备等待队列第一个节点
      */
-    public void gerFirstNodeC(){
+    public int gerFirstNodeC(){
         deviceWaitQueueC = blockB.removeFirst();
         getDeviceC(deviceWaitQueueC.getUid(),deviceWaitQueueC.getTime(),deviceWaitQueueC.getSize());
+        return deviceWaitQueueC.getTime();
     }
 
     public DeviceTable getDeviceTable() {
