@@ -1,5 +1,7 @@
 package frame.FileManagement;
 
+import frame.processManagement.Util;
+
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
@@ -11,17 +13,24 @@ import java.util.Arrays;
 public class FileUtil {
     private byte[][] diskBuffer;
     private final int ROOT_DIR = 4;
+    private final byte EXE_PROPERTY = 5;
+    private final byte TXT_PROPERTY = 1;
+    private final byte DIR_PROPERTY = 3;
     private FAT fileAllocationTable;
     private Disk disk;
+    private byte[] emptyBlock;
+    private byte[] emptyItem;
     public FileUtil() throws Exception {
         disk = new Disk();
         diskBuffer = disk.getDisk();
         fileAllocationTable = new FAT(disk);
+        emptyBlock = new byte[64];
+        emptyItem = new byte[8];
     }
 
     /**
      * @author: Vizzk
-     * @description: 依次检查blockIndex盘块上是否存在目录name，存在则返回name所在盘块号，否则返回-1
+     * @description: 依次检查blockIndex盘块上是否存在目录name，存在则返回name所指向盘块号，否则返回-1
      * @param name
      * @param blockIndex
      * @param property
@@ -53,7 +62,7 @@ public class FileUtil {
         int nextBlockIndex = blockIndex;
         for(int i=0; i<path.length && blockIndex != -1; i++) {
             do{
-                blockIndex = getBlock(path[i], (byte)3, blockIndex);
+                blockIndex = getBlock(path[i], DIR_PROPERTY, nextBlockIndex);
                 nextBlockIndex = fileAllocationTable.getNextBlock(nextBlockIndex);
             }
             while(blockIndex == -1 && nextBlockIndex != 1);
@@ -63,7 +72,29 @@ public class FileUtil {
     }
     /**
      * @author: Vizzk
-     * @description: 检查某个目录下是否包含某个文件，包含则返回文件所在的块序号，返回-1不存在，
+     * @description: 找到文件所指向盘块
+     * @param name 文件名
+     * @param property 文件属性
+     * @param dirBlock 文件所在目录块
+     * @return int
+     */
+    public int findFile(byte[] name, byte property, int dirBlock) {
+        int blockIndex;
+        if(dirBlock == -1){
+            blockIndex = -1;
+            return blockIndex;
+        }
+        int itemIndex = getItem(name, property, dirBlock);
+        if(itemIndex == -1){
+            blockIndex = -1;
+            return blockIndex;
+        }
+        blockIndex = Disk.byteToUnsigned(diskBuffer[dirBlock][itemIndex*8+5]);
+        return blockIndex;
+    }
+    /**
+     * @author: Vizzk
+     * @description: 检查某个目录下是否包含某个文件，包含则返回文件所在目录的块序号，返回-1不存在，
      * @param name
      * @param property
      * @param blockIndex
@@ -88,7 +119,7 @@ public class FileUtil {
     }
     /**
      * @author: Vizzk
-     * @description: 返回文件或目录在盘块中的位置
+     * @description: 返回文件或目录在盘块中的位置,-1不存在
      * @param name
      * @param property
      * @param blockIndex
@@ -108,10 +139,23 @@ public class FileUtil {
         }
         return itemIndex;
     }
+    public void deleteItem(int blockIndex, int itemIndex){
+        System.arraycopy(emptyItem,0,diskBuffer[blockIndex],itemIndex*8,8);
+    }
+    /**
+     * @author: Vizzk
+     * @description: 检查盘块是否为空闲
+     * @param blockIndex
+     * @return boolean
+     */
+    public boolean isBlockEmpty(int blockIndex){
+        boolean isEmpty = Arrays.equals(emptyBlock, diskBuffer[blockIndex]);
+        return isEmpty;
+    }
 
     /**
      * @author: Vizzk
-     * @description: 判断盘块及该盘块的下一盘块是否空间已满
+     * @description: 判断目录否空间已满
      * @param blockIndex
      * @return boolean
      */
@@ -124,18 +168,12 @@ public class FileUtil {
             }
         }
         else{
+            //有空目录项，查看是否有空间可分配
             if(getContained(emptyBlock, (byte)0, blockIndex)!=-1){
-                isFull = false;
+                isFull = !fileAllocationTable.isEmptyBlockEnough(1);
             }
             else{
-                for(int i = 0; i < 4 && isFull; i++){
-                    for(int j = 0; j < 64; j++){
-                        if(diskBuffer[i][j] == 0){
-                            isFull = false;
-                            break;
-                        }
-                    }
-                }
+               isFull = !fileAllocationTable.isEmptyBlockEnough(2);
             }
         }
         return isFull;
@@ -149,12 +187,15 @@ public class FileUtil {
      * @param dirBlock  要分配的文件所在目录的盘块号
      * @return void
      */
-    public void assignSpace(byte[] name, byte property, byte isExecutable, int dirBlock){
+    public void assignDirectorySpace(byte[] name, byte property, byte isExecutable, int dirBlock){
         int blockIndex = 0;
         int itemIndex;
         int assignedBlock;
         byte[] freeSpace = new byte[3];
         blockIndex = getContained(freeSpace, (byte)0, dirBlock);
+        if(blockIndex == -1){
+            blockIndex = fileAllocationTable.assignNextBlock(dirBlock);
+        }
         itemIndex = getItem(freeSpace, (byte)0, blockIndex);
         assignedBlock = fileAllocationTable.assignBlock();
         byte[] byteFile = new byte[8];
@@ -164,13 +205,166 @@ public class FileUtil {
         byteFile[5] = (byte)assignedBlock;
         System.arraycopy(byteFile, 0, diskBuffer[blockIndex], itemIndex*8, 8);
     }
+    /**
+     * @author: Vizzk
+     * @description: 将文件长度写入磁盘中，第6位是低位
+     * @param length 长度
+     * @param blockIndex 目录盘块号
+     * @param itemIndex 目录所在盘块位置
+     * @return void
+     */
+    public void writeLength(int length, int blockIndex, int itemIndex){
 
-    public void createFile(String name){
-
+        byte[] temp = Disk.lengthToBytes(length);
+        diskBuffer[blockIndex][itemIndex*8+6] = temp[0];
+        diskBuffer[blockIndex][itemIndex*8+7] = temp[1];
+    }
+    /**
+     * @author: Vizzk
+     * @description: 将内容写入到以headblock为开头盘块的磁盘中
+     * @param content
+     * @param headBlock
+     * @return void
+     */
+    public void writeContent(byte[] content, int headBlock){
+        int blockNum = content.length / 64;
+        int tailNum = content.length % 64;
+        int blockIndex = headBlock;
+        for(int i = 0; i < blockNum; i++){
+            System.arraycopy(content, i*64, diskBuffer[blockIndex], 0, 64);
+            blockIndex = fileAllocationTable.getNextBlock(blockIndex);
+        }
+        if(tailNum > 0){
+            System.arraycopy(content, blockNum*64, diskBuffer[blockIndex], 0, tailNum);
+        }
     }
 
-    public void deleteFile(){
+    /**
+     * @author: Vizzk
+     * @description: 将content转换为字节数据，若是可执行文件则先编译
+     * @param content
+     * @param isExecutable
+     * @return byte[]
+     */
+    public byte[] createByteContent(String content, boolean isExecutable){
+        byte[] bytes;
+        if(isExecutable){
+            bytes = Util.getFile(content);
+        }
+        else{
+            bytes = disk.stringToBytes(content);
+        }
+        return bytes;
+    }
+    /**
+     * @author: Vizzk
+     * @description: 写文件入磁盘
+     * @param name 文件名字
+     * @param content 文件内容（二进制）
+     * @param property 文件属性，文本文件为1，可执行文件为5
+     * @param dirBlock 文件目录所在盘块
+     * @return void
+     */
+    public void writeFile(byte[] name, byte[] content, byte property, int dirBlock) throws Exception{
+        String message;
+        byte[] bytes = content;
+        int length = bytes.length;
+        int blockNum = length / 64 + ((length % 64)==0 ? 0:1);
+        if(!fileAllocationTable.isEmptyBlockEnough(blockNum-1)){
+            message = "空间不足";
+            return;
+        }
+        //blockIndex是所在的目录盘块，itemIndex是在盘块中哪一片，headBLock是文件所在的第一块盘块
+        int blockIndex = getContained(name, property, dirBlock);
+        int itemIndex = getItem(name, property, blockIndex);
+        int headBlock = Disk.byteToUnsigned(diskBuffer[blockIndex][itemIndex*8+5]);
 
+        fileAllocationTable.assignBlocks(headBlock,blockNum-1);
+        writeContent(bytes, headBlock);
+        writeLength(length, blockIndex, itemIndex);
+
+        disk.writeDisk();
+        message = "写入成功";
+        System.out.println(message);
+    }
+    /**
+     * @author: Vizzk
+     * @description: 创建可执行文件或文本文件
+     * @param path 文件路径
+     * @param content 文件内容
+     * @return void
+     */
+    public void createFile(String path, String content) throws Exception{
+        byte[][] bytePath = disk.formatPath(path);
+        byte[] byteContent;
+        byte property;
+        String message;
+        if(path.contains(".e")){
+            property = (byte)5;
+        }
+        else{
+            property = (byte)1;
+        }
+        int dirBlock = this.findDirectory(Arrays.copyOf(bytePath,bytePath.length-1));
+        if(dirBlock == -1){
+            message = "路径错误！";
+            System.out.println(message);
+            return ;
+        }
+        if(isDirFull(dirBlock)){
+            message = "磁盘已满";
+            System.out.println(message);
+            return;
+        }
+        if(getContained(bytePath[bytePath.length-1], property, dirBlock) != -1){
+            message = "该路径下有同名文件";
+            System.out.println(message);
+            return;
+        }
+        if(property == 1){
+            assignDirectorySpace(bytePath[bytePath.length-1], property, (byte)0, dirBlock);
+            byteContent = createByteContent(content, false);
+        }
+        else{
+            assignDirectorySpace(bytePath[bytePath.length-1], property, (byte)1, dirBlock);
+            byteContent = createByteContent(content, true);
+        }
+        writeFile(bytePath[bytePath.length-1], byteContent, property, dirBlock);
+    }
+    /**
+     * @author: Vizzk
+     * @description: 删除文件
+     * @param path 文件路径
+     * @return void
+     */
+    public void deleteFile(String path) throws Exception{
+        String message;
+        byte property = TXT_PROPERTY;
+        if(path.contains(".e")){
+            property = EXE_PROPERTY;
+        }
+        byte[][] bytePath = disk.formatPath(path);
+        byte[][] fatherPath = Arrays.copyOf(bytePath,bytePath.length-1);
+        int parentDirBlock = this.findDirectory(fatherPath);
+        if(parentDirBlock>4){
+            parentDirBlock = this.getContained(bytePath[bytePath.length-1], property, parentDirBlock);
+        }
+        int dirBlock = findFile(bytePath[bytePath.length-1], property, parentDirBlock);
+
+        if(dirBlock == -1){
+            message = "路径错误";
+            return;
+        }
+        int itemIndex = getItem(bytePath[bytePath.length-1], property, parentDirBlock);
+        System.out.println(parentDirBlock+" "+dirBlock+" "+itemIndex);
+
+        fileAllocationTable.freeBlocks(dirBlock);
+        deleteItem(parentDirBlock, itemIndex);
+        if(isBlockEmpty(parentDirBlock)){
+            fileAllocationTable.linkBlock(parentDirBlock);
+        }
+        disk.writeDisk();
+        System.out.println("delete success");
     }
     /**
      * @author: Vizzk
@@ -187,24 +381,44 @@ public class FileUtil {
         }
 
         if(!isDirFull(dirBlock) && getContained(bytePath[bytePath.length-1], (byte)3, dirBlock) == -1){
-            assignSpace(bytePath[bytePath.length-1], (byte)3, (byte)0, dirBlock);
+            assignDirectorySpace(bytePath[bytePath.length-1], (byte)3, (byte)0, dirBlock);
         }
         disk.writeDisk();
         System.out.println("创建成功");
         return;
-        /*for(String s:bytePath){，
-            bytes = stringToBytes(s);
-            System.out.println(Arrays.toString(bytes));
-            bytesToString(bytes);
-        }*/
-    }
 
-    public void removeDirectory(String path){
+    }
+    /**
+     * @author: Vizzk
+     * @description: 从硬盘中移除空目录
+     * @param path
+     * @return void
+     */
+    public void removeDirectory(String path) throws Exception{
+        String message;
         byte[][] bytePath = disk.formatPath(path);
-        int dirBlock = this.findDirectory(Arrays.copyOf(bytePath,bytePath.length-1));
-        if(dirBlock == -1){
-            System.out.println("路径错误！");
-            return ;
+        byte[][] fatherPath = Arrays.copyOf(bytePath,bytePath.length-1);
+        int parentDirBlock = this.findDirectory(fatherPath);
+        if(parentDirBlock>4){
+            parentDirBlock = this.getContained(bytePath[bytePath.length-1], (byte)3, parentDirBlock);
         }
+        int dirBlock = this.findDirectory(bytePath);
+        if(dirBlock == -1){
+            message = "路径错误";
+            System.out.println(message);
+            return;
+        }
+        if(!isBlockEmpty(dirBlock)){
+            message = "目录非空";
+            return;
+        }
+        int itemIndex = getItem(bytePath[bytePath.length-1], (byte)3, parentDirBlock);
+        fileAllocationTable.freeBlock(dirBlock);
+        deleteItem(parentDirBlock, itemIndex);
+        if(isBlockEmpty(parentDirBlock)){
+            fileAllocationTable.linkBlock(parentDirBlock);
+        }
+        disk.writeDisk();
+        System.out.println("delete success");
     }
 }
