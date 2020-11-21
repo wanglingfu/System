@@ -15,13 +15,46 @@ import java.util.concurrent.ArrayBlockingQueue;
  * @create: 2020-10-16 22:51
  **/
 public class ProcessScheduling {
-    private Integer ProcessNum = 0;//现有进程数，只允许最多10个
-    private Queue<PCB> readyPCB;//就绪PCB队列
-    private ArrayList<PCB> blockPCB;//阻塞PCB队列
-    private PCB idlePCB = new PCB(null);//闲置进程
-    private PCB runPCB = idlePCB;//运行中的进程
+    /**
+     * 现有进程数，只允许最多10个
+     */
+    private Integer ProcessNum = 0;
+    /**
+     * 就绪PCB队列
+     */
+    private Queue<PCB> readyPCB;
+    /**
+     * 阻塞PCB队列
+     */
+    private ArrayList<PCB> blockPCB;
+    /**
+     * 闲置进程
+     */
+    private PCB idlePCB = new PCB(null);
+    /**
+     * 运行中的进程
+     */
+    private PCB runPCB = idlePCB;
+    /**
+     * 主存
+     */
     private Memory memory;
+    /**
+     * 设备
+     */
     private Device device;
+    /**
+     * 阻塞原因 A
+     */
+    private final String BLOCK_A = "A";
+    /**
+     * 阻塞原因 B
+     */
+    private final String BLOCK_B = "B";
+    /**
+     * 阻塞原因 C
+     */
+    private final String BLOCK_C = "C";
 
     public ProcessScheduling(Memory memory, Device device) {
         this.memory = memory;
@@ -132,11 +165,11 @@ public class ProcessScheduling {
      */
     public void block(String reason){
         int deviceTime = 9;
-        if(reason == "A"){
+        if(reason == BLOCK_A){
             deviceTime = device.getDeviceA(runPCB.getUuid(),runPCB.getTime(),runPCB.getFile().length);
-        }else if(reason == "B"){
+        }else if(reason == BLOCK_B){
             deviceTime = device.getDeviceB(runPCB.getUuid(),runPCB.getTime(),runPCB.getFile().length);
-        }else if(reason == "C"){
+        }else if(reason == BLOCK_C){
             deviceTime = device.getDeviceC(runPCB.getUuid(),runPCB.getTime(),runPCB.getFile().length);
         }
         if(deviceTime <9){
@@ -151,11 +184,11 @@ public class ProcessScheduling {
     public void awake(PCB pcb){
         String reason = pcb.getReason();
         int[] ints = new int[0];
-        if(reason == "A"){
+        if(reason == BLOCK_A){
             ints = device.removeDeviceA(pcb.getUuid());
-        }else if(reason == "B"){
+        }else if(reason == BLOCK_B){
             ints = device.removeDeviceB(pcb.getUuid());
-        }else if(reason == "C"){
+        }else if(reason == BLOCK_C){
             ints = device.removeDeviceC(pcb.getUuid());
         }
         if(ints != null)

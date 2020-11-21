@@ -13,9 +13,18 @@ import java.util.Random;
  * @create: 2020-10-21 21:52
  **/
 public class CreatProcess implements Runnable{
-    private byte[][] file;//全部文件
-    private int flag;//是否执行完所有文件
-    private ProcessScheduling processScheduling;//进程调度
+    /**
+     * 全部文件
+     */
+    private byte[][] file;
+    /**
+     * 是否执行完所有文件
+     */
+    private int flag;
+    /**
+     * 进程调度
+     */
+    private ProcessScheduling processScheduling;
 
     public CreatProcess(byte[][] file,ProcessScheduling processScheduling) {
         this.file = file;

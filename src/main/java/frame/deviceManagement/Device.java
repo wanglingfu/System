@@ -212,7 +212,7 @@ public class Device {
      */
     public int[] removeDeviceC(String Uid){
         int[] re = new int[2];
-        if (Uid.equals(deviceTable.getB1())){
+        if (Uid.equals(deviceTable.getC1())){
             deviceTable.setC1("设备空闲");
             if(!blockC.isEmpty()) {
                 gerFirstNodeC();
@@ -222,7 +222,7 @@ public class Device {
             }
             returnIndexC1 = 6;
             return null;
-        }else if (Uid.equals(deviceTable.getB2())){
+        }else if (Uid.equals(deviceTable.getC2())){
             deviceTable.setC2("设备空闲");
             if(!blockC.isEmpty()) {
                 gerFirstNodeC();
@@ -233,7 +233,7 @@ public class Device {
             returnIndexC2 = 7;
             return null;
         }
-        else if (Uid.equals(deviceTable.getB3())){
+        else if (Uid.equals(deviceTable.getC3())){
             deviceTable.setC3("设备空闲");
             if(!blockC.isEmpty()) {
                 gerFirstNodeC();

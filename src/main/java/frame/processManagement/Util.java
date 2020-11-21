@@ -6,7 +6,7 @@ package frame.processManagement;
  * @create: 2020-11-06 15:53
  **/
 public class Util {
-    public static byte[] getFile(String file){
+    public static byte[] getByteFile(String file){
         String[] split = file.split("d");
         split[0] = split[0] + 'd';
         String[] split1 = split[0].split("\r\n");
@@ -16,7 +16,46 @@ public class Util {
         }
         return bytes;
     }
-    public static Byte compile(String IR){
+    public static String getStringFile(byte[] file){
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Byte aByte : file) {
+            String s = byteToString(aByte);
+            stringBuilder.append(s);
+            stringBuilder.append("\r\n");
+        }
+        return stringBuilder.toString();
+    }
+    public static String byteToString(byte IR){
+        if (IR == 0){
+            return "x++";
+        }
+        else if (IR == 32){
+            return "x--";
+        }
+        else if(IR == 96){
+            return "end";
+        }
+        else if(IR < 0){
+            int i =IR + 128;
+            return "x="+i;
+        }else{
+            int i = (int)IR;
+            int code = i/64;
+            int[] device = {(i % 64) / 16, (i % 64) / 8};
+            int[] time = {i%16,i%8};
+            if(device[code] == 0){
+                return "!A" + time[code];
+            }
+            else if(device[code] == 1){
+                return "!B" + time[code];
+            }
+            else{
+                return "!C" + time[code];
+            }
+        }
+    }
+
+    public static byte compile(String IR){
         char[] chars = IR.toCharArray();
         /**
          * 编码规则：

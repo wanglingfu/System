@@ -148,13 +148,8 @@ public class test {
         char[] s = new char[10000];
         reader.read(s);
         String s1 = String.valueOf(s);
-        String[] split = s1.split("d");
-        split[0] = split[0] + 'd';
-        String[] split1 = split[0].split("\r\n");
-        Byte[] bytes = new Byte[split1.length];
-        for (int i = 0; i < split1.length; i++) {
-            System.out.println(split1[i]);
-            bytes[i] = Util.compile(split1[i]);
-        }
+        byte[] byteFile = Util.getByteFile(s1);
+        String stringFile = Util.getStringFile(byteFile);
+        System.out.println(stringFile);
     }
 }

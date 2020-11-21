@@ -14,14 +14,38 @@ import lombok.SneakyThrows;
  * @create: 2020-10-19 22:30
  **/
 public class CPU implements Runnable{
-    private Integer AX;//数据寄存器
-    private Integer PSW = 0;//中断标志寄存器
-    private String IR;//指令寄存器
-    private Integer PC = 0;//程序计数器
-    private byte[] file;//运行中的进程文件
-    private int flag ;//是否运行完
-    private int finalAX;//运行结束之后显示进程的AX
-    private int SystemTime = 0;//系统时间
+    /**
+     * 数据寄存器
+     */
+    private Integer AX;
+    /**
+     * 中断标志寄存器
+     */
+    private Integer PSW = 0;
+    /**
+     * 指令寄存器
+     */
+    private String IR;
+    /**
+     * 程序计数器
+     */
+    private Integer PC = 0;
+    /**
+     * 运行中的进程文件
+     */
+    private byte[] file;
+    /**
+     * 是否运行完
+     */
+    private int flag ;
+    /**
+     * 运行结束之后显示进程的AX
+     */
+    private int finalAX;
+    /**
+     * 系统时间
+     */
+    private int SystemTime = 0;
 
     private ProcessScheduling processScheduling;
     private String uuid;//运行中进程id
@@ -261,7 +285,10 @@ public class CPU implements Runnable{
                 }
                 //！？？指令
                 else {
-                    int code = i/64;//是否为特殊
+                    /**
+                     * code：是否为特殊
+                     */
+                    int code = i/64;
                     int[] device = {(i % 64) / 16, (i % 64) / 8};
                     int[] time = {i%16,i%8};
                     preservation(processScheduling.getRunPCB());

@@ -12,12 +12,30 @@ import java.util.UUID;
  * @create: 2020-10-13 23:51
  **/
 public class PCB {
-    private String uuid;//进程标识符
-    private String reason;//阻塞原因， 哪个设备
+    /**
+     * 进程标识符
+     */
+    private String uuid;
+    /**
+     * 阻塞原因， 哪个设备
+     */
+    private String reason;
+    /**
+     * 阻塞时间
+     */
     private Integer time;
-    private byte[] file;//文件
-    private Integer AX;//数据
-    private Integer PC;//程序计数器
+    /**
+     * 文件
+     */
+    private byte[] file;
+    /**
+     * 数据
+     */
+    private Integer AX;
+    /**
+     * 程序计数器
+     */
+    private Integer PC;
 
     public String getUuid() {
         return uuid;
