@@ -133,7 +133,6 @@ public class ProcessScheduling {
                 }
                 size++;
             }
-            System.out.println(size);
             boolean b = memory.BestFit(size, pcb.getUuid());
             if(b){
                 ProcessNum++;

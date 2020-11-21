@@ -56,7 +56,7 @@ public class CreatProcess implements Runnable{
             main.lockCreate.lock();
             while(processScheduling.getProcessNum()>=10){
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

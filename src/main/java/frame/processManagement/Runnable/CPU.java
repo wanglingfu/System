@@ -161,7 +161,7 @@ public class CPU implements Runnable{
            }
            while(main.SystemTime == SystemTime){
                try {
-                   Thread.sleep(200);
+                   Thread.sleep(500);
                } catch (InterruptedException e) {
                    e.printStackTrace();
                }
@@ -198,39 +198,96 @@ public class CPU implements Runnable{
                 case 3:{
                     PSW = 0;
                     main.lockTime.lock();
+                    System.out.println("设备中断");
                     /**
                      * 判断哪个设备已使用完
                      */
                     String a1 = null;
-                    if(main.DeviceTime[0] ==0){
+                    String a2 = null;
+                    String b1 = null;
+                    String b2 = null;
+                    String b3 = null;
+                    String c1 = null;
+                    String c2 = null;
+                    String c3 = null;
+                    if(main.DeviceTime[0] == 0){
                         a1 = processScheduling.getDevice().getDeviceTable().getA1();
+                        for (int i = 0; i < processScheduling.getBlockPCB().size(); i++) {
+                            if(processScheduling.getBlockPCB().get(i).getUuid() == a1){
+                                PCB remove = processScheduling.getBlockPCB().remove(i);
+                                processScheduling.awake(remove);
+                                break;
+                            }
+                        }
                     }
-                    else if(main.DeviceTime[1] ==0){
-                        a1 = processScheduling.getDevice().getDeviceTable().getA2();
+                    if(main.DeviceTime[1] == 0){
+                        a2 = processScheduling.getDevice().getDeviceTable().getA2();
+                        for (int i = 0; i < processScheduling.getBlockPCB().size(); i++) {
+                            if(processScheduling.getBlockPCB().get(i).getUuid() == a2){
+                                PCB remove = processScheduling.getBlockPCB().remove(i);
+                                processScheduling.awake(remove);
+                                break;
+                            }
+                        }
                     }
-                    else if(main.DeviceTime[2] ==0){
-                        a1 = processScheduling.getDevice().getDeviceTable().getB1();
+                    if(main.DeviceTime[2] == 0){
+                        b1 = processScheduling.getDevice().getDeviceTable().getB1();
+                        for (int i = 0; i < processScheduling.getBlockPCB().size(); i++) {
+                            if(processScheduling.getBlockPCB().get(i).getUuid() == b1){
+                                PCB remove = processScheduling.getBlockPCB().remove(i);
+                                processScheduling.awake(remove);
+                                break;
+                            }
+                        }
                     }
-                    else if(main.DeviceTime[3] ==0){
-                        a1 = processScheduling.getDevice().getDeviceTable().getB2();
+                    if(main.DeviceTime[3] == 0){
+                        b2 = processScheduling.getDevice().getDeviceTable().getB2();
+                        for (int i = 0; i < processScheduling.getBlockPCB().size(); i++) {
+                            if(processScheduling.getBlockPCB().get(i).getUuid() == b2){
+                                PCB remove = processScheduling.getBlockPCB().remove(i);
+                                processScheduling.awake(remove);
+                                break;
+                            }
+                        }
                     }
-                    else if(main.DeviceTime[4] ==0){
-                        a1 = processScheduling.getDevice().getDeviceTable().getB3();
+                    if(main.DeviceTime[4] == 0){
+                        b3 = processScheduling.getDevice().getDeviceTable().getB3();
+                        for (int i = 0; i < processScheduling.getBlockPCB().size(); i++) {
+                            if(processScheduling.getBlockPCB().get(i).getUuid() == b3){
+                                PCB remove = processScheduling.getBlockPCB().remove(i);
+                                processScheduling.awake(remove);
+                                break;
+                            }
+                        }
                     }
-                    else if(main.DeviceTime[5] ==0){
-                        a1 = processScheduling.getDevice().getDeviceTable().getC1();
+                    if(main.DeviceTime[5] == 0){
+                        c1 = processScheduling.getDevice().getDeviceTable().getC1();
+                        for (int i = 0; i < processScheduling.getBlockPCB().size(); i++) {
+                            if(processScheduling.getBlockPCB().get(i).getUuid() == c1){
+                                PCB remove = processScheduling.getBlockPCB().remove(i);
+                                processScheduling.awake(remove);
+                                break;
+                            }
+                        }
                     }
-                    else if(main.DeviceTime[6] ==0){
-                        a1 = processScheduling.getDevice().getDeviceTable().getC2();
+                    if(main.DeviceTime[6] == 0){
+                        c2 = processScheduling.getDevice().getDeviceTable().getC2();
+                        for (int i = 0; i < processScheduling.getBlockPCB().size(); i++) {
+                            if(processScheduling.getBlockPCB().get(i).getUuid() == c2){
+                                PCB remove = processScheduling.getBlockPCB().remove(i);
+                                processScheduling.awake(remove);
+                                break;
+                            }
+                        }
                     }
-                    else if(main.DeviceTime[7] ==0){
-                        a1 = processScheduling.getDevice().getDeviceTable().getC3();
-                    }
-                    for (int i = 0; i < processScheduling.getBlockPCB().size(); i++) {
-                        if(processScheduling.getBlockPCB().get(i).getUuid() == a1){
-                            PCB remove = processScheduling.getBlockPCB().remove(i);
-                            processScheduling.awake(remove);
-                            break;
+                    if(main.DeviceTime[7] == 0){
+                        c3 = processScheduling.getDevice().getDeviceTable().getC3();
+                        for (int i = 0; i < processScheduling.getBlockPCB().size(); i++) {
+                            if(processScheduling.getBlockPCB().get(i).getUuid() == c3){
+                                PCB remove = processScheduling.getBlockPCB().remove(i);
+                                processScheduling.awake(remove);
+                                break;
+                            }
                         }
                     }
                     main.lockTime.unlock();

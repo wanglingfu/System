@@ -1,16 +1,23 @@
 package Main;
 
 import frame.deviceManagement.Device;
+import frame.processManagement.PCB;
 import frame.processManagement.ProcessScheduling;
 import frame.processManagement.Runnable.CPU;
 import frame.processManagement.Runnable.CreatProcess;
 import frame.processManagement.Runnable.TimeSchedul;
+import frame.processManagement.Util;
 import frame.storageManagement.Memory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.*;
+import java.util.Iterator;
+import java.util.Queue;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class main extends JFrame {
@@ -189,7 +196,15 @@ public class main extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount()==2){
-                        new ProcessFrame();
+                   //  ProcessFrame processFrame = new ProcessFrame();
+                    try {
+                        ProcessFrame.test();
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+
+
+                    //}
                 }
             }
 

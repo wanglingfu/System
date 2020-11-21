@@ -18,7 +18,20 @@ public class Disk {
         writeDisk();*/
         readDisk();
     };
-
+    /**
+     * @author: Vizzk
+     * @description: 将number转换为2字节的整数,第0位是个位
+     * @param number
+     * @return byte[]
+     */
+    public static byte[] lengthToBytes(int number){
+        byte[] bytes = new byte[2];
+        int temp = number & 0x000000ff;
+        bytes[0] = (byte)temp;
+        temp = number >> 8;
+        bytes[1] = (byte)temp;
+        return bytes;
+    }
     /**
      * @author: Vizzk
      * @description: 读取的符号字节 转换为 无符号
@@ -94,6 +107,7 @@ public class Disk {
         String[] directory;
         byte[][] bytePath;
         directory = temp.split("/");
+        ///directory = path.split("/");
         if(directory[0].equals("")){
             directory = Arrays.copyOfRange(directory,1,directory.length);
         }
