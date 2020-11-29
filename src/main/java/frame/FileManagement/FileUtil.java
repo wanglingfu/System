@@ -3,7 +3,10 @@ package frame.FileManagement;
 import frame.processManagement.Util;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author ：Vizzk
@@ -91,6 +94,26 @@ public class FileUtil {
         }
         blockIndex = Disk.byteToUnsigned(diskBuffer[dirBlock][itemIndex*8+5]);
         return blockIndex;
+    }
+    /**
+     * @author: Vizzk
+     * @description: 返回文件所指向盘块
+     * @param path
+     * @return int
+     */
+    public int getFile(String path){
+        byte property = TXT_PROPERTY;
+        if(path.contains(".e")){
+            property = EXE_PROPERTY;
+        }
+        byte[][] bytePath = disk.formatPath(path);
+        byte[][] fatherPath = Arrays.copyOf(bytePath,bytePath.length-1);
+        int parentDirBlock = this.findDirectory(fatherPath);
+        if(parentDirBlock>4){
+            parentDirBlock = this.getContained(bytePath[bytePath.length-1], property, parentDirBlock);
+        }
+        int dirBlock = findFile(bytePath[bytePath.length-1], property, parentDirBlock);
+        return dirBlock;
     }
     /**
      * @author: Vizzk
@@ -221,6 +244,30 @@ public class FileUtil {
     }
     /**
      * @author: Vizzk
+     * @description: 返回文件长度
+     * @param path 文件路径
+     * @return int
+     */
+    public int getFileLength(String path){
+        byte property = TXT_PROPERTY;
+        if(path.contains(".e")){
+            property = EXE_PROPERTY;
+        }
+        byte[][] bytePath = disk.formatPath(path);
+        byte[][] fatherPath = Arrays.copyOf(bytePath,bytePath.length-1);
+        byte[] name = bytePath[bytePath.length-1];
+        int fatherDirBlock = this.findDirectory(fatherPath);
+        if(fatherDirBlock>4){
+            fatherDirBlock = this.getContained(bytePath[bytePath.length-1], property, fatherDirBlock);
+        }
+        int itemIndex = getItem(name, property, fatherDirBlock);
+        int low = Disk.byteToUnsigned(diskBuffer[fatherDirBlock][itemIndex*8+6]);
+        int high = Disk.byteToUnsigned(diskBuffer[fatherDirBlock][itemIndex*8+7])<<8;
+        return low + high;
+
+    }
+    /**
+     * @author: Vizzk
      * @description: 将内容写入到以headblock为开头盘块的磁盘中
      * @param content
      * @param headBlock
@@ -249,7 +296,7 @@ public class FileUtil {
     public byte[] createByteContent(String content, boolean isExecutable){
         byte[] bytes;
         if(isExecutable){
-            bytes = Util.getFile(content);
+            bytes = Util.getByteFile(content);
         }
         else{
             bytes = disk.stringToBytes(content);
@@ -297,13 +344,10 @@ public class FileUtil {
     public void createFile(String path, String content) throws Exception{
         byte[][] bytePath = disk.formatPath(path);
         byte[] byteContent;
-        byte property;
+        byte property = TXT_PROPERTY;
         String message;
         if(path.contains(".e")){
-            property = (byte)5;
-        }
-        else{
-            property = (byte)1;
+            property = EXE_PROPERTY;
         }
         int dirBlock = this.findDirectory(Arrays.copyOf(bytePath,bytePath.length-1));
         if(dirBlock == -1){
@@ -400,7 +444,7 @@ public class FileUtil {
         byte[][] fatherPath = Arrays.copyOf(bytePath,bytePath.length-1);
         int parentDirBlock = this.findDirectory(fatherPath);
         if(parentDirBlock>4){
-            parentDirBlock = this.getContained(bytePath[bytePath.length-1], (byte)3, parentDirBlock);
+            parentDirBlock = this.getContained(bytePath[bytePath.length-1], DIR_PROPERTY, parentDirBlock);
         }
         int dirBlock = this.findDirectory(bytePath);
         if(dirBlock == -1){
@@ -420,5 +464,117 @@ public class FileUtil {
         }
         disk.writeDisk();
         System.out.println("delete success");
+    }
+    /**
+     * @author: Vizzk
+     * @description: 获取文件内容并返回字符串
+     * @param path
+     * @return java.lang.String
+     */
+    public String getFileContent(String path){
+        String contentString = null;
+        byte property = TXT_PROPERTY;
+        if(path.contains(".e")){
+            property = EXE_PROPERTY;
+        }
+        int blockIndex = getFile(path);
+        int length = getFileLength(path);
+        byte[] content = new byte[length];
+        int blockNum = length / 64;
+        int itemNum = length % 64;
+        int i;
+        for(i=0; i < blockNum; i++){
+            System.arraycopy(diskBuffer[blockIndex],0,content,64*i,64);
+            blockIndex = fileAllocationTable.getNextBlock(blockIndex);
+        }
+        if(itemNum > 0){
+            System.arraycopy(diskBuffer[blockIndex],0,content,64*i,itemNum);
+        }
+        if(property == EXE_PROPERTY){
+            contentString = Util.getStringFile(content);
+        }
+        else{
+            contentString = disk.bytesToString(content);
+        }
+        return contentString;
+    }
+
+    /**
+     * @author: Vizzk
+     * @description: 复制文件
+     * @param srcPath 原文件路径
+     * @param destPath  目标路径
+     * @return void
+     */
+    public void copyFile(String srcPath, String destPath) throws Exception{
+        String content = getFileContent(srcPath);
+        createFile(destPath,content);
+    }
+    /**
+     * @author: Vizzk
+     * @description: 返回文件的名字和后缀，若目录则无后缀，t为文本文件，e为可执行文件
+     * @param file
+     * @return java.lang.String
+     */
+    public String getFileName(byte[] file){
+        String name;
+        String suffix = "";
+        byte[] bytename = Arrays.copyOf(file,3);
+        name = disk.bytesToString(bytename);
+        if(file[4] == EXE_PROPERTY){
+            suffix = ".e";
+        }
+        if(file[4] == TXT_PROPERTY){
+            suffix = ".t";
+        }
+        name = name + suffix;
+        return name;
+    }
+    /**
+     * @author: Vizzk
+     * @description: 返回path路径下的所有目录和文件，root为根目录
+     * @param path
+     * @return java.util.ArrayList<java.lang.String>
+     */
+    public ArrayList<String> getDirectorys(String path){
+
+        ArrayList<String> directorys = new ArrayList<String>();
+        byte[] item = new byte[8];
+        String name;
+        int blockIndex;
+        if(path.equals("root")){
+            blockIndex = ROOT_DIR;
+        }
+        else{
+            byte[][] bytePath = disk.formatPath(path);
+            blockIndex = this.findDirectory(bytePath);
+        }
+        do{
+            for(int i=0; i<8; i++){
+                System.arraycopy(diskBuffer[blockIndex],i*8,item,0,8);
+                if(!Arrays.equals(emptyItem,item)){
+                    name = getFileName(item);
+                    directorys.add(name);
+                }
+            }
+            blockIndex = fileAllocationTable.getNextBlock(blockIndex);
+        }
+        while(blockIndex != 1);
+        return directorys;
+    }
+
+    public void deleteAll(String path) throws Exception{
+        System.out.println(path);
+        ArrayList<String> list = getDirectorys(path);
+        for(int i=0; i< list.size(); i++){
+            if(list.get(i).contains(".e") || list.get(i).contains(".t")){
+                deleteFile(path+"/"+list.get(i));
+            }
+            else{
+                deleteAll(path+"/"+list.get(i));
+            }
+        }
+        removeDirectory(path);
+        System.out.println("成功");
     }
 }

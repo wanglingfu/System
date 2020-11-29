@@ -6,7 +6,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 import java.lang.System;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * @author ：Vizzk
@@ -17,16 +19,26 @@ public class TestFile {
     @Test
     public void testFormate() throws Exception{
         Disk disk = new Disk();
-        String S = "/abc";
-        byte[][] bytes = disk.formatPath(S);
-        for(byte[] b:bytes) {
-            System.out.println(Arrays.toString(b));
-        }
+
+    }
+    @Test
+    public void printFile() throws Exception{
+        FileUtil fileUtil = new FileUtil();
+        String path = "/abc/abc";
+        String content = fileUtil.getFileContent(path);
+        System.out.println(content);
+    }
+    @Test
+    public void copyFile() throws Exception {
+        FileUtil fileUtil = new FileUtil();
+        String srcPath = "/abc/def";
+        String destPath = "/abc/abc";
+        fileUtil.copyFile(srcPath,destPath);
     }
     @Test
     public void createfile() throws Exception{
         FileUtil fileUtil = new FileUtil();
-        String path = "/def/def";
+        String path = "/abc/def";
         String content = "abcdefghijklnsssm";
         fileUtil.createFile(path, content);
     }
@@ -40,7 +52,7 @@ public class TestFile {
         System.out.println(s1);
         FileUtil fileUtil = new FileUtil();
 
-        String path = "/def/abc.e";
+        String path = "/abc/abc/abc.e";
         String content = s1;
         fileUtil.createFile(path, s1);
     }
@@ -56,13 +68,29 @@ public class TestFile {
         disk.printDisk();
     }
     @Test
+    public void printDir() throws Exception{
+        FileUtil fileUtil = new FileUtil();
+        ArrayList<String> list = fileUtil.getDirectorys("root");
+        Iterator iter = list.iterator();
+        while(iter.hasNext()){
+            System.out.println(iter.next());
+        }
+    }
+    @Test
     public void reWrite() throws Exception{
         Disk disk = new Disk();
     }
     @Test
     public void makeDir() throws Exception{
         FileUtil fileUtil = new FileUtil();
-        fileUtil.makeDirectory("/def/abc");
+        fileUtil.makeDirectory("/abc/abc/bc");
+
+    }
+    @Test
+    public void deleteAll() throws Exception{
+        FileUtil fileUtil = new FileUtil();
+        String path = "/abc";
+        fileUtil.deleteAll(path);
 
     }
     @Test
