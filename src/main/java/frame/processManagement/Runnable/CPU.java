@@ -72,8 +72,9 @@ public class CPU{
     /**
      *进程锁
      */
-    public ReentrantLock lock = new ReentrantLock();
-    public Condition condition1 = lock.newCondition();
+    public static ReentrantLock lock = new ReentrantLock();
+    public static Condition condition1 = lock.newCondition();
+    public static Condition condition2 = lock.newCondition();
     public CPU(int flag, ProcessScheduling processScheduling, String uuid) {
         this.flag = flag;
         this.processScheduling = processScheduling;
@@ -332,7 +333,7 @@ public class CPU{
                        processScheduling.getRunPCB().setReason("A");
                        int a = processScheduling.block("A");
                        if (a < 9) {
-                           DeviceTime[a] = time[code];
+                           DeviceTime[a-1] = time[code];
                        }
                        IR = "!A" + time[code];
                    }
@@ -340,7 +341,7 @@ public class CPU{
                        processScheduling.getRunPCB().setReason("B");
                        int b = processScheduling.block("B");
                        if (b < 9) {
-                           device[b] = time[code];
+                           DeviceTime[b] = time[code];
                        }
                        IR = "!B" + time[code];
                    }
@@ -348,7 +349,7 @@ public class CPU{
                        processScheduling.getRunPCB().setReason("C");
                        int c = processScheduling.block("C");
                        if (c < 9) {
-                           device[c] = time[code];
+                           DeviceTime[c] = time[code];
                        }
                        IR = "!C" + time[code];
                    }
@@ -356,6 +357,7 @@ public class CPU{
                    recovery(processScheduling.getRunPCB());
                }
            }
+           condition2.signal();
            lock.unlock();
        }
     }

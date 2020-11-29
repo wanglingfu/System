@@ -5,7 +5,6 @@ import frame.processManagement.PCB;
 import frame.processManagement.ProcessScheduling;
 import frame.processManagement.Runnable.CPU;
 import frame.processManagement.Runnable.CreatProcess;
-import frame.processManagement.Runnable.TimeSchedul;
 import frame.processManagement.Util;
 import frame.storageManagement.Hole;
 import frame.storageManagement.Memory;
@@ -19,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.*;
+
 /**
  * @ClassName ProcessFrame
  * @Description 操作系统界面
@@ -286,42 +287,55 @@ public class ProcessFrame extends JFrame {
         char[] s = new char[10000];
         reader.read(s);
         String s1 = String.valueOf(s);
-        String[] split = s1.split("\r\n");
-        byte[][] files = new byte[split.length][100];
-        for (int i = 0; i < split.length; i++) {
-            String[] s2 = split[i].split(" ");
-            for (int j = 0; j < s2.length; j++) {
-                if(j == s2.length-1)
-                    files[i][j] = Util.compile("end");
-                else
-                    files[i][j] = Util.compile(s2[j]);
-            }
-        }
+        byte[] byteFile = Util.getByteFile(s1);
+        byte[] byteFile1 = Util.getByteFile(s1);
+        byte[] byteFile2 = Util.getByteFile(s1);
+        byte[] byteFile3 = Util.getByteFile(s1);
+        byte[] byteFile4 = Util.getByteFile(s1);
+        byte[] byteFile5 = Util.getByteFile(s1);
+        byte[][] files = {byteFile,byteFile1,byteFile2,byteFile3,byteFile4,byteFile5};
         final Memory memory = new Memory(512);
         final Device device = new Device();
         final ProcessScheduling processScheduling = new ProcessScheduling(memory,device);
         final CPU cpu = new CPU(files.length, processScheduling,processScheduling.getIdlePCB().getUuid());
         CreatProcess creatProcess = new CreatProcess(files,processScheduling);
-        TimeSchedul timeSchedul = new TimeSchedul(cpu,processScheduling);
-        Thread thread = new Thread(creatProcess);
-        Thread thread1 = new Thread(timeSchedul);
-        Thread thread2 = new Thread(cpu);
-        thread.start();
-        thread1.start();
-        thread2.start();
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
+                2,
+                5,
+                3,
+                TimeUnit.SECONDS,
+                new LinkedBlockingDeque<>(3),
+                Executors.defaultThreadFactory(),
+                new ThreadPoolExecutor.AbortPolicy());
+        threadPoolExecutor.execute(()->{
+            try {
+                cpu.cpu();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        threadPoolExecutor.execute(()->{
+            creatProcess.run();
+        });
+        ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(1);
+        scheduledExecutorService.scheduleAtFixedRate(()->{
+            cpu.time();
+        },1,1,TimeUnit.SECONDS);
         int timerDelay = 10;
         new Timer(timerDelay, new ActionListener(){
             public void actionPerformed(ActionEvent e) {
+                CPU.lock.lock();
                 try {
-                    Thread.sleep(100);
+                    CPU.condition2.await();
                 } catch (InterruptedException interruptedException) {
                     interruptedException.printStackTrace();
                 }
-                processFrame.printScreen(String.valueOf(main.SystemTime), String.valueOf(main.TimeSlice), String.valueOf(cpu.getAX()), cpu.getIR(), String.valueOf(cpu.getFinalAX()), device.getDeviceTable().toString(), processScheduling.getRunPCB().getUuid());
+                processFrame.printScreen(String.valueOf(cpu.SystemTime), String.valueOf(cpu.TimeSlice), String.valueOf(cpu.getAX()), cpu.getIR(), String.valueOf(cpu.getFinalAX()), device.getDeviceTable().toString(), processScheduling.getRunPCB().getUuid());
                 processFrame.printScreen2(processScheduling);
                 processFrame.printScreen4(memory.getHoles());
-                processFrame.printScreen3(device.getDeviceTable().getA1(),main.DeviceTime[0],device.getDeviceTable().getA2(),main.DeviceTime[1],device.getDeviceTable().getB1(),main.DeviceTime[2],device.getDeviceTable().getB2(),main.DeviceTime[3],device.getDeviceTable().getB3(),main.DeviceTime[4],device.getDeviceTable().getC1(),
-                        main.DeviceTime[5],device.getDeviceTable().getC2(),main.DeviceTime[6],device.getDeviceTable().getC3(),main.DeviceTime[7]);
+                processFrame.printScreen3(device.getDeviceTable().getA1(),cpu.DeviceTime[0],device.getDeviceTable().getA2(),cpu.DeviceTime[1],device.getDeviceTable().getB1(),cpu.DeviceTime[2],device.getDeviceTable().getB2(),cpu.DeviceTime[3],device.getDeviceTable().getB3(),cpu.DeviceTime[4],device.getDeviceTable().getC1(),
+                        cpu.DeviceTime[5],device.getDeviceTable().getC2(),cpu.DeviceTime[6],device.getDeviceTable().getC3(),cpu.DeviceTime[7]);
+                CPU.lock.unlock();
             }
         }).start();
     }

@@ -86,7 +86,7 @@ public class PCB {
     }
 
     public PCB(byte[] file){
-        uuid = UUID.randomUUID().toString().substring(0,5);
+        uuid = UUID.randomUUID().toString();
         reason = null;
         time = 0;
         this.file =file;
