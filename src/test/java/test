@@ -1,5 +1,2 @@
-x=55
-x--
-x++
-end
-!A5
+x=55 !A9 x++ x++ x++ x++ x++ x-- !B8 x++ x++ x-- x=12 !C3 x++ x-- !A3 x++ end
+x=55 !A9 x++ !C5 x++ x++ x-- x=12 !B5 x++ x-- !A6 x++ end
