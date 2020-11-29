@@ -1,6 +1,7 @@
 package frame.processManagement;
 
 import Main.main;
+import com.sun.xml.internal.fastinfoset.tools.XML_SAX_StAX_FI;
 import frame.deviceManagement.Device;
 import frame.storageManagement.Memory;
 
@@ -55,6 +56,11 @@ public class ProcessScheduling {
      * 阻塞原因 C
      */
     private final String BLOCK_C = "C";
+
+    /**
+     * 允许最大进程数
+     */
+    private final int MAX_NUM = 10;
 
     public ProcessScheduling(Memory memory, Device device) {
         this.memory = memory;
@@ -122,9 +128,8 @@ public class ProcessScheduling {
     /**
      * 创建进程
      */
-    public boolean create(byte[] file){
-        main.lockCreate.lock();
-        if(ProcessNum < 10){
+    public synchronized boolean create(byte[] file){
+        if(ProcessNum < MAX_NUM){
             PCB pcb = new PCB(file);
             int size = 0;
             for (Byte aByte : file) {
@@ -143,17 +148,15 @@ public class ProcessScheduling {
                     readyPCB.add(pcb);
                 }
             }
-            main.lockCreate.unlock();
             return b;
         }
-        main.lockCreate.unlock();
         return false;
     }
 
     /**
      * 销毁进程
      */
-    public void destroy(){
+    public synchronized void destroy(){
         memory.releaseMemory(runPCB.getUuid());
         util(0);
         ProcessNum--;
@@ -162,7 +165,7 @@ public class ProcessScheduling {
     /**
      * 阻塞进程
      */
-    public void block(String reason){
+    public synchronized int block(String reason){
         int deviceTime = 9;
         if(reason == BLOCK_A){
             deviceTime = device.getDeviceA(runPCB.getUuid(),runPCB.getTime(),runPCB.getFile().length);
@@ -171,16 +174,14 @@ public class ProcessScheduling {
         }else if(reason == BLOCK_C){
             deviceTime = device.getDeviceC(runPCB.getUuid(),runPCB.getTime(),runPCB.getFile().length);
         }
-        if(deviceTime <9){
-            main.DeviceTime[deviceTime-1] = runPCB.getTime();
-        }
         util(1);
+        return deviceTime;
     }
 
     /**
      * 唤醒进程
      */
-    public void awake(PCB pcb){
+    public synchronized int[] awake(PCB pcb){
         String reason = pcb.getReason();
         int[] ints = new int[0];
         if(reason == BLOCK_A){
@@ -190,8 +191,7 @@ public class ProcessScheduling {
         }else if(reason == BLOCK_C){
             ints = device.removeDeviceC(pcb.getUuid());
         }
-        if(ints != null)
-        main.DeviceTime[ints[0]-1] = ints[1];
+;
         /**
          * 是否为闲置进程
          */
@@ -200,12 +200,13 @@ public class ProcessScheduling {
         }else{
             runPCB = pcb;
         }
+        return ints;
     }
 
     /**
      * 工具类 替换现有进程
      */
-    public void util(int select){
+    public synchronized void util(int select){
         /**
          * 阻塞
          */
@@ -224,7 +225,6 @@ public class ProcessScheduling {
         else{
             runPCB = idlePCB;
         }
-        main.TimeSlice = 6;
     }
 
 }

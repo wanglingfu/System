@@ -6,6 +6,11 @@ package frame.processManagement;
  * @create: 2020-11-06 15:53
  **/
 public class Util {
+    /**
+     * String文件转为byte文件
+     * @param file
+     * @return
+     */
     public static byte[] getByteFile(String file){
         String[] split = file.split("d");
         split[0] = split[0] + 'd';
@@ -16,6 +21,12 @@ public class Util {
         }
         return bytes;
     }
+
+    /**
+     * byte文件转为String文件
+     * @param file
+     * @return
+     */
     public static String getStringFile(byte[] file){
         StringBuilder stringBuilder = new StringBuilder();
         for (Byte aByte : file) {
@@ -25,6 +36,12 @@ public class Util {
         }
         return stringBuilder.toString();
     }
+
+    /**
+     * byte命令转为String命令
+     * @param IR
+     * @return
+     */
     public static String byteToString(byte IR){
         if (IR == 0){
             return "x++";
@@ -55,6 +72,11 @@ public class Util {
         }
     }
 
+    /**
+     * byte命令转为String命令
+     * @param IR
+     * @return
+     */
     public static byte compile(String IR){
         char[] chars = IR.toCharArray();
         /**
