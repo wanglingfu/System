@@ -19,7 +19,7 @@ public class TestFile {
     @Test
     public void testFormate() throws Exception{
         Disk disk = new Disk();
-
+        disk.formatPath("/abc/cde");
     }
     @Test
     public void printFile() throws Exception{
@@ -52,7 +52,7 @@ public class TestFile {
         System.out.println(s1);
         FileUtil fileUtil = new FileUtil();
 
-        String path = "/abc/abc/abc.e";
+        String path = "/abc/bcd/abc.e";
         String content = s1;
         fileUtil.createFile(path, s1);
     }
@@ -83,7 +83,7 @@ public class TestFile {
     @Test
     public void makeDir() throws Exception{
         FileUtil fileUtil = new FileUtil();
-        fileUtil.makeDirectory("/abc/abc/bc");
+        fileUtil.makeDirectory("/abc/bcd");
 
     }
     @Test
@@ -120,5 +120,13 @@ public class TestFile {
         byte[][] bytes = disk.formatPath(S);
         int dir = fileUtil.getBlock(bytes[0], (byte)3, 4);
         System.out.println(dir);
+    }
+    @Test
+    public void getExe() throws Exception{
+        FileUtil fileUtil = new FileUtil();
+        ArrayList<String> list = fileUtil.getExeFiles();
+        for(String s:list){
+            System.out.println(s);
+        }
     }
 }

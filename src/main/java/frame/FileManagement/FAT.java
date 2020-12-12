@@ -146,4 +146,7 @@ public class FAT {
         }
         return ;
     }
+    public boolean getFAT(){
+        return true;
+    }
 }
