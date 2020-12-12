@@ -341,7 +341,7 @@ public class CPU{
                        processScheduling.getRunPCB().setReason("B");
                        int b = processScheduling.block("B");
                        if (b < 9) {
-                           DeviceTime[b] = time[code];
+                           DeviceTime[b-1] = time[code];
                        }
                        IR = "!B" + time[code];
                    }
@@ -349,7 +349,7 @@ public class CPU{
                        processScheduling.getRunPCB().setReason("C");
                        int c = processScheduling.block("C");
                        if (c < 9) {
-                           DeviceTime[c] = time[code];
+                           DeviceTime[c-1] = time[code];
                        }
                        IR = "!C" + time[code];
                    }
