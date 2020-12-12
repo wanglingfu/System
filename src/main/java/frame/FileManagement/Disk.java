@@ -70,7 +70,8 @@ public class Disk {
         ois.close();
     };
 
-    public byte[][] getDisk() {
+    public byte[][] getDisk() throws Exception {
+        //readDisk();
         return disk;
     }
 

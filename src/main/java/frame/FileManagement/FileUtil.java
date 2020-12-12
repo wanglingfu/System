@@ -425,9 +425,16 @@ public class FileUtil {
         }
 
         if(!isDirFull(dirBlock) && getContained(bytePath[bytePath.length-1], (byte)3, dirBlock) == -1){
-            assignDirectorySpace(bytePath[bytePath.length-1], (byte)3, (byte)0, dirBlock);
+            assignDirectorySpace(bytePath[bytePath.length-1], DIR_PROPERTY, (byte)0, dirBlock);
         }
         disk.writeDisk();
+        diskBuffer = disk.getDisk();
+       /* for(byte[] l:diskBuffer){
+            for(byte b:l){
+                System.out.print(b+" ");
+            }
+            System.out.println();
+        }*/
         System.out.println("创建成功");
         return;
 
@@ -553,7 +560,12 @@ public class FileUtil {
             for(int i=0; i<8; i++){
                 System.arraycopy(diskBuffer[blockIndex],i*8,item,0,8);
                 if(!Arrays.equals(emptyItem,item)){
-                    name = getFileName(item);
+                    if(path != "root"){
+                        name = path+ "/" + getFileName(item);
+                    }
+                    else{
+                        name = "/" + getFileName(item);
+                    }
                     directorys.add(name);
                 }
             }
@@ -562,8 +574,13 @@ public class FileUtil {
         while(blockIndex != 1);
         return directorys;
     }
-
-    public void deleteAll(String path) throws Exception{
+    /**
+     * @author:
+     * @description: 删除路径
+     * @param path 文件路径
+     * @return boolean
+     */
+    public boolean deleteAll(String path) throws Exception{
         System.out.println(path);
         ArrayList<String> list = getDirectorys(path);
         for(int i=0; i< list.size(); i++){
@@ -575,6 +592,40 @@ public class FileUtil {
             }
         }
         removeDirectory(path);
-        System.out.println("成功");
+        return true;
+    }
+
+    public void getAllFile(String path, ArrayList<String> files){
+        ArrayList<String> list = getDirectorys(path);
+        String filename;
+        for(int i=0; i< list.size(); i++){
+            if(list.get(i).contains(".e") || list.get(i).contains(".t")){
+                if(list.get(i).contains(".e")){
+                    if(path.equals("root")){
+                        filename = "/" +list.get(i);
+                    }
+                    else{
+                        filename = path +  "/" +list.get(i);
+                    }
+                    files.add(filename);
+                }
+            }
+            else{
+                if(path.equals("root")){
+                    getAllFile("/"+list.get(i),files);
+
+                }
+                else{
+                    getAllFile(path+"/"+list.get(i),files);
+                }
+            }
+        }
+    }
+
+    public ArrayList<String> getExeFiles() throws Exception{
+        diskBuffer = disk.getDisk();
+        ArrayList<String> files = new ArrayList<String>();
+        getAllFile("root",files);
+        return files;
     }
 }
