@@ -112,6 +112,8 @@ public class main extends JFrame {
                         ProcessFrame.test();
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
                     }
 
 

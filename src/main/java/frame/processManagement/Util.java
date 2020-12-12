@@ -6,6 +6,7 @@ package frame.processManagement;
  * @create: 2020-11-06 15:53
  **/
 public class Util {
+
     /**
      * String文件转为byte文件
      * @param file

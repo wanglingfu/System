@@ -1,7 +1,10 @@
 package frame.processManagement.Runnable;
 
+import frame.FileManagement.FileUtil;
 import frame.processManagement.ProcessScheduling;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -13,7 +16,7 @@ public class CreatProcess{
     /**
      * 全部文件
      */
-    private byte[][] file;
+    private ArrayList<String> file;
     /**
      * 是否执行完所有文件
      */
@@ -22,18 +25,23 @@ public class CreatProcess{
      * 进程调度
      */
     private ProcessScheduling processScheduling;
+    /**
+     * 文件工具
+     */
+    private FileUtil fileUtil;
 
-    public CreatProcess(byte[][] file,ProcessScheduling processScheduling) {
+    public CreatProcess(ArrayList<String> file,ProcessScheduling processScheduling,FileUtil fileUtil) {
         this.file = file;
-        flag = file.length;
+        flag = file.size();
         this.processScheduling = processScheduling;
+        this.fileUtil = fileUtil;
     }
 
-    public byte[] getFile(int i) {
-        return file[i];
+    public ArrayList<String> getFile() {
+        return file;
     }
 
-    public void setFile(byte[][] file) {
+    public void setFile(ArrayList<String> file) {
         this.file = file;
     }
 
@@ -56,13 +64,15 @@ public class CreatProcess{
                 }
             }
             Random random = new Random();
-            int i = random.nextInt(file.length);
-            while(file[i] == null){
-                i = random.nextInt(file.length);
+            int i = random.nextInt(file.size()) + 1;
+            while(file.get(i) == null){
+                i = random.nextInt(file.size()) + 1;
             }
-            boolean b = processScheduling.create(file[i]);
+            String fileContent = fileUtil.getFileContent(file.get(i));
+            byte[] byteContent = fileUtil.createByteContent(fileContent, true);
+            boolean b = processScheduling.create(byteContent);
             if(b){
-                file[i] = null;
+                file.remove(i);
                 flag--;
             }
             try {

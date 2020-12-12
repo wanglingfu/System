@@ -1,5 +1,6 @@
 package Main;
 
+import frame.FileManagement.FileUtil;
 import frame.deviceManagement.Device;
 import frame.processManagement.PCB;
 import frame.processManagement.ProcessScheduling;
@@ -269,7 +270,7 @@ public class ProcessFrame extends JFrame {
             ss += hole.getSize();
         }
     }
-    public static void test() throws IOException {
+    public static void test() throws Exception {
         final ProcessFrame processFrame = new ProcessFrame();
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -282,23 +283,13 @@ public class ProcessFrame extends JFrame {
             System.out.println(e);
         }
 
-        File test = new File("src\\test\\java\\test");
-        Reader reader = new FileReader(test);
-        char[] s = new char[10000];
-        reader.read(s);
-        String s1 = String.valueOf(s);
-        byte[] byteFile = Util.getByteFile(s1);
-        byte[] byteFile1 = Util.getByteFile(s1);
-        byte[] byteFile2 = Util.getByteFile(s1);
-        byte[] byteFile3 = Util.getByteFile(s1);
-        byte[] byteFile4 = Util.getByteFile(s1);
-        byte[] byteFile5 = Util.getByteFile(s1);
-        byte[][] files = {byteFile,byteFile1,byteFile2,byteFile3,byteFile4,byteFile5};
         final Memory memory = new Memory(512);
         final Device device = new Device();
         final ProcessScheduling processScheduling = new ProcessScheduling(memory,device);
-        final CPU cpu = new CPU(files.length, processScheduling,processScheduling.getIdlePCB().getUuid());
-        CreatProcess creatProcess = new CreatProcess(files,processScheduling);
+        final FileUtil fileUtil = new FileUtil();
+        ArrayList<String> exeFiles = fileUtil.getExeFiles();
+        final CPU cpu = new CPU(exeFiles.size(), processScheduling,processScheduling.getIdlePCB().getUuid());
+        CreatProcess creatProcess = new CreatProcess(exeFiles,processScheduling,fileUtil);
         ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
                 2,
                 5,
