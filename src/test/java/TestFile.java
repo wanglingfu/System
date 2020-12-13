@@ -52,7 +52,7 @@ public class TestFile {
         System.out.println(s1);
         FileUtil fileUtil = new FileUtil();
 
-        String path = "/abc/bcd/abc.e";
+        String path = "/abc.e";
         String content = s1;
         fileUtil.createFile(path, s1);
     }
@@ -104,7 +104,7 @@ public class TestFile {
     public void findDir() throws Exception{
         FileUtil fileUtil = new FileUtil();
         Disk disk = new Disk();
-        String S = "/abc";
+        String S = "/abc/bcd";
         byte[][] bytes = disk.formatPath(S);
         byte[][] bytes1 = Arrays.copyOf(bytes,bytes.length-1);
         int dirblock = fileUtil.findDirectory(bytes);
@@ -116,7 +116,7 @@ public class TestFile {
     public void getBlock() throws Exception{
         FileUtil fileUtil = new FileUtil();
         Disk disk = new Disk();
-        String S = "/abg";
+        String S = "/abc";
         byte[][] bytes = disk.formatPath(S);
         int dir = fileUtil.getBlock(bytes[0], (byte)3, 4);
         System.out.println(dir);

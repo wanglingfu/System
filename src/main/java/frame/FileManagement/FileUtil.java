@@ -602,30 +602,38 @@ public class FileUtil {
             if(list.get(i).contains(".e") || list.get(i).contains(".t")){
                 if(list.get(i).contains(".e")){
                     if(path.equals("root")){
-                        filename = "/" +list.get(i);
+                        filename = list.get(i);
                     }
                     else{
-                        filename = path +  "/" +list.get(i);
+                        filename = list.get(i);
                     }
                     files.add(filename);
                 }
             }
             else{
                 if(path.equals("root")){
-                    getAllFile("/"+list.get(i),files);
-
+                    getAllFile(list.get(i),files);
                 }
                 else{
-                    getAllFile(path+"/"+list.get(i),files);
+                    getAllFile(list.get(i),files);
                 }
             }
         }
     }
-
+    /**
+     * @author:
+     * @description: 获取所有可执行文件路径
+     * @param
+     * @return java.util.ArrayList<java.lang.String>
+     */
     public ArrayList<String> getExeFiles() throws Exception{
         diskBuffer = disk.getDisk();
         ArrayList<String> files = new ArrayList<String>();
         getAllFile("root",files);
         return files;
+    }
+
+    public void getFileBlock(String path){
+        //getBlock()
     }
 }
