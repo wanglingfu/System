@@ -129,4 +129,21 @@ public class TestFile {
             System.out.println(s);
         }
     }
+    @Test
+    public void getblocks() throws Exception{
+        FileUtil fileUtil = new FileUtil();
+        String path = "/abc.e";
+        ArrayList<Integer> list = fileUtil.getFileBlock(path);
+        for(int s:list){
+            System.out.println(s);
+        }
+    }
+    @Test
+    public void getFat() throws Exception{
+        FileUtil fileUtil = new FileUtil();
+        int[] s = fileUtil.getFAT();
+        for(int i:s){
+            System.out.println(i);
+        }
+    }
 }
