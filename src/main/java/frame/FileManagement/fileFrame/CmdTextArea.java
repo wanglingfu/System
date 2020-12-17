@@ -37,6 +37,30 @@ public class CmdTextArea extends JTextArea implements KeyListener,    //命令�
                     this.append("(Exit successfully)\n");
                     this.append("Please Input \"cmd\" To Get Administrator Permissions >");
                 }
+                else if(input.startsWith("create")){
+                    String path=input.substring(input.indexOf('/')+1,input.length());
+                    //if(path.substring(last))
+                }
+                else if(input.startsWith("delete")){
+                    String path=input.substring(input.indexOf('/')+1,input.length());
+
+                }
+                else if(input.startsWith("open")){
+                    String path=input.substring(input.indexOf('/')+1,input.length());
+
+                }
+                else if(input.startsWith("copy")){
+                    String path=input.substring(input.indexOf('/')+1,input.length());
+
+                }
+                else if(input.startsWith("makedir")){
+                    String path=input.substring(input.indexOf('/')+1,input.length());
+
+                }
+                else if(input.startsWith("remove")){
+                    String path=input.substring(input.indexOf('/')+1,input.length());
+
+                }
                 else{
                     this.append("Invalid instructions\n");
                     this.append("C:\\Users\\James>");
@@ -97,5 +121,15 @@ public class CmdTextArea extends JTextArea implements KeyListener,    //命令�
 
     public void changePermission(){
         permission=!permission;
+    }
+
+    private boolean getPath(String path){  //获取类似“ /abc/aaa”字符串
+        //先删除前边空格，循环做一个算法判断是不是/abc/aaa的形式（不能同时多个//）
+        path.replaceAll(" ","");
+        for(int i=0;i<path.length();i++){
+           // if(Character.isLetter(path.charAt(i))||path.charAt(i)=='/')
+
+        }
+        return false;
     }
 }

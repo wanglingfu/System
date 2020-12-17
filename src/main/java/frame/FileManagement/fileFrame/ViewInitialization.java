@@ -81,6 +81,7 @@ public class ViewInitialization {
 
     private JComponent view() { //磁盘盘块视图
         buttons=new JButton[256];
+        for(int i=0;i<256;i++) buttons[i]=new JButton("NO." + (i),new ImageIcon("src/main/resources/未占用盘块mini.png"));
         updateImage();
         for(int i=0;i<256;i++)   view.add(buttons[i]);
         view = getBorderPane(view, 40, 15, 15, 15); //让盘块与边界有间隔，看起来舒服些
@@ -101,7 +102,6 @@ public class ViewInitialization {
     }
 
     private void updateImage() {   //更新按钮信息
-        buttons=new JButton[256];
         int buttonsAttribute[] = fileUtil.getFAT();
         //被占用磁盘块是1，被当前目录项占用是2，空闲为0
         if (selectionNode != null) {
@@ -111,16 +111,16 @@ public class ViewInitialization {
             }
         }
         for (int i = 0; i < 256; i++) {
+            System.out.println(i);
             if (buttonsAttribute[i] == 0) {
-                buttons[i] = new JButton("NO." + (i), new ImageIcon("src/main/resources/未占用盘块.png"));
+                buttons[i].setIcon(new ImageIcon("src/main/resources/未占用盘块.png"));
+                buttons[i].setText("NO." + (i));
             } else if (buttonsAttribute[i] == 1) {
-                buttons[i] = new JButton("NO." + (i), new ImageIcon("src/main/resources/被占用盘块.png"));
-                //buttons[i].setEnabled(false);
+                buttons[i].setIcon(new ImageIcon("src/main/resources/被占用盘块.png"));
+                buttons[i].setText("NO." + (i));
             } else {
-                System.out.print(i + " ");
-                buttons[i] = new JButton("NO." + (i), new ImageIcon("src/main/resources/被选中盘块.png"));
-                buttons[i].setEnabled(false);
-                //buttons[i].setDisabledIcon(new ImageIcon("src/main/resources/被选中盘块.png"));
+                buttons[i].setIcon(new ImageIcon("src/main/resources/被选中盘块.png"));
+                buttons[i].setText("NO." + (i));
             }
             buttons[i].setBackground(new Color(227, 223, 226));
         }
@@ -162,10 +162,8 @@ public class ViewInitialization {
             @Override
             public void mouseClicked(MouseEvent e) {
                 //左键单击目录项则选中，更新选中节点，单机其他地方选中节点为空
-                view.removeAll();
                 updateImage();
-                for(int i=0;i<256;i++) view.add(buttons[i]);
-                contentPane.updateUI();
+                view.updateUI();
                 //buttons[1]=new JButton("a",null);
                 //for(int i=0;i<256;i++) buttons[i].updateUI();
                 if (e.getButton() == MouseEvent.BUTTON1) {
@@ -254,10 +252,10 @@ public class ViewInitialization {
         filePopupMenu = new JPopupMenu();
         listPopupMenu.add(createMenuItem("新建目录", "新建目录"));
         listPopupMenu.add(createMenuItem("新建文件", "新建文件"));
-        listPopupMenu.add(createMenuItem("删除", "删除目录"));
+        listPopupMenu.add(createMenuItem("删除", "删除"));
         listPopupMenu.add(createMenuItem("属性", "目录属性"));
         filePopupMenu.add(createMenuItem("打开", "打开文件"));
-        filePopupMenu.add(createMenuItem("删除", "删除文件"));
+        filePopupMenu.add(createMenuItem("删除", "删除"));
         filePopupMenu.add(createMenuItem("属性", "文件属性"));
     }
 
@@ -310,16 +308,16 @@ public class ViewInitialization {
                     exception.printStackTrace();
                 }
             }
-            else if (action.equals("删除目录")) {
-                deleteItem();
-                System.out.println("删除了"+getPathString(selectionNode));
+            else if (action.equals("删除")) {
+                try {
+                    deleteItem();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
             } else if (action.equals("目录属性")) {
                 System.out.println(getPathString(selectionNode));
             } else if (action.equals("打开文件")) {
                 showTxtFile(jf, contentPane);
-            } else if (action.equals("删除文件")) {
-                System.out.println("删除了"+getPathString(selectionNode));
-                deleteItem();
             } else if (action.equals("文件属性")) {
                 System.out.println(getPathString(selectionNode));
             }
@@ -508,11 +506,15 @@ public class ViewInitialization {
     }
 
 
-    private void deleteItem(){   //删除文件或目录
+    private void deleteItem() throws Exception {   //删除文件或目录
         if(selectionNode==null)
             return ;
-        DefaultMutableTreeNode node=selectionNode;
-        node.removeFromParent();
+        //System.out.println(selectionNode.toString());
+        if(selectionNode.toString().contains(".t")||selectionNode.toString().contains(".e"))
+            fileUtil.deleteFile(getPathString(selectionNode));  //删除文件
+        else fileUtil.deleteAll(getPathString(selectionNode));  //删除目录
+        //System.out.println(getPathString(selectionNode));
+        selectionNode.removeFromParent();
         tree.updateUI();
         selectionNode=null;
     }
