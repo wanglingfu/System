@@ -1,5 +1,5 @@
-package frame.fileFrame;
-
+package frame.FileManagement.fileFrame;
+import frame.FileManagement.*;
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -11,19 +11,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+//字体设置 label1.setFont(new Font("宋体",Font.BOLD,16));
 
 
-public class test {
+public class ViewInitialization {
 
-    public test() {
-        jf = new JFrame();
+    public ViewInitialization() throws Exception {
+        jf = new JFrame("文件资源管理器");
         jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jf.setLocationRelativeTo(null);
         jf.pack();
         jf.setVisible(true);
-        surface(1500, 800, jf);
+        surface(1800, 1000, jf);
     }
 
     private JFrame jf;
@@ -43,10 +45,12 @@ public class test {
     private JTree tree;
     private DefaultMutableTreeNode selectionNode;
     private TreePath movePath;
+    private FileUtil fileUtil;
 
-    private void initial() { //初始化操作
+
+    private void initial() throws Exception { //初始化操作
+        fileUtil=new FileUtil();
         contentPane = new JPanel();
-        //contentPane.setPreferredSize(new Dimension(width,height));
         contentPane.setLayout(new BorderLayout());
         menu = new JMenuBar();
         button1 = new JButton("回退");
@@ -60,7 +64,7 @@ public class test {
         buttons = new myButton[32][8];
     }
 
-    private void surface(int width, int height, JFrame jf) {
+    private void surface(int width, int height, JFrame jf) throws Exception {
         initial();
         jf.setContentPane(contentPane);
         setView();
@@ -82,8 +86,8 @@ public class test {
         for (int i = 0; i < 32; i++) {
             for (int j = 0; j < 8; j++) {
                 buttons[i][j] = new myButton("NO." + (i * 8 + j),
-                        new ImageIcon(getClass().getResource("/images/被选中盘块.png")), i * 8 + j);
-                //buttons[i][j].setDisabledIcon(new ImageIcon(getClass().getResource("/images/被选中盘块.png")));  //设置被占用盘块的图标
+                        new ImageIcon("src/main/resources/被选中盘块.png"), i * 8 + j);
+                buttons[i][j].setDisabledIcon(new ImageIcon("src/main/resources/被选中盘块.png"));  //设置被占用盘块的图标
                 //buttons[i][j].setEnabled(false);  //不可用表示盘块被占用
                 buttons[i][j].setBackground(new Color(227, 223, 226));
                 view.add(buttons[i][j]);
@@ -92,11 +96,11 @@ public class test {
         view = getBorderPane(view, 40, 15, 15, 15); //让盘块与边界有间隔，看起来舒服些
         JPanel description = new JPanel(new FlowLayout(FlowLayout.LEFT));
         description.add(new JLabel("  说明:"));
-        description.add(new JLabel(new ImageIcon(getClass().getResource("/images/未占用盘块mini.png"))));
+        description.add(new JLabel(new ImageIcon("src/main/resources/未占用盘块mini.png")));
         description.add(new JLabel("未占用盘块     "));
-        description.add(new JLabel(new ImageIcon(getClass().getResource("/images/被占用盘块mini.png"))));
+        description.add(new JLabel(new ImageIcon("src/main/resources/被占用盘块mini.png")));
         description.add(new JLabel("被占用盘块     "));
-        description.add(new JLabel(new ImageIcon(getClass().getResource("/images/被选中盘块mini.png"))));
+        description.add(new JLabel(new ImageIcon("src/main/resources/被选中盘块mini.png")));
         description.add(new JLabel("当前目录/文件所占用的盘块 "));
         view.add(description, BorderLayout.NORTH);
         JScrollPane scrollPane = new JScrollPane(view);
@@ -107,17 +111,25 @@ public class test {
     }
 
     private JComponent command(){
-        commandLine=new JPanel();
+        commandLine=new JPanel(new BorderLayout());
+        frame.FileManagement.fileFrame.CmdTextArea cmdText=new frame.FileManagement.fileFrame.CmdTextArea();
+        cmdText.addKeyListener(cmdText);
+        cmdText.addCaretListener(cmdText);
+        cmdText.setFont(new Font("宋体", Font.PLAIN, 20));
+        cmdText.append("Please Input \"cmd\" To Get Administrator Permissions >");
+        cmdText.requestFocus();
+        cmdText.setCaretPosition(cmdText.getText().length());
+        commandLine.add(cmdText,BorderLayout.CENTER);
         return commandLine;
     }
 
-    private JComponent catalog() { //目录视图
+    private JComponent catalog() throws Exception { //目录视图
         JPanel catalogPanel = new JPanel(new BorderLayout());
         JLabel description = new JLabel("文件目录");
         catalogPanel.add(description, BorderLayout.NORTH);
         description.setPreferredSize(new Dimension(0,20));
         menuItemProcessing();  //菜单项
-        DefaultMutableTreeNode rootNode = getRootNode("中国");
+        DefaultMutableTreeNode rootNode = getRootNode("root");
         selectionNode = null;// 使用根节点创建树组件
         tree = new JTree(rootNode);// 设置树显示根节点句柄
         tree.setShowsRootHandles(false); // 设置树节点可编辑
@@ -155,11 +167,12 @@ public class test {
                     }
                 }
                 if(tree.getSelectionPath()!=null)
-                selectionNode = (DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent();
+                    selectionNode = (DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent();
             }
             @Override
             public void mouseReleased(MouseEvent e) {   //保证了选中结点的正确
-                selectionNode = (DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent();
+                if(tree.getSelectionPath()!=null)
+                    selectionNode = (DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent();
             }
         });
         JScrollPane scrollPane = new JScrollPane(tree);
@@ -167,23 +180,50 @@ public class test {
         return catalogPanel;
     }
 
-    private void setView() {
-        JSplitPane splitViewCommand = new JSplitPane();
-        JSplitPane splitPane = new JSplitPane();
-        splitViewCommand.setOrientation(JSplitPane.VERTICAL_SPLIT);
-        splitViewCommand.setTopComponent(view());
-        splitViewCommand.setBottomComponent(command());
-        splitPane.setLeftComponent(catalog());
-        splitPane.setRightComponent(splitViewCommand);
-        splitPane.setOneTouchExpandable(true);
-        splitViewCommand.setOneTouchExpandable(true);
-        // 拖动分隔条时连续重绘组件
-        splitViewCommand.setContinuousLayout(true);
-        splitPane.setContinuousLayout(true);
-        // 设置分隔条的初始位置
-        splitViewCommand.setDividerLocation(500);
-        splitPane.setDividerLocation(150);
-        contentPane.add(splitPane, BorderLayout.CENTER);
+    public String getPathString(DefaultMutableTreeNode node) { //根据节点以字符串形式返回路径
+        String path = "";
+        String previous = "";
+        if(node==null)
+            return null;
+        while (node.getParent() != null) {
+            previous = path;
+            path = '/' + node.getUserObject().toString() + previous;
+            node = (DefaultMutableTreeNode) node.getParent();
+        }
+        return path;
+    }
+
+
+    private DefaultMutableTreeNode getRootNode(String root) {  //通过根目录路径构建路径树，然后返回该树的根结点
+        Queue<String> stringQueue=new LinkedList<String>();
+        Queue<DefaultMutableTreeNode> nodeQueue=new LinkedList<DefaultMutableTreeNode>();
+        stringQueue.offer(root);
+        DefaultMutableTreeNode nowNode;
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(root);
+        nodeQueue.offer(rootNode);
+        nowNode=rootNode;
+        while(!stringQueue.isEmpty()){
+            String node=stringQueue.poll();
+            nowNode= nodeQueue.element();
+            nodeQueue.remove();
+            //String[] childNodes=returnChilds(node);
+            if((!node.contains(".t"))&&(!node.contains(".e"))){   //不是文件的路径才执行下一步
+                ArrayList<String>childNodes=fileUtil.getDirectorys(node);
+                if(childNodes.size()!=0){
+                    for(String path:childNodes){
+                        stringQueue.offer(path);
+                        String s=path.substring(path.lastIndexOf("/")+1);
+                        System.out.println(s);
+                        DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(s);
+                        if((s.contains(".t"))||(s.contains(".e"))) //如果是文件结点，不允许其有孩子
+                            childNode.setAllowsChildren(false);
+                        nodeQueue.offer(childNode);
+                        nowNode.add(childNode);
+                    }
+                }
+            }
+        }
+        return rootNode;
     }
 
     private void menuItemProcessing() { //菜单项设置
@@ -212,51 +252,39 @@ public class test {
         return item;
     }
 
-    /*private MouseListener mouseListener=new MouseAdapter() {
-        @Override
-        public void mousePressed(MouseEvent e) {
-            //如果需要唯一确定某个节点，必须通过TreePath来获取。
-            TreePath tp = tree.getPathForLocation(e.getX(), e.getY());
-            if (tp != null)
-            {
-                movePath = tp;
-            }
-        }
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            //根据鼠标松开时的TreePath来获取TreePath
-            TreePath tp = tree.getPathForLocation(e.getX(), e.getY());
-
-            if (tp != null && movePath != null)
-            {
-                //阻止向子节点拖动
-                if (movePath.isDescendant(tp) && movePath != tp)
-                {
-                    JOptionPane.showMessageDialog(jf, "目标节点是被移动节点的子节点，无法移动！", "非法操作", JOptionPane.ERROR_MESSAGE );
-                    return;
-                }
-                //既不是向子节点移动，而且鼠标按下、松开的不是同一个节点
-                else if (movePath != tp)
-                {
-                    System.out.println(tp.getLastPathComponent());
-                    //add方法可以先将原节点从原父节点删除，再添加到新父节点中
-                    ((DefaultMutableTreeNode)tp.getLastPathComponent()).add((DefaultMutableTreeNode)movePath.getLastPathComponent());
-                    movePath = null;
-                    tree.updateUI();
-                }
-            }
-        }
-    };*/
-
+    // ArrayList<String> getDirectorys(String path)
+    // void makeDirectory(String path)
+    // void createFile(String path, String content)
+    // void removeDirectory(String path)
+    // void deleteFile(String path)
+    // void deleteAll(String path)
+    // String getFileContent(String path)
+    // int getFileLength(String path)
+    // void copyFile(String srcPath, String destPath)
     private ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             String action = e.getActionCommand();
-            if (action.equals("新建目录"))
-                addItem("新目录");
-            else if (action.equals("新建文件"))
-                addItem("新文件");
-             else if (action.equals("删除目录")) {
+            if (action.equals("新建目录")) {
+                try {
+                    String inputContent = JOptionPane.showInputDialog(jf,
+                            "新建目录命名：(要求小于三个字符)\n",
+                            "新建项命名",3);
+                    //if(同一级没有重复的目录名字)
+                    addDirectory(inputContent);
+                    System.out.println(inputContent);  //点取消字符串为null
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+            }
+            else if (action.equals("新建文件")) {
+                try {
+                    showFileCreation(jf, contentPane);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+            }
+            else if (action.equals("删除目录")) {
                 deleteItem();
                 System.out.println("删除了"+getPathString(selectionNode));
             } else if (action.equals("目录属性")) {
@@ -272,9 +300,102 @@ public class test {
         }
     };
 
+    //创建文件时弹出的命名窗口
+    private void showFileCreation(Frame owner, Component parentComponent) {
+        final JDialog dialog = new JDialog(owner,"新建文本命名", true);
+        JPanel mainPanel =new JPanel(null);
+        JRadioButton radioBtn01 = new JRadioButton("txt");
+        JRadioButton radioBtn02 = new JRadioButton("exe");
+        ButtonGroup btnGroup = new ButtonGroup();
+        btnGroup.add(radioBtn01);
+        btnGroup.add(radioBtn02);
+        radioBtn01.setSelected(true);
+        JLabel label1 = new JLabel("名称:"); label1.setFont(new Font("宋体",Font.BOLD,16));
+        JLabel label2 = new JLabel("内容:"); label2.setFont(new Font("宋体",Font.BOLD,16));
+        JLabel label3 = new JLabel("属性:"); label3.setFont(new Font("宋体",Font.BOLD,16));
+        JLabel label4 = new JLabel("(文本名称不大于3个字符)"); label4.setFont(new Font("黑体",Font.PLAIN,14));
+        JTextArea textArea=new JTextArea("默认内容"); textArea.setFont(new Font("宋体",Font.BOLD,16));
+        textArea.setLineWrap(true);  //自动换行
+        JTextField nameField=new JTextField(); nameField.setFont(new Font("宋体",Font.BOLD,16));
+        JButton saveButton = new JButton("创建");
+        JButton cancleButton = new JButton("取消");
+        label1.setBounds(30, 30, 50, 30);
+        label2.setBounds(30, 130, 50, 30);
+        label3.setBounds(30, 80, 50, 30);
+        label4.setBounds(220, 30, 180, 30);
+        radioBtn01.setBounds(80,80,50,30);
+        radioBtn02.setBounds(170,80,50,30);
+        nameField.setBounds(80,30,140,30);
+        textArea.setBounds(80,130,220,100);
+        saveButton.setBounds(70, 250, 70, 30);
+        cancleButton.setBounds(270, 250, 70, 30);
+        mainPanel.add(saveButton);
+        mainPanel.add(cancleButton);
+        mainPanel.add(label1);
+        mainPanel.add(label2);
+        mainPanel.add(label3);
+        mainPanel.add(label4);
+        mainPanel.add(radioBtn01);
+        mainPanel.add(radioBtn02);
+        mainPanel.add(nameField);
+        mainPanel.add(textArea);
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {  //创建
+                String fileNameString=nameField.getText();
+                String fileText=textArea.getText();
+                if(fileNameString.length()==0){
+                    JOptionPane.showMessageDialog(jf, "文件名称不能为空", "提示", JOptionPane.WARNING_MESSAGE);
+                }
+                else if(fileNameString.length()>3){
+                    JOptionPane.showMessageDialog(jf, "文件名称不能超过3个字符", "提示", JOptionPane.WARNING_MESSAGE);
+                }
+                //else if(有同级同名文件)
+                else{  //创建文件
+                    //addFile();
+                }
+            }
+        });
+        cancleButton.addActionListener(new ActionListener() {  //取消
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dialog.dispose();
+            }
+        });
+        dialog.setSize(400, 350);
+        // 设置对话框大小不可改变
+        dialog.setResizable(false);
+        dialog.setLocationRelativeTo(parentComponent);
+        // 设置对话框的内容面板
+        dialog.setContentPane(mainPanel);
+        // 显示对话框
+        dialog.setVisible(true);
+    }
+
+    private void setView() throws Exception {  //设置界面的分隔拖拉条
+        JSplitPane splitViewCommand = new JSplitPane();
+        JSplitPane splitPane = new JSplitPane();
+        splitViewCommand.setOrientation(JSplitPane.VERTICAL_SPLIT);
+        splitViewCommand.setTopComponent(view());
+        splitViewCommand.setBottomComponent(command());
+        splitPane.setLeftComponent(catalog());
+        splitPane.setRightComponent(splitViewCommand);
+        splitPane.setOneTouchExpandable(true);
+        splitViewCommand.setOneTouchExpandable(true);
+        // 拖动分隔条时连续重绘组件
+        splitViewCommand.setContinuousLayout(true);
+        splitPane.setContinuousLayout(true);
+        // 设置分隔条的初始位置
+        splitViewCommand.setDividerLocation(600);
+        splitPane.setDividerLocation(150);
+        contentPane.add(splitPane, BorderLayout.CENTER);
+    }
+
+
     private void showTxtFile(Frame owner, Component parentComponent) {
         // txt文件显示
-        final JDialog dialog = new JDialog(owner, getPathString(selectionNode), true);
+        String txtName=selectionNode.getUserObject().toString();
+        final JDialog dialog = new JDialog(owner, txtName, true);
         JTextField txtField = new JTextField("ss");
         JPanel txtPanel = getBorderPane(txtField, 40, 40, 40, 40);
         JPanel topPanel = new JPanel(null);
@@ -314,48 +435,6 @@ public class test {
         dialog.setVisible(true);
     }
 
-    public String getPathString(DefaultMutableTreeNode node) { //根据节点以字符串形式返回路径
-        String path = "";
-        String previous = "";
-        if(node==null)
-            return null;
-        while (node.getParent() != null) {
-            previous = path;
-            path = '/' + node.getUserObject().toString() + previous;
-            node = (DefaultMutableTreeNode) node.getParent();
-        }
-        previous = path;
-        path = '/' + node.getUserObject().toString() + previous;
-        return path;
-    }
-
-
-    private DefaultMutableTreeNode getRootNode(String root) {  //通过根目录路径构建路径树，然后返回该树的根结点
-        Queue<String> stringQueue=new LinkedList<String>();
-        Queue<DefaultMutableTreeNode> nodeQueue=new LinkedList<DefaultMutableTreeNode>();
-        stringQueue.offer(root);
-        DefaultMutableTreeNode nowNode;
-        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(root);
-        nodeQueue.offer(rootNode);
-        nowNode=rootNode;
-        while(!stringQueue.isEmpty()){
-            String node=stringQueue.poll();
-            nowNode= nodeQueue.element();
-            nodeQueue.remove();
-            String childNodes[]=returnChilds(node);
-            if(childNodes!=null){
-                for(String s:childNodes){
-                    stringQueue.offer(s);
-                    DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(s);
-                    nodeQueue.offer(childNode);
-                    nowNode.add(childNode);
-                }
-            }
-        }
-        return rootNode;
-    }
-
-
     private void toolBar(int height) { //工具栏视图
         menu.setPreferredSize(new Dimension(0, height));
         contentPane.add(menu, BorderLayout.NORTH);
@@ -384,7 +463,7 @@ public class test {
     }
 
     private String[] returnChilds(String s) {
-        if (s == "中国")
+        if (s == "root")
             return new String[]{"广东", "福建"};
         else if (s == "广东")
             return new String[]{"广州", "深圳"};
@@ -406,12 +485,30 @@ public class test {
         selectionNode=null;
     }
 
-    private void addItem(String newNodeString){   //新建文件
-        if(selectionNode==null)
+    private void addDirectory(String newNodeString) throws Exception {   //新建目录
+        if(selectionNode==null){
+            System.out.println("选中项为空，无法新建目录");
             return ;
+        }
+        fileUtil.makeDirectory(getPathString(selectionNode)+'/'+newNodeString);
         DefaultMutableTreeNode newNode=new DefaultMutableTreeNode(newNodeString);
-        if(newNode.toString()=="新文件")    //如果建立的是文件则不允许在其有孩子结点
-            newNode.setAllowsChildren(false);
+        newNode.setAllowsChildren(true);
+        selectionNode.add(newNode);
+        TreeNode[] nodes = newNode.getPath();   //自动展开新建的目录
+        TreePath path = new TreePath(nodes);
+        tree.scrollPathToVisible(path);
+        tree.updateUI();
+        selectionNode=null;
+    }
+
+    private void addFile(String newNodeString) throws Exception {   //新建文件
+        if(selectionNode==null){
+            System.out.println("选中项为空，无法新建文件");
+            return ;
+        }
+        fileUtil.createFile(getPathString(selectionNode)+'/'+newNodeString+".t","");
+        DefaultMutableTreeNode newNode=new DefaultMutableTreeNode(newNodeString+".t");
+        newNode.setAllowsChildren(false);   //不允许在文件下创建目录项
         selectionNode.add(newNode);
         TreeNode[] nodes = newNode.getPath();   //自动展开新建的目录
         TreePath path = new TreePath(nodes);
