@@ -89,7 +89,7 @@ public class TestFile {
     @Test
     public void deleteAll() throws Exception{
         FileUtil fileUtil = new FileUtil();
-        String path = "/abc";
+        String path = "/abc/bcd";
         fileUtil.deleteAll(path);
 
     }
