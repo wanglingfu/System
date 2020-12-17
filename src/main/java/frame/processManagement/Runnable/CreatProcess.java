@@ -64,9 +64,9 @@ public class CreatProcess{
                 }
             }
             Random random = new Random();
-            int i = random.nextInt(file.size()) + 1;
+            int i = random.nextInt(file.size()) ;
             while(file.get(i) == null){
-                i = random.nextInt(file.size()) + 1;
+                i = random.nextInt(file.size()) ;
             }
             String fileContent = fileUtil.getFileContent(file.get(i));
             byte[] byteContent = fileUtil.createByteContent(fileContent, true);

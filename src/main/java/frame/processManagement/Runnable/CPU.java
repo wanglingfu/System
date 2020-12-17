@@ -1,16 +1,8 @@
 package frame.processManagement.Runnable;
 
-
-import Main.main;
-import frame.deviceManagement.Device;
-import frame.deviceManagement.DeviceTable;
 import frame.processManagement.PCB;
 import frame.processManagement.ProcessScheduling;
 
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -233,7 +225,6 @@ public class CPU{
                 */
                case 3: {
                    PSW = 0;
-                   System.out.println("设备中断");
                    /**
                     * 判断哪个设备已使用完
                     */
@@ -277,7 +268,7 @@ public class CPU{
            /**
             * 确认是否为闲置进程
             */
-           if (processScheduling.getRunPCB().getUuid() != processScheduling.getIdlePCB().getUuid() && file == processScheduling.getRunPCB().getFile()) {
+           if (processScheduling.getRunPCB().getUuid() != processScheduling.getIdlePCB().getUuid() && file != null && PC < file.length) {
                /**
                 * 编码规则：
                 * x++:00000000
@@ -309,6 +300,7 @@ public class CPU{
                }
                //end指令
                else if (i == 96) {
+                   System.out.println("end");
                    PSW = 1;
                    finalAX = AX;
                    IR = "end";
