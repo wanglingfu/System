@@ -308,7 +308,7 @@ public class ProcessFrame extends JFrame {
         threadPoolExecutor.execute(()->{
             creatProcess.run();
         });
-        ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(1);
+        ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(5);
         scheduledExecutorService.scheduleAtFixedRate(()->{
             cpu.time();
         },1,1,TimeUnit.SECONDS);

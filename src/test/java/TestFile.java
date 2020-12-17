@@ -44,7 +44,7 @@ public class TestFile {
     }
     @Test
     public void createExeFile() throws Exception{
-        File test = new File("H:\\test");
+        File test = new File("E:\\test.txt");
         Reader reader = new FileReader(test);
         char[] s = new char[10000];
         reader.read(s);
@@ -52,14 +52,14 @@ public class TestFile {
         System.out.println(s1);
         FileUtil fileUtil = new FileUtil();
 
-        String path = "/abc.e";
+        String path = "/bcd.e";
         String content = s1;
         fileUtil.createFile(path, s1);
     }
     @Test
     public void delectfile() throws Exception{
         FileUtil fileUtil = new FileUtil();
-        String path = "/def/abc.e";
+        String path = "/bcd.e";
         fileUtil.deleteFile(path);
     }
     @Test

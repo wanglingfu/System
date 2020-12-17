@@ -8,6 +8,7 @@ import frame.storageManagement.Memory;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 
 /**
@@ -31,7 +32,7 @@ public class ProcessScheduling {
     /**
      * 闲置进程
      */
-    private PCB idlePCB = new PCB(null);
+    private PCB idlePCB = new PCB("闲置进程");
     /**
      * 运行中的进程
      */
@@ -206,7 +207,7 @@ public class ProcessScheduling {
     /**
      * 工具类 替换现有进程
      */
-    public synchronized void util(int select){
+    public void util(int select){
         /**
          * 阻塞
          */
