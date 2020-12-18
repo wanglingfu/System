@@ -24,7 +24,7 @@ public class TestFile {
     @Test
     public void printFile() throws Exception{
         FileUtil fileUtil = new FileUtil();
-        String path = "/abc/abc";
+        String path = "/abc/def.t";
         String content = fileUtil.getFileContent(path);
         System.out.println(content);
     }
@@ -39,7 +39,7 @@ public class TestFile {
     public void createfile() throws Exception{
         FileUtil fileUtil = new FileUtil();
         String path = "/abc/def";
-        String content = "abcdefghijklnsssm";
+        String content = "abcdefghijklnsssmaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
         fileUtil.createFile(path, content);
     }
     @Test
@@ -132,7 +132,7 @@ public class TestFile {
     @Test
     public void getblocks() throws Exception{
         FileUtil fileUtil = new FileUtil();
-        String path = "/abc.e";
+        String path = "/abc/def.t";
         ArrayList<Integer> list = fileUtil.getFileBlock(path);
         for(int s:list){
             System.out.println(s);
