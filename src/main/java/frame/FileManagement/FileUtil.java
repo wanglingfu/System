@@ -681,6 +681,7 @@ public class FileUtil {
         int temp = fileAllocationTable.getNextBlock(index);
         while(temp != 1){
             blockList.add(temp);
+            temp = fileAllocationTable.getNextBlock(temp);
         }
         return blockList;
     }
@@ -693,7 +694,7 @@ public class FileUtil {
     public int[] getFAT(){
         byte[] bytes = new byte[256];
         for(int i=0; i<4; i++){
-            System.arraycopy(diskBuffer[0],0, bytes, i*64, 64);
+            System.arraycopy(diskBuffer[i],0, bytes, i*64, 64);
         }
         int[] fat = new int[256];
         for(int i=0; i<256; i++){
