@@ -228,7 +228,7 @@ public class ViewInitialization {
             nowNode= nodeQueue.element();
             nodeQueue.remove();
             //String[] childNodes=returnChilds(node);
-            if((!node.contains(".t"))&&(!node.contains(".e"))){   //不是文件的路径才执行下一步
+            if((!node.contains(".txt"))&&(!node.contains(".exe"))){   //不是文件的路径才执行下一步
                 ArrayList<String>childNodes=fileUtil.getDirectorys(node);
                 if(childNodes.size()!=0){
                     for(String path:childNodes){
@@ -236,7 +236,7 @@ public class ViewInitialization {
                         String s=path.substring(path.lastIndexOf("/")+1);
                         System.out.println(s);
                         DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(s);
-                        if((s.contains(".t"))||(s.contains(".e"))) //如果是文件结点，不允许其有孩子
+                        if((s.contains(".txt"))||(s.contains(".exe"))) //如果是文件结点，不允许其有孩子
                             childNode.setAllowsChildren(false);
                         nodeQueue.offer(childNode);
                         nowNode.add(childNode);
@@ -407,23 +407,25 @@ public class ViewInitialization {
                     else {
                         try {
                             if (radioBtn01.isSelected())
-                                fileNameString = fileNameString + ".t";
-                            else fileNameString = fileNameString + ".e";
+                                fileNameString = fileNameString + ".txt";
+                            else fileNameString = fileNameString + ".exe";
                             int p = addFile(fileNameString, fileText);
-                            if (p == 2)
+                            if(p==0){
+                                updateImage();
+                                view.updateUI();
+                                dialog.dispose();
+                            }
+                            else if (p == 2)
                                 JOptionPane.showMessageDialog(jf, "磁盘已满，无法添加！", "提示", JOptionPane.WARNING_MESSAGE);
-                            if (p == 3)
+                            else if (p == 3)
                                 JOptionPane.showMessageDialog(jf, "同级下有同名同类型文件，无法添加！", "提示", JOptionPane.WARNING_MESSAGE);
                         }
                         catch (Exception exception) {
                             exception.printStackTrace();
                         }
-                            updateImage();
-                            view.updateUI();
-                            dialog.dispose();
-                        }
                     }
                 }
+            }
         });
         cancleButton.addActionListener(new ActionListener() {  //取消
             @Override
@@ -540,7 +542,7 @@ public class ViewInitialization {
         if(selectionNode==null)
             return ;
         //System.out.println(selectionNode.toString());
-        if(selectionNode.toString().contains(".t")||selectionNode.toString().contains(".e"))
+        if(selectionNode.toString().contains(".txt")||selectionNode.toString().contains(".exe"))
             fileUtil.deleteFile(getPathString(selectionNode));  //删除文件
         else fileUtil.deleteAll(getPathString(selectionNode));  //删除目录
         //System.out.println(getPathString(selectionNode));
