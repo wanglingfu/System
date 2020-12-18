@@ -541,10 +541,10 @@ public class FileUtil {
         byte[] bytename = Arrays.copyOf(file,3);
         name = disk.bytesToString(bytename);
         if(file[4] == EXE_PROPERTY){
-            suffix = ".e";
+            suffix = ".exe";
         }
         if(file[4] == TXT_PROPERTY){
-            suffix = ".t";
+            suffix = ".txt";
         }
         name = name + suffix;
         return name;
