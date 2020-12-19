@@ -81,6 +81,7 @@ public class ViewInitialization {
 
     private JComponent view() { //磁盘盘块视图
         buttons=new JButton[256];
+        for(int i=0;i<256;i++) buttons[i]=new JButton("NO." + (i),new ImageIcon("src/main/resources/未占用盘块mini.png"));
         updateImage();
         for(int i=0;i<256;i++)   view.add(buttons[i]);
         view = getBorderPane(view, 40, 15, 15, 15); //让盘块与边界有间隔，看起来舒服些
@@ -101,26 +102,27 @@ public class ViewInitialization {
     }
 
     private void updateImage() {   //更新按钮信息
-        buttons=new JButton[256];
         int buttonsAttribute[] = fileUtil.getFAT();
+        for(int a:buttonsAttribute)
         //被占用磁盘块是1，被当前目录项占用是2，空闲为0
         if (selectionNode != null) {
+            System.out.println("选中为空");
             ArrayList<Integer> nowOccupied = fileUtil.getFileBlock(getPathString(selectionNode));
             for (int i : nowOccupied) {
                 buttonsAttribute[i] = 2;
             }
         }
+        for(int i=0;i<256;i++) System.out.print(buttonsAttribute[i]+" ");
         for (int i = 0; i < 256; i++) {
             if (buttonsAttribute[i] == 0) {
-                buttons[i] = new JButton("NO." + (i), new ImageIcon("src/main/resources/未占用盘块.png"));
-            } else if (buttonsAttribute[i] == 1) {
-                buttons[i] = new JButton("NO." + (i), new ImageIcon("src/main/resources/被占用盘块.png"));
-                //buttons[i].setEnabled(false);
-            } else {
-                System.out.print(i + " ");
-                buttons[i] = new JButton("NO." + (i), new ImageIcon("src/main/resources/被选中盘块.png"));
-                buttons[i].setEnabled(false);
-                //buttons[i].setDisabledIcon(new ImageIcon("src/main/resources/被选中盘块.png"));
+                buttons[i].setIcon(new ImageIcon("src/main/resources/未占用盘块.png"));
+                buttons[i].setText("NO." + (i));
+            } else if (buttonsAttribute[i] == 2) {  //2表示当前目录项占用的
+                buttons[i].setIcon(new ImageIcon("src/main/resources/被选中盘块.png"));
+                buttons[i].setText("NO." + (i));
+            } else {     //所有其他被占用的磁盘块
+                buttons[i].setIcon(new ImageIcon("src/main/resources/被占用盘块.png"));
+                buttons[i].setText("NO." + (i));
             }
             buttons[i].setBackground(new Color(227, 223, 226));
         }
@@ -162,16 +164,12 @@ public class ViewInitialization {
             @Override
             public void mouseClicked(MouseEvent e) {
                 //左键单击目录项则选中，更新选中节点，单机其他地方选中节点为空
-                view.removeAll();
-                updateImage();
-                for(int i=0;i<256;i++) view.add(buttons[i]);
-                contentPane.updateUI();
-                //buttons[1]=new JButton("a",null);
-                //for(int i=0;i<256;i++) buttons[i].updateUI();
                 if (e.getButton() == MouseEvent.BUTTON1) {
+                    updateImage();   //更新磁盘界面
+                    view.updateUI();
                     if (tree.getPathForLocation(e.getX(), e.getY()) != null) {
                         selectionNode = (DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent();
-                    }else{
+                    }else {
                         selectionNode = null;
                         tree.setSelectionPath(null);
                     }
@@ -230,7 +228,7 @@ public class ViewInitialization {
             nowNode= nodeQueue.element();
             nodeQueue.remove();
             //String[] childNodes=returnChilds(node);
-            if((!node.contains(".t"))&&(!node.contains(".e"))){   //不是文件的路径才执行下一步
+            if((!node.contains(".txt"))&&(!node.contains(".exe"))){   //不是文件的路径才执行下一步
                 ArrayList<String>childNodes=fileUtil.getDirectorys(node);
                 if(childNodes.size()!=0){
                     for(String path:childNodes){
@@ -238,7 +236,7 @@ public class ViewInitialization {
                         String s=path.substring(path.lastIndexOf("/")+1);
                         System.out.println(s);
                         DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(s);
-                        if((s.contains(".t"))||(s.contains(".e"))) //如果是文件结点，不允许其有孩子
+                        if((s.contains(".txt"))||(s.contains(".exe"))) //如果是文件结点，不允许其有孩子
                             childNode.setAllowsChildren(false);
                         nodeQueue.offer(childNode);
                         nowNode.add(childNode);
@@ -254,10 +252,10 @@ public class ViewInitialization {
         filePopupMenu = new JPopupMenu();
         listPopupMenu.add(createMenuItem("新建目录", "新建目录"));
         listPopupMenu.add(createMenuItem("新建文件", "新建文件"));
-        listPopupMenu.add(createMenuItem("删除", "删除目录"));
+        listPopupMenu.add(createMenuItem("删除", "删除"));
         listPopupMenu.add(createMenuItem("属性", "目录属性"));
         filePopupMenu.add(createMenuItem("打开", "打开文件"));
-        filePopupMenu.add(createMenuItem("删除", "删除文件"));
+        filePopupMenu.add(createMenuItem("删除", "删除"));
         filePopupMenu.add(createMenuItem("属性", "文件属性"));
     }
 
@@ -276,9 +274,9 @@ public class ViewInitialization {
     }
 
     // ArrayList<String> getDirectorys(String path)
-    // boolean makeDirectory(String path)
+    // boolean makeDirectory(String path)  //1路径错误 2磁盘已满 3同名文件
     // boolean createFile(String path, String content)
-    // void removeDirectory(String path)
+    // void removeDirectory(String path)  //删除空目录
     // void deleteFile(String path)
     // void deleteAll(String path)
     // String getFileContent(String path)
@@ -292,16 +290,7 @@ public class ViewInitialization {
         public void actionPerformed(ActionEvent e) {
             String action = e.getActionCommand();
             if (action.equals("新建目录")) {
-                try {
-                    String inputContent = JOptionPane.showInputDialog(jf,
-                            "新建目录命名：(要求小于三个字符)\n",
-                            "新建项命名",3);
-                    //if(同一级没有重复的目录名字)
-                    addDirectory(inputContent);
-                    System.out.println(inputContent);  //点取消字符串为null
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
+                showDirectoryCreation();
             }
             else if (action.equals("新建文件")) {
                 try {
@@ -310,24 +299,53 @@ public class ViewInitialization {
                     exception.printStackTrace();
                 }
             }
-            else if (action.equals("删除目录")) {
-                deleteItem();
-                System.out.println("删除了"+getPathString(selectionNode));
+            else if (action.equals("删除")) {
+                try {
+                    deleteItem();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
             } else if (action.equals("目录属性")) {
                 System.out.println(getPathString(selectionNode));
             } else if (action.equals("打开文件")) {
                 showTxtFile(jf, contentPane);
-            } else if (action.equals("删除文件")) {
-                System.out.println("删除了"+getPathString(selectionNode));
-                deleteItem();
             } else if (action.equals("文件属性")) {
                 System.out.println(getPathString(selectionNode));
             }
         }
     };
 
-    //创建文件时弹出的命名窗口
+    private void showDirectoryCreation(){
+        try {
+            String inputContent = JOptionPane.showInputDialog(jf,
+                    "新建目录命名：(要求小于三个字符)\n",
+                    "新建项命名",3);
+            int flag=1;
+            for(int i=0;i<inputContent.length();i++){
+                if(!Character.isUpperCase(inputContent.charAt(i))&&!Character.isLowerCase(inputContent.charAt(i))){
+                    JOptionPane.showMessageDialog(jf, "目录名称有误！", "提示", JOptionPane.WARNING_MESSAGE);
+                    flag=0;
+                    break;
+                }
+            }
+            if(flag==1){
+                if(inputContent.length()==0)
+                    JOptionPane.showMessageDialog(jf, "目录名称不能为空！", "提示", JOptionPane.WARNING_MESSAGE);
+                else if(inputContent.length()>3)
+                    JOptionPane.showMessageDialog(jf, "目录名称不能大于3个字符！", "提示", JOptionPane.WARNING_MESSAGE);
+                else {
+                    addDirectory(inputContent);
+                }
+            }
+            System.out.println(inputContent);  //点取消字符串为null
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+
     private void showFileCreation(Frame owner, Component parentComponent) {
+        //创建文件时弹出的命名窗口
         final JDialog dialog = new JDialog(owner,"新建文本命名", true);
         JPanel mainPanel =new JPanel(null);
         JRadioButton radioBtn01 = new JRadioButton("txt");
@@ -342,6 +360,7 @@ public class ViewInitialization {
         JLabel label4 = new JLabel("(文本名称不大于3个字符)"); label4.setFont(new Font("黑体",Font.PLAIN,14));
         JTextArea textArea=new JTextArea("默认内容"); textArea.setFont(new Font("宋体",Font.BOLD,16));
         textArea.setLineWrap(true);  //自动换行
+        JScrollPane scrollPane=new JScrollPane();
         JTextField nameField=new JTextField(); nameField.setFont(new Font("宋体",Font.BOLD,16));
         JButton saveButton = new JButton("创建");
         JButton cancleButton = new JButton("取消");
@@ -370,23 +389,43 @@ public class ViewInitialization {
             public void actionPerformed(ActionEvent e) {  //创建
                 String fileNameString=nameField.getText();
                 String fileText=textArea.getText();
-                if(fileNameString.length()==0){
-                    JOptionPane.showMessageDialog(jf, "文件名称不能为空", "提示", JOptionPane.WARNING_MESSAGE);
+                int flag=1;
+                for(int i=0;i<fileNameString.length();i++){
+                    if(!Character.isUpperCase(fileNameString.charAt(i))&&!Character.isLowerCase(fileNameString.charAt(i))){
+                        JOptionPane.showMessageDialog(jf, "目录名称有误！", "提示", JOptionPane.WARNING_MESSAGE);
+                        flag=0;
+                        break;
+                    }
                 }
-                else if(fileNameString.length()>3){
-                    JOptionPane.showMessageDialog(jf, "文件名称不能超过3个字符", "提示", JOptionPane.WARNING_MESSAGE);
-                }
-                else {
+                if(flag==1){
+                    if(fileNameString.length()==0){
+                        JOptionPane.showMessageDialog(jf, "文件名称不能为空", "提示", JOptionPane.WARNING_MESSAGE);
+                    }
+                    else if(fileNameString.length()>3){
+                        JOptionPane.showMessageDialog(jf, "文件名称不能超过3个字符", "提示", JOptionPane.WARNING_MESSAGE);
+                    }
+                    else {
                         try {
-                            if(radioBtn01.isSelected())
-                            addFile(fileNameString,'t',fileText);
-                            else addFile(fileNameString,'e',fileText);
-                            dialog.dispose();
-                        } catch (Exception exception) {
+                            if (radioBtn01.isSelected())
+                                fileNameString = fileNameString + ".txt";
+                            else fileNameString = fileNameString + ".exe";
+                            int p = addFile(fileNameString, fileText);
+                            if(p==0){
+                                updateImage();
+                                view.updateUI();
+                                dialog.dispose();
+                            }
+                            else if (p == 2)
+                                JOptionPane.showMessageDialog(jf, "磁盘已满，无法添加！", "提示", JOptionPane.WARNING_MESSAGE);
+                            else if (p == 3)
+                                JOptionPane.showMessageDialog(jf, "同级下有同名同类型文件，无法添加！", "提示", JOptionPane.WARNING_MESSAGE);
+                        }
+                        catch (Exception exception) {
                             exception.printStackTrace();
                         }
                     }
                 }
+            }
         });
         cancleButton.addActionListener(new ActionListener() {  //取消
             @Override
@@ -425,7 +464,7 @@ public class ViewInitialization {
 
 
     private void showTxtFile(Frame owner, Component parentComponent) {
-        // txt文件显示
+        // txt文件显示和修改
         String txtName=selectionNode.getUserObject().toString();
         final JDialog dialog = new JDialog(owner, txtName, true);
         JTextField txtField = new JTextField("ss");
@@ -467,15 +506,6 @@ public class ViewInitialization {
         dialog.setVisible(true);
     }
 
-    /*private void toolBar(int height) { //工具栏视图
-        menu.setPreferredSize(new Dimension(0, height));
-        contentPane.add(menu, BorderLayout.NORTH);
-        button1.setBackground(new Color(204, 204, 204));
-        menu.add(button1);
-        button2.setBackground(new Color(204, 204, 204));
-        menu.add(button2);
-    }*/
-
     public JPanel getBorderPane(JComponent p, int northBorder, int southBorder, int westBorder, int eastBorder) { //返回一个能指定边界间隔大小的JPanel
         JPanel panel = new JPanel(new BorderLayout());
         JPanel east = new JPanel();
@@ -508,17 +538,21 @@ public class ViewInitialization {
     }
 
 
-    private void deleteItem(){   //删除文件或目录
+    private void deleteItem() throws Exception {   //删除文件或目录
         if(selectionNode==null)
             return ;
-        DefaultMutableTreeNode node=selectionNode;
-        node.removeFromParent();
+        //System.out.println(selectionNode.toString());
+        if(selectionNode.toString().contains(".txt")||selectionNode.toString().contains(".exe"))
+            fileUtil.deleteFile(getPathString(selectionNode));  //删除文件
+        else fileUtil.deleteAll(getPathString(selectionNode));  //删除目录
+        //System.out.println(getPathString(selectionNode));
+        selectionNode.removeFromParent();
         tree.updateUI();
         selectionNode=null;
     }
 
-    private void addDirectory(String newNodeString) throws Exception {   //新建目录
-        fileUtil.makeDirectory(getPathString(selectionNode)+'/'+newNodeString);
+    private int addDirectory(String newNodeString) throws Exception {   //新建目录
+        int p=fileUtil.makeDirectory(getPathString(selectionNode)+'/'+newNodeString);
         DefaultMutableTreeNode newNode=new DefaultMutableTreeNode(newNodeString);
         newNode.setAllowsChildren(true);
         selectionNode.add(newNode);
@@ -527,20 +561,22 @@ public class ViewInitialization {
         tree.scrollPathToVisible(path);
         tree.updateUI();
         selectionNode=null;
+        return p;
     }
 
-    private boolean addFile(String newNodeString,char nature,String content) throws Exception {   //新建文件
-        String fileName=newNodeString+"."+nature;
-        if(!fileUtil.createFile(getPathString(selectionNode)+'/'+fileName,content))
-        return false;
-        DefaultMutableTreeNode newNode=new DefaultMutableTreeNode(fileName);
+    private int addFile(String newNodeString,String content) throws Exception {   //新建文件
+        int p=fileUtil.createFile(getPathString(selectionNode)+'/'+newNodeString,content);
+        if(p!=0)
+            return p;
+        DefaultMutableTreeNode newNode=new DefaultMutableTreeNode(newNodeString);
         newNode.setAllowsChildren(false);   //不允许在文件下创建目录项
         selectionNode.add(newNode);
         TreeNode[] nodes = newNode.getPath();   //自动展开新建的目录
         TreePath path = new TreePath(nodes);
         tree.scrollPathToVisible(path);
+        tree.setSelectionPath(path);
+        selectionNode=newNode;
         tree.updateUI();
-        selectionNode=null;
-        return true;
+        return 0;
     }
 }

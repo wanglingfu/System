@@ -196,7 +196,7 @@ public class FileUtil {
                 isFull = !fileAllocationTable.isEmptyBlockEnough(1);
             }
             else{
-               isFull = !fileAllocationTable.isEmptyBlockEnough(2);
+                isFull = !fileAllocationTable.isEmptyBlockEnough(2);
             }
         }
         return isFull;
@@ -342,7 +342,7 @@ public class FileUtil {
      * @param content 文件内容
      * @return void
      */
-    public boolean createFile(String path, String content) throws Exception{
+    public int createFile(String path, String content) throws Exception{
         boolean flag = false;
         byte[][] bytePath = disk.formatPath(path);
         byte[] byteContent;
@@ -355,17 +355,17 @@ public class FileUtil {
         if(dirBlock == -1){
             message = "路径错误！";
             System.out.println(message);
-            return flag;
+            return 1;
         }
         if(isDirFull(dirBlock)){
             message = "磁盘已满";
             System.out.println(message);
-            return flag;
+            return 2;
         }
         if(getContained(bytePath[bytePath.length-1], property, dirBlock) != -1){
             message = "该路径下有同名文件";
             System.out.println(message);
-            return flag;
+            return 3;
         }
         if(property == 1){
             assignDirectorySpace(bytePath[bytePath.length-1], property, (byte)0, dirBlock);
@@ -375,7 +375,8 @@ public class FileUtil {
             assignDirectorySpace(bytePath[bytePath.length-1], property, (byte)1, dirBlock);
             byteContent = createByteContent(content, true);
         }
-        return writeFile(bytePath[bytePath.length-1], byteContent, property, dirBlock);
+        writeFile(bytePath[bytePath.length-1], byteContent, property, dirBlock);
+        return 0;
     }
     /**
      * @author: Vizzk
@@ -419,19 +420,24 @@ public class FileUtil {
      * @param path 目录路径
      * @return void
      */
-    public boolean makeDirectory(String path) throws Exception{
+    public int makeDirectory(String path) throws Exception{
         byte[][] bytePath = disk.formatPath(path);
         int dirBlock = this.findDirectory(Arrays.copyOf(bytePath,bytePath.length-1));
         if(dirBlock == -1){
             System.out.println("路径错误！");
-            return false;
+            return 1;
         }
 
         if(!isDirFull(dirBlock) && getContained(bytePath[bytePath.length-1], (byte)3, dirBlock) == -1){
             assignDirectorySpace(bytePath[bytePath.length-1], DIR_PROPERTY, (byte)0, dirBlock);
         }
         else{
-            return false;
+            if(isDirFull(dirBlock)){
+                return 2;
+            }
+            else{
+                return 3;
+            }
         }
         disk.writeDisk();
         diskBuffer = disk.getDisk();
@@ -442,7 +448,7 @@ public class FileUtil {
             System.out.println();
         }*/
         System.out.println("创建成功");
-        return true;
+        return 0;
     }
     /**
      * @author: Vizzk
@@ -519,7 +525,7 @@ public class FileUtil {
      * @param destPath  目标路径
      * @return boolean
      */
-    public boolean copyFile(String srcPath, String destPath) throws Exception{
+    public int copyFile(String srcPath, String destPath) throws Exception{
         String content = getFileContent(srcPath);
         return createFile(destPath,content);
     }
@@ -535,10 +541,10 @@ public class FileUtil {
         byte[] bytename = Arrays.copyOf(file,3);
         name = disk.bytesToString(bytename);
         if(file[4] == EXE_PROPERTY){
-            suffix = ".e";
+            suffix = ".exe";
         }
         if(file[4] == TXT_PROPERTY){
-            suffix = ".t";
+            suffix = ".txt";
         }
         name = name + suffix;
         return name;
@@ -586,19 +592,26 @@ public class FileUtil {
      * @param path 文件路径
      * @return boolean
      */
-    public boolean deleteAll(String path) throws Exception{
+    public int deleteAll(String path) throws Exception{
+        byte[][] bytePath = disk.formatPath(path);
+        int dirBlock = this.findDirectory(Arrays.copyOf(bytePath,bytePath.length-1));
+        if(dirBlock == -1){
+            System.out.println("路径错误！");
+            return 1;
+        }
         System.out.println(path);
         ArrayList<String> list = getDirectorys(path);
         for(int i=0; i< list.size(); i++){
             if(list.get(i).contains(".e") || list.get(i).contains(".t")){
-                deleteFile(path+"/"+list.get(i));
+                deleteFile(list.get(i));
+                System.out.println(list.get(i));
             }
             else{
-                deleteAll(path+"/"+list.get(i));
+                deleteAll(list.get(i));
             }
         }
         removeDirectory(path);
-        return true;
+        return 0;
     }
 
     public void getAllFile(String path, ArrayList<String> files){
@@ -668,6 +681,7 @@ public class FileUtil {
         int temp = fileAllocationTable.getNextBlock(index);
         while(temp != 1){
             blockList.add(temp);
+            temp = fileAllocationTable.getNextBlock(temp);
         }
         return blockList;
     }
@@ -680,7 +694,7 @@ public class FileUtil {
     public int[] getFAT(){
         byte[] bytes = new byte[256];
         for(int i=0; i<4; i++){
-            System.arraycopy(diskBuffer[0],0, bytes, i*64, 64);
+            System.arraycopy(diskBuffer[i],0, bytes, i*64, 64);
         }
         int[] fat = new int[256];
         for(int i=0; i<256; i++){

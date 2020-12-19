@@ -24,7 +24,7 @@ public class TestFile {
     @Test
     public void printFile() throws Exception{
         FileUtil fileUtil = new FileUtil();
-        String path = "/abc/abc";
+        String path = "/bcd.exe";
         String content = fileUtil.getFileContent(path);
         System.out.println(content);
     }
@@ -38,13 +38,13 @@ public class TestFile {
     @Test
     public void createfile() throws Exception{
         FileUtil fileUtil = new FileUtil();
-        String path = "/abc/def";
-        String content = "abcdefghijklnsssm";
+        String path = "/abc/def.txt";
+        String content = "abcdefghijklnsssmaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
         fileUtil.createFile(path, content);
     }
     @Test
     public void createExeFile() throws Exception{
-        File test = new File("E:\\test.txt");
+        File test = new File("H:\\test.txt");
         Reader reader = new FileReader(test);
         char[] s = new char[10000];
         reader.read(s);
@@ -52,7 +52,7 @@ public class TestFile {
         System.out.println(s1);
         FileUtil fileUtil = new FileUtil();
 
-        String path = "/bcd.e";
+        String path = "/bcd.exe";
         String content = s1;
         fileUtil.createFile(path, s1);
     }
@@ -132,7 +132,7 @@ public class TestFile {
     @Test
     public void getblocks() throws Exception{
         FileUtil fileUtil = new FileUtil();
-        String path = "/abc.e";
+        String path = "/abc/def.t";
         ArrayList<Integer> list = fileUtil.getFileBlock(path);
         for(int s:list){
             System.out.println(s);
