@@ -67,11 +67,14 @@ public class main extends JFrame {
         lb1.setBackground(Color.white);
         lb1.setFont(new Font("宋体", Font.BOLD, 14));
         button1.addMouseListener(new MouseListener() {
-            @SneakyThrows
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount()==2){
-                    new ViewInitialization();
+                    try {
+                        new ViewInitialization();
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
                 }
             }
 
@@ -113,13 +116,16 @@ public class main extends JFrame {
         lb4.setFont(new Font("宋体", Font.BOLD, 14));
         ProcessFrame processFrame = new ProcessFrame();
         button4.addMouseListener(new MouseListener() {
-            @SneakyThrows
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount()==2){
                     if (bool == true) {
                         processFrame.setVisibleTest(processFrame);
-                        ProcessFrame.test(processFrame);
+                        try {
+                            ProcessFrame.test(processFrame);
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
                         bool = false;
                     }
                     else {
