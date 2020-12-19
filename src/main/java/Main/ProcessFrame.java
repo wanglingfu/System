@@ -58,14 +58,13 @@ public class ProcessFrame extends JFrame {
         setBounds(100,20,1150,700);
         Font font = new Font("宋体", Font.BOLD, 14);
         setResizable(false);
-        setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Toolkit tk=Toolkit.getDefaultToolkit();
         Image image=tk.createImage("src/main/resources/jc.jpg");
         this.setIconImage(image);
         Container container =new Container();
         container.setLayout(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.setBackground(Color.white);
         //系统时钟
         jLabelTime.setBounds(850+50,360,100,100);
@@ -259,6 +258,7 @@ public class ProcessFrame extends JFrame {
         for (int i = 0; i < holes.size(); i++){
             Hole hole = holes.get(i);
             Button button = new Button(hole.getUid());
+            //button.set
             if (hole.isFree()){
                 button.setBackground(Color.BLACK);
             }
@@ -270,8 +270,10 @@ public class ProcessFrame extends JFrame {
             ss += hole.getSize();
         }
     }
-    public static void test() throws Exception {
-        final ProcessFrame processFrame = new ProcessFrame();
+    public static  void setVisibleTest(ProcessFrame processFrame){
+                processFrame.setVisible(true);
+    }
+    public static void test(ProcessFrame processFrame) throws Exception {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -314,6 +316,7 @@ public class ProcessFrame extends JFrame {
         },1,1,TimeUnit.SECONDS);
         int timerDelay = 10;
         new Timer(timerDelay, new ActionListener(){
+            @Override
             public void actionPerformed(ActionEvent e) {
                 CPU.lock.lock();
                 try {
