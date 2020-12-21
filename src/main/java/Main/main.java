@@ -1,5 +1,7 @@
 package Main;
 
+import frame.FileManagement.FileUtil;
+import frame.FileManagement.fileFrame.ViewInitialization;
 import frame.deviceManagement.Device;
 import frame.processManagement.PCB;
 import frame.processManagement.ProcessScheduling;
@@ -7,6 +9,7 @@ import frame.processManagement.Runnable.CPU;
 import frame.processManagement.Runnable.CreatProcess;
 import frame.processManagement.Util;
 import frame.storageManagement.Memory;
+import lombok.SneakyThrows;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,18 +18,21 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Queue;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.ReentrantLock;
 public class main extends JFrame {
 
     private static final long serialVersionUID=1L;
+    private static boolean bool = true;
     public main(){
         setResizable(false);
         setBounds(250,17,900,700);
         setTitle("Double-Z");
         setLayout(null);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
     public static void main(String[] args){
         JFrame frame = new main();
@@ -64,7 +70,11 @@ public class main extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount()==2){
-
+                    try {
+                        new ViewInitialization();
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
                 }
             }
 
@@ -90,6 +100,7 @@ public class main extends JFrame {
         });
 
         //进程管理
+
         JButton button4=new JButton();
         button4.setBounds(20, 150, 50, 50);
         ImageIcon logo4=new ImageIcon("src/main/resources/sb.jpg");
@@ -103,21 +114,23 @@ public class main extends JFrame {
         lb4.setForeground(Color.white);
         lb4.setBackground(Color.white);
         lb4.setFont(new Font("宋体", Font.BOLD, 14));
+        ProcessFrame processFrame = new ProcessFrame();
         button4.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount()==2){
-                    //  ProcessFrame processFrame = new ProcessFrame();
-                    try {
-                        ProcessFrame.test();
-                    } catch (IOException ioException) {
-                        ioException.printStackTrace();
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
+                    if (bool == true) {
+                        processFrame.setVisibleTest(processFrame);
+                        try {
+                            ProcessFrame.test(processFrame);
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
+                        bool = false;
                     }
-
-
-                    //}
+                    else {
+                        processFrame.setVisibleTest(processFrame);
+                    }
                 }
             }
 
