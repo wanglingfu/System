@@ -18,16 +18,7 @@ public class Util {
         String[] split1 = split[0].split("\n");
         byte[] bytes = new byte[split1.length];
         for (int i = 0; i < split1.length; i++) {
-            bytes[i] = compile(split1[i]);
-        }
-        return bytes;
-    }
-    public static byte[] getByteFile2(String file){
-        String[] split = file.split("d");
-        split[0] = split[0] + 'd';
-        String[] split1 = split[0].split("\r\n");
-        byte[] bytes = new byte[split1.length];
-        for (int i = 0; i < split1.length; i++) {
+            split1[i].replaceAll("\r","");
             bytes[i] = compile(split1[i]);
         }
         return bytes;
@@ -43,7 +34,7 @@ public class Util {
         for (Byte aByte : file) {
             String s = byteToString(aByte);
             stringBuilder.append(s);
-            stringBuilder.append("\r\n");
+            stringBuilder.append("\n");
         }
         return stringBuilder.toString();
     }
