@@ -1,15 +1,11 @@
 package frame.processManagement;
 
-import Main.main;
-import com.sun.xml.internal.fastinfoset.tools.XML_SAX_StAX_FI;
 import frame.deviceManagement.Device;
 import frame.storageManagement.Memory;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.UUID;
-import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * @description: 进程调度
@@ -191,15 +187,6 @@ public class ProcessScheduling {
             ints = device.removeDeviceB(pcb.getUuid());
         }else if(reason == BLOCK_C){
             ints = device.removeDeviceC(pcb.getUuid());
-        }
-;
-        /**
-         * 是否为闲置进程
-         */
-        if(runPCB.getUuid() != idlePCB.getUuid()){
-            readyPCB.add(pcb);
-        }else{
-            runPCB = pcb;
         }
         return ints;
     }
