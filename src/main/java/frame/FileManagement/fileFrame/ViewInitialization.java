@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.*;
@@ -41,11 +42,13 @@ public class ViewInitialization {
     private JPanel left;
     private JPopupMenu listPopupMenu;
     private JPopupMenu filePopupMenu;
+    private JPopupMenu rootPopupMune;
     private JTree tree;
     private DefaultMutableTreeNode selectionNode;
     private TreePath movePath;
     private FileUtil fileUtil;
     private JButton buttons[];
+
 
     private void initial() throws Exception { //初始化操作
         fileUtil=new FileUtil();
@@ -154,6 +157,12 @@ public class ViewInitialization {
         DefaultMutableTreeNode rootNode = getRootNode("root");
         selectionNode = null;// 使用根节点创建树组件
         tree = new JTree(rootNode);// 设置树显示根节点句柄
+        DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
+        renderer.setFont(new Font("Serif",Font.BOLD,20));//设置树的整体字体样式
+        renderer. setTextSelectionColor(Color.BLACK);//设置当前选中节点的文本颜色
+        renderer. setBorderSelectionColor(new Color(174,207,247));//节点具有焦点时，用于焦点指示符的颜色
+        renderer. setBackgroundSelectionColor(new Color(236,240,246));//设置节点具有焦点时的背景色
+        tree.setCellRenderer(renderer);
         tree.setShowsRootHandles(false); // 设置树节点可编辑
         tree.setEditable(false); // 设置节点选中监听器
         //tree.addMouseListener(mouseListener);  //结点拖动
@@ -182,8 +191,11 @@ public class ViewInitialization {
                     if (tree.getPathForLocation(e.getX(), e.getY()) != null
                             && tree.getPathForLocation(e.getX(), e.getY()) == tree.getSelectionPath()) {
                         //右键打开菜单项,判断是文件还是目录
-                        if (isFile(selectionNode))
-                            filePopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                        if(getPathString(selectionNode)==""){
+                            rootPopupMune.show(e.getComponent(), e.getX(), e.getY());
+                        }
+                        else if (isFile(selectionNode))
+                             filePopupMenu.show(e.getComponent(), e.getX(), e.getY());
                         else listPopupMenu.show(e.getComponent(), e.getX(), e.getY());
                     } else {
                         selectionNode = null;
@@ -219,7 +231,7 @@ public class ViewInitialization {
     }
 
 
-    private DefaultMutableTreeNode getRootNode(String root) {  //通过根目录路径构建路径树，然后返回该树的根结点
+    private DefaultMutableTreeNode getRootNode(String root){  //通过根目录路径构建路径树，然后返回该树的根结点
         Queue<String> stringQueue=new LinkedList<String>();
         Queue<DefaultMutableTreeNode> nodeQueue=new LinkedList<DefaultMutableTreeNode>();
         stringQueue.offer(root);
@@ -241,6 +253,7 @@ public class ViewInitialization {
                         DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(s);
                         if((s.contains(".txt"))||(s.contains(".exe"))) //如果是文件结点，不允许其有孩子
                             childNode.setAllowsChildren(false);
+
                         nodeQueue.offer(childNode);
                         nowNode.add(childNode);
                     }
@@ -253,6 +266,9 @@ public class ViewInitialization {
     private void menuItemProcessing() { //菜单项设置
         listPopupMenu = new JPopupMenu();
         filePopupMenu = new JPopupMenu();
+        rootPopupMune=new JPopupMenu();
+        rootPopupMune.add(createMenuItem("新建目录", "新建目录"));
+        rootPopupMune.add(createMenuItem("新建文件", "新建文件"));
         listPopupMenu.add(createMenuItem("新建目录", "新建目录"));
         listPopupMenu.add(createMenuItem("新建文件", "新建文件"));
         listPopupMenu.add(createMenuItem("删除", "删除"));
@@ -295,23 +311,22 @@ public class ViewInitialization {
                 showDirectoryCreation();
             }
             else if (action.equals("新建文件")) {
-                try {
                     showFileCreation(jf, contentPane);
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
             }
             else if (action.equals("删除")) {
                 try {
+                    if(getPathString(selectionNode)==""){
+
+                    }
                     deleteItem();
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
-            } else if (action.equals("目录属性")) {
+            } else if (action.equals("目录属性")){
                 System.out.println(getPathString(selectionNode));
-            } else if (action.equals("打开文件")) {
+            } else if (action.equals("打开文件")){
                 showTxtFile(jf, contentPane);
-            } else if (action.equals("文件属性")) {
+            } else if (action.equals("文件属性")){
                 System.out.println(getPathString(selectionNode));
             }
         }
@@ -369,7 +384,9 @@ public class ViewInitialization {
         JLabel label4 = new JLabel("(文本名称不大于3个字符)"); label4.setFont(new Font("黑体",Font.PLAIN,14));
         JTextArea textArea=new JTextArea("默认内容"); textArea.setFont(new Font("宋体",Font.BOLD,16));
         textArea.setLineWrap(true);  //自动换行
-        JScrollPane scrollPane=new JScrollPane();
+        JScrollPane scrollPane = new JScrollPane(textArea,ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setViewportView(textArea);
+
         JTextField nameField=new JTextField(); nameField.setFont(new Font("宋体",Font.BOLD,16));
         JButton saveButton = new JButton("创建");
         JButton cancleButton = new JButton("取消");
@@ -380,7 +397,7 @@ public class ViewInitialization {
         radioBtn01.setBounds(80,80,50,30);
         radioBtn02.setBounds(170,80,50,30);
         nameField.setBounds(80,30,140,30);
-        textArea.setBounds(80,130,220,100);
+        scrollPane.setBounds(80,130,220,100);
         saveButton.setBounds(70, 250, 70, 30);
         cancleButton.setBounds(270, 250, 70, 30);
         mainPanel.add(saveButton);
@@ -392,7 +409,7 @@ public class ViewInitialization {
         mainPanel.add(radioBtn01);
         mainPanel.add(radioBtn02);
         mainPanel.add(nameField);
-        mainPanel.add(textArea);
+        mainPanel.add(scrollPane);
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {  //创建
