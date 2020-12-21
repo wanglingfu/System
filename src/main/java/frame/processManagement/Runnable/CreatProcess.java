@@ -2,8 +2,8 @@ package frame.processManagement.Runnable;
 
 import frame.FileManagement.FileUtil;
 import frame.processManagement.ProcessScheduling;
+import frame.processManagement.Util;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -69,8 +69,11 @@ public class CreatProcess{
                 i = random.nextInt(file.size()) ;
             }
             String fileContent = fileUtil.getFileContent(file.get(i));
-            byte[] byteContent = fileUtil.createByteContent(fileContent, true);
-            boolean b = processScheduling.create(byteContent);
+            byte[] byteFile = Util.getByteFile(fileContent);
+            for (byte b : byteFile) {
+                System.out.println(Util.byteToString(b));
+            }
+            boolean b = processScheduling.create(byteFile);
             if(b){
                 file.remove(i);
                 flag--;

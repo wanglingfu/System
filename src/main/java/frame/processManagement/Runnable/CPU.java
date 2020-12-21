@@ -169,6 +169,7 @@ public class CPU{
         PC = pcb.getPC();
         file = pcb.getFile();
         uuid = pcb.getUuid();
+        TimeSlice = 6;
     }
 
     /**
@@ -189,7 +190,6 @@ public class CPU{
             * 一个系统时间执行一条指令
             */
            if (processScheduling.getRunPCB().getUuid() != uuid) {
-               TimeSlice = 6;
                recovery(processScheduling.getRunPCB());
            }
 
@@ -204,7 +204,6 @@ public class CPU{
                    PSW = 0;
                    finalAX = processScheduling.getRunPCB().getAX();
                    processScheduling.destroy();
-                   TimeSlice = 6;
                    recovery(processScheduling.getRunPCB());
                    flag--;
                    break;
@@ -216,7 +215,6 @@ public class CPU{
                    PSW = 0;
                    processScheduling.setRunPCB(preservation(processScheduling.getRunPCB()));
                    processScheduling.util(2);
-                   TimeSlice = 6;
                    recovery(processScheduling.getRunPCB());
                    break;
                }
@@ -268,24 +266,7 @@ public class CPU{
            /**
             * 确认是否为闲置进程
             */
-           if (processScheduling.getRunPCB().getUuid() != processScheduling.getIdlePCB().getUuid() && file != null && PC < file.length) {
-               /**
-                * 编码规则：
-                * x++:00000000
-                * x—:00100000
-                * !A?:01000xxx
-                * !B?:01001xxx
-                * !C?:01010xxx
-                * end:01100000
-                * x=?:1xxxxxxx
-                * 特殊：
-                * !A8:00001000
-                * !A9:00001001
-                * !B8:00011000
-                * !B9:00011001
-                * !C8:00101000
-                * !C9:00101001
-                */
+           if (processScheduling.getRunPCB().getUuid() != processScheduling.getIdlePCB().getUuid()) {
                int i = file[PC];
                PC++;
                //x++指令
@@ -300,7 +281,6 @@ public class CPU{
                }
                //end指令
                else if (i == 96) {
-                   System.out.println("end");
                    PSW = 1;
                    finalAX = AX;
                    IR = "end";
@@ -345,7 +325,6 @@ public class CPU{
                        }
                        IR = "!C" + time[code];
                    }
-                   TimeSlice = 6;
                    recovery(processScheduling.getRunPCB());
                }
            }
@@ -360,6 +339,15 @@ public class CPU{
                 int[] awake = processScheduling.awake(remove);
                 if(awake != null) {
                     DeviceTime[awake[0] - 1] = awake[1];
+                }
+                /**
+                 * 是否为闲置进程
+                 */
+                if(processScheduling.getRunPCB().getUuid() != processScheduling.getIdlePCB().getUuid()){
+                    processScheduling.getReadyPCB().add(remove);
+                }else{
+                    processScheduling.setRunPCB(remove);
+                    recovery(remove);
                 }
                 break;
             }
