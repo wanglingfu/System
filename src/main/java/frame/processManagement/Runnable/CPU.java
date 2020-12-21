@@ -265,13 +265,10 @@ public class CPU{
                default:
                    break;
            }
-           if(processScheduling.getRunPCB().getUuid() != processScheduling.getIdlePCB().getUuid() && PC >= file.length){
-               setPSW(1);
-           }
            /**
             * 确认是否为闲置进程
             */
-           if (processScheduling.getRunPCB().getUuid() != processScheduling.getIdlePCB().getUuid() && file != null && PC < file.length) {
+           if (processScheduling.getRunPCB().getUuid() != processScheduling.getIdlePCB().getUuid()) {
                /**
                 * 编码规则：
                 * x++:00000000
@@ -363,6 +360,7 @@ public class CPU{
                 if(awake != null) {
                     DeviceTime[awake[0] - 1] = awake[1];
                 }
+                recovery(processScheduling.getRunPCB());
                 break;
             }
         }

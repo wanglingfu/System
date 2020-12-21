@@ -129,7 +129,7 @@ public class ProcessScheduling {
     /**
      * 创建进程
      */
-    public synchronized boolean create(byte[] file){
+    public boolean create(byte[] file){
         if(ProcessNum < MAX_NUM){
             PCB pcb = new PCB(file);
             int size = 0;
@@ -157,7 +157,7 @@ public class ProcessScheduling {
     /**
      * 销毁进程
      */
-    public synchronized void destroy(){
+    public void destroy(){
         memory.releaseMemory(runPCB.getUuid());
         util(0);
         ProcessNum--;
@@ -166,7 +166,7 @@ public class ProcessScheduling {
     /**
      * 阻塞进程
      */
-    public synchronized int block(String reason){
+    public int block(String reason){
         int deviceTime = 9;
         if(reason == BLOCK_A){
             deviceTime = device.getDeviceA(runPCB.getUuid(),runPCB.getTime(),runPCB.getFile().length);
@@ -182,7 +182,7 @@ public class ProcessScheduling {
     /**
      * 唤醒进程
      */
-    public synchronized int[] awake(PCB pcb){
+    public int[] awake(PCB pcb){
         String reason = pcb.getReason();
         int[] ints = new int[0];
         if(reason == BLOCK_A){

@@ -70,7 +70,7 @@ public class CreatProcess{
                 i = random.nextInt(file.size()) ;
             }
             String fileContent = fileUtil.getFileContent(file.get(i));
-            byte[] byteFile = Util.getByteFile2(fileContent);
+            byte[] byteFile = Util.getByteFile(fileContent);
             for (byte b : byteFile) {
                 System.out.println(Util.byteToString(b));
             }
