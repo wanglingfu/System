@@ -265,6 +265,9 @@ public class CPU{
                default:
                    break;
            }
+           if(processScheduling.getRunPCB().getUuid() != processScheduling.getIdlePCB().getUuid() && PC >= file.length){
+               setPSW(1);
+           }
            /**
             * 确认是否为闲置进程
             */
@@ -300,7 +303,6 @@ public class CPU{
                }
                //end指令
                else if (i == 96) {
-                   System.out.println("end");
                    PSW = 1;
                    finalAX = AX;
                    IR = "end";
