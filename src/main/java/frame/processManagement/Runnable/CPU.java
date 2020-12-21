@@ -300,7 +300,6 @@ public class CPU{
                }
                //end指令
                else if (i == 96) {
-                   System.out.println("end");
                    PSW = 1;
                    finalAX = AX;
                    IR = "end";

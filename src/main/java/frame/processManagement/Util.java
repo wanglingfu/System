@@ -13,9 +13,9 @@ public class Util {
      * @return
      */
     public static byte[] getByteFile(String file){
+        System.out.println(file);
         String[] split = file.split("d");
         split[0] = split[0] + 'd';
-        System.out.println(split[0]);
         String[] split1 = split[0].split("\r\n");
         byte[] bytes = new byte[split1.length];
         for (int i = 0; i < split1.length; i++) {
