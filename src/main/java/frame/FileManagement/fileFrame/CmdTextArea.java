@@ -38,27 +38,68 @@ public class CmdTextArea extends JTextArea implements KeyListener,    //命令�
                     this.append("Please Input \"cmd\" To Get Administrator Permissions >");
                 }
                 else if(input.startsWith("create")){
-                    String path=input.substring(input.indexOf('/')+1,input.length());
-                    //if(path.substring(last))
+                    String path=getPath(input);
+                    if(path==null){ //格式错误
+                        this.append("Invalid instructions\n");
+                        this.append("C:\\Users\\James>");
+                    }
+                    else{
+
+                    }
                 }
                 else if(input.startsWith("delete")){
-                    String path=input.substring(input.indexOf('/')+1,input.length());
+                    String path=getPath(input);
+                    if(path==null){ //格式错误
+                        this.append("Invalid instructions\n");
+                        this.append("C:\\Users\\James>");
+                    }
+                    else{
+
+                    }
 
                 }
                 else if(input.startsWith("open")){
-                    String path=input.substring(input.indexOf('/')+1,input.length());
+                    String path=getPath(input);
+                    if(path==null){ //格式错误
+                        this.append("Invalid instructions\n");
+                        this.append("C:\\Users\\James>");
+                    }
+                    else{
+
+                    }
 
                 }
                 else if(input.startsWith("copy")){
-                    String path=input.substring(input.indexOf('/')+1,input.length());
+                    String path=getPath(input);
+                    if(path==null){ //格式错误
+                        this.append("Invalid instructions\n");
+                        this.append("C:\\Users\\James>");
+                    }
+                    else{
+
+                    }
 
                 }
                 else if(input.startsWith("makedir")){
-                    String path=input.substring(input.indexOf('/')+1,input.length());
+                    String path=getPath(input);
+                    if(path==null){ //格式错误
+                        this.append("Invalid instructions\n");
+                        this.append("C:\\Users\\James>");
+                    }
+                    else{
+
+                    }
 
                 }
                 else if(input.startsWith("remove")){
-                    String path=input.substring(input.indexOf('/')+1,input.length());
+                    String path=getPath(input);
+                    if(path==null){ //格式错误
+                        this.append("Invalid instructions\n");
+                        this.append("C:\\Users\\James>");
+                    }
+                    else{
+
+                    }
 
                 }
                 else{
@@ -123,12 +164,37 @@ public class CmdTextArea extends JTextArea implements KeyListener,    //命令�
         permission=!permission;
     }
 
-    private boolean getPath(String path){  //获取类似“ /abc/aaa”字符串
-        //先删除前边空格，循环做一个算法判断是不是/abc/aaa的形式（不能同时多个//）
-        path.replaceAll(" ","");
-        for(int i=0;i<path.length();i++){
-           // if(Character.isLetter(path.charAt(i))||path.charAt(i)=='/')
 
+    public static String getPath(String withBlankPath){  //格式正确返回路径，错误返回null
+        String str1=withBlankPath.substring(0,withBlankPath.lastIndexOf(" "));
+        String path=withBlankPath.substring(str1.length()+1,withBlankPath.length());
+        System.out.println(path);
+        char[] chars = path.toCharArray();
+        if (chars.length == 0){
+            return null;
+        }
+        if (chars[0]!='/'){
+            return null;
+        }
+        for (int i = 1; i < chars.length; i++) {
+            if(isLetter(chars[i])){
+                continue;
+            }else if(chars[i] == '/'){
+                if(i+1 < chars.length && isLetter(chars[i+1])){
+                    i++;
+                    continue;
+                }else{
+                    return null;
+                }
+            }else{
+                return null;
+            }
+        }
+        return path;
+    }
+    public static boolean isLetter(char a){
+        if(a >= 'A' && a <= 'Z' || a >= 'a' && a <= 'z'){
+            return true;
         }
         return false;
     }
