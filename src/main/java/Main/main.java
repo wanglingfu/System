@@ -9,7 +9,6 @@ import frame.processManagement.Runnable.CPU;
 import frame.processManagement.Runnable.CreatProcess;
 import frame.processManagement.Util;
 import frame.storageManagement.Memory;
-import lombok.SneakyThrows;
 
 import javax.swing.*;
 import java.awt.*;

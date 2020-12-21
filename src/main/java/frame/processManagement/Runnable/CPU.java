@@ -19,7 +19,7 @@ public class CPU{
     /**
      * 中断标志寄存器
      */
-    private Integer PSW = 0;
+    private int[] PSW = {0,0,0};
     /**
      * 指令寄存器
      */
@@ -79,14 +79,6 @@ public class CPU{
 
     public void setAX(Integer AX) {
         this.AX = AX;
-    }
-
-    public Integer getPSW() {
-        return PSW;
-    }
-
-    public void setPSW(Integer PSW) {
-        this.PSW = PSW;
     }
 
     public String getIR() {
@@ -196,72 +188,14 @@ public class CPU{
            /**
             * 判断中断
             */
-           switch (PSW) {
-               /**
-                * 程序停止
-                */
-               case 1: {
-                   PSW = 0;
-                   finalAX = processScheduling.getRunPCB().getAX();
-                   processScheduling.destroy();
-                   recovery(processScheduling.getRunPCB());
-                   flag--;
-                   break;
-               }
-               /**
-                * 时间片结束
-                */
-               case 2: {
-                   PSW = 0;
-                   processScheduling.setRunPCB(preservation(processScheduling.getRunPCB()));
-                   processScheduling.util(2);
-                   recovery(processScheduling.getRunPCB());
-                   break;
-               }
-               /**
-                * 设备中断
-                */
-               case 3: {
-                   PSW = 0;
-                   /**
-                    * 判断哪个设备已使用完
-                    */
-                   if (DeviceTime[0] == 0) {
-                       String a1 = processScheduling.getDevice().getDeviceTable().getA1();
-                       PSW3(a1);
-                   }
-                   if (DeviceTime[1] == 0) {
-                       String a2 = processScheduling.getDevice().getDeviceTable().getA2();
-                       PSW3(a2);
-                   }
-                   if (DeviceTime[2] == 0) {
-                       String b1 = processScheduling.getDevice().getDeviceTable().getB1();
-                       PSW3(b1);
-                   }
-                   if (DeviceTime[3] == 0) {
-                       String b2 = processScheduling.getDevice().getDeviceTable().getB2();
-                       PSW3(b2);
-                   }
-                   if (DeviceTime[4] == 0) {
-                       String b3 = processScheduling.getDevice().getDeviceTable().getB3();
-                       PSW3(b3);
-                   }
-                   if (DeviceTime[5] == 0) {
-                       String c1 = processScheduling.getDevice().getDeviceTable().getC1();
-                       PSW3(c1);
-                   }
-                   if (DeviceTime[6] == 0) {
-                       String c2 = processScheduling.getDevice().getDeviceTable().getC2();
-                       PSW3(c2);
-                   }
-                   if (DeviceTime[7] == 0) {
-                       String c3 = processScheduling.getDevice().getDeviceTable().getC3();
-                       PSW3(c3);
-                   }
-                   break;
-               }
-               default:
-                   break;
+           if(PSW[0] == 1){
+               psw1();
+           }
+           if(PSW[1] == 1){
+               psw2();
+           }
+           if(PSW[2] == 1){
+               psw3();
            }
            /**
             * 确认是否为闲置进程
@@ -281,7 +215,7 @@ public class CPU{
                }
                //end指令
                else if (i == 96) {
-                   PSW = 1;
+                   PSW[0] = 1;
                    finalAX = AX;
                    IR = "end";
                }
@@ -332,7 +266,69 @@ public class CPU{
            lock.unlock();
        }
     }
-    private void PSW3(String uuid){
+
+    /**
+     * 进程终止
+     */
+    private void psw1(){
+        PSW[0] = 0;
+        finalAX = processScheduling.getRunPCB().getAX();
+        processScheduling.destroy();
+        recovery(processScheduling.getRunPCB());
+        flag--;
+    }
+
+    /**
+     * 进程时间片结束
+     */
+    private void psw2(){
+        PSW[1] = 0;
+        processScheduling.setRunPCB(preservation(processScheduling.getRunPCB()));
+        processScheduling.util(2);
+        recovery(processScheduling.getRunPCB());
+    }
+    /**
+     * 进程中断
+     */
+    private void psw3(){
+        PSW[2] = 0;
+        /**
+         * 判断哪个设备已使用完
+         */
+        if (DeviceTime[0] == 0) {
+            String a1 = processScheduling.getDevice().getDeviceTable().getA1();
+            psw3Util(a1);
+        }
+        if (DeviceTime[1] == 0) {
+            String a2 = processScheduling.getDevice().getDeviceTable().getA2();
+            psw3Util(a2);
+        }
+        if (DeviceTime[2] == 0) {
+            String b1 = processScheduling.getDevice().getDeviceTable().getB1();
+            psw3Util(b1);
+        }
+        if (DeviceTime[3] == 0) {
+            String b2 = processScheduling.getDevice().getDeviceTable().getB2();
+            psw3Util(b2);
+        }
+        if (DeviceTime[4] == 0) {
+            String b3 = processScheduling.getDevice().getDeviceTable().getB3();
+            psw3Util(b3);
+        }
+        if (DeviceTime[5] == 0) {
+            String c1 = processScheduling.getDevice().getDeviceTable().getC1();
+            psw3Util(c1);
+        }
+        if (DeviceTime[6] == 0) {
+            String c2 = processScheduling.getDevice().getDeviceTable().getC2();
+            psw3Util(c2);
+        }
+        if (DeviceTime[7] == 0) {
+            String c3 = processScheduling.getDevice().getDeviceTable().getC3();
+            psw3Util(c3);
+        }
+    }
+    private void psw3Util(String uuid){
         for (int i = 0; i < processScheduling.getBlockPCB().size(); i++) {
             if(processScheduling.getBlockPCB().get(i).getUuid() == uuid){
                 PCB remove = processScheduling.getBlockPCB().remove(i);
@@ -353,6 +349,9 @@ public class CPU{
             }
         }
     }
+    /**
+     * 时间运行函数
+     */
     public void time(){
         lock.lock();
         SystemTime++;
@@ -361,13 +360,13 @@ public class CPU{
         }
         if (TimeSlice == 0) {
             TimeSlice = 6;
-            setPSW(2);
+            PSW[1] = 1;
         }
         if (DeviceTime != null) {
             for (int i = 0; i < DeviceTime.length; i++) {
                 DeviceTime[i]--;
                 if (DeviceTime[i] == 0) {
-                    setPSW(3);
+                    PSW[2] = 1;
                 }
             }
         }
