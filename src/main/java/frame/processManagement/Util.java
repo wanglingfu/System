@@ -13,7 +13,16 @@ public class Util {
      * @return
      */
     public static byte[] getByteFile(String file){
-        System.out.println(file);
+        String[] split = file.split("d");
+        split[0] = split[0] + 'd';
+        String[] split1 = split[0].split("\n");
+        byte[] bytes = new byte[split1.length];
+        for (int i = 0; i < split1.length; i++) {
+            bytes[i] = compile(split1[i]);
+        }
+        return bytes;
+    }
+    public static byte[] getByteFile2(String file){
         String[] split = file.split("d");
         split[0] = split[0] + 'd';
         String[] split1 = split[0].split("\r\n");
@@ -98,31 +107,31 @@ public class Util {
          * !C8:00101000
          * !C9:00101001
          */
-        if (IR.equals("x++")) {
+        if (IR.equals("x++") || IR.equals("X++")) {
             return 0;
-        }else if (IR.equals("x--")) {
+        }else if (IR.equals("x--")||IR.equals("X--")) {
             return 32;
-        }else if (IR.equals("end")) {
+        }else if (IR.equals("end")||IR.equals("END")) {
             return 96;
         }else if (chars[0] == '!') {
             if(chars[2] == '8' || chars[2] == '9'){
                 int b = 0;
-                if(chars[1] == 'A') {
+                if(chars[1] == 'A' || chars[1] == 'a') {
                     b = 0;
-                } else if (chars[1] == 'B') {
+                } else if (chars[1] == 'B' || chars[1] == 'b') {
                     b = 16;
-                } else if (chars[1] == 'C') {
+                } else if (chars[1] == 'C' || chars[1] == 'c') {
                     b = 32;
                 }
                 b = b + chars[2] - '0' ;
                 return (byte) b;
             }else{
                 int b = 64;
-                if(chars[1] == 'A') {
+                if(chars[1] == 'A' || chars[1] == 'a')  {
                     b+=0;
-                } else if (chars[1] == 'B') {
+                } else if (chars[1] == 'B' || chars[1] == 'b') {
                     b+=8;
-                } else if (chars[1] == 'C') {
+                } else if (chars[1] == 'C' || chars[1] == 'c') {
                     b+=16;
                 }
                 b = b + chars[2] - '0';

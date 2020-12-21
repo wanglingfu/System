@@ -265,6 +265,9 @@ public class CPU{
                default:
                    break;
            }
+           if(processScheduling.getRunPCB().getUuid() != processScheduling.getIdlePCB().getUuid() && PC >= file.length){
+               setPSW(1);
+           }
            /**
             * 确认是否为闲置进程
             */

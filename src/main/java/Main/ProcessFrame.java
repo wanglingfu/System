@@ -285,12 +285,12 @@ public class ProcessFrame extends JFrame {
             System.out.println(e);
         }
 
-        final Memory memory = new Memory(512);
-        final Device device = new Device();
-        final ProcessScheduling processScheduling = new ProcessScheduling(memory,device);
-        final FileUtil fileUtil = new FileUtil();
+        Memory memory = new Memory(512);
+        Device device = new Device();
+        ProcessScheduling processScheduling = new ProcessScheduling(memory,device);
+        FileUtil fileUtil = new FileUtil();
         ArrayList<String> exeFiles = fileUtil.getExeFiles();
-        final CPU cpu = new CPU(exeFiles.size(), processScheduling,processScheduling.getIdlePCB().getUuid());
+        CPU cpu = new CPU(exeFiles.size(), processScheduling,processScheduling.getIdlePCB().getUuid());
         CreatProcess creatProcess = new CreatProcess(exeFiles,processScheduling,fileUtil);
         ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
                 2,
