@@ -22,14 +22,14 @@ public class ViewInitialization {
 
     public ViewInitialization() throws Exception {
         jf = new JFrame("文件资源管理器");
-        jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        jf.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         jf.setLocationRelativeTo(null);
         jf.pack();
-        jf.setVisible(true);
+        jf.setVisible(false);
         surface(1800, 1000, jf);
     }
 
-    private JFrame jf;
+    private static JFrame jf;
     private JPanel contentPane;
     private JMenuBar menu;
     private JButton button1;
@@ -134,6 +134,9 @@ public class ViewInitialization {
         }
     }
 
+    public static void t(){
+        jf.setVisible(true);
+    }
 
     private JComponent command(){
         commandLine=new JPanel(new BorderLayout());

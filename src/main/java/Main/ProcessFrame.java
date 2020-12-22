@@ -29,6 +29,8 @@ import java.util.concurrent.*;
  * @Version 1.0
  **/
 public class ProcessFrame extends JFrame {
+    private static Timer timer;
+    public static int bool = 0;
     private static final long serialVersionUID = 1L;
     private static int dp_method=0;
     private final JLabel jLabelTime =new JLabel();  //系统时钟
@@ -315,9 +317,10 @@ public class ProcessFrame extends JFrame {
             cpu.time();
         },1,1,TimeUnit.SECONDS);
         int timerDelay = 10;
-        new Timer(timerDelay, new ActionListener(){
+         timer = new Timer(timerDelay, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                bool = 0;
                 CPU.lock.lock();
                 try {
                     CPU.condition2.await();
@@ -327,11 +330,16 @@ public class ProcessFrame extends JFrame {
                 processFrame.printScreen(String.valueOf(cpu.SystemTime), String.valueOf(cpu.TimeSlice), String.valueOf(cpu.getAX()), cpu.getIR(), String.valueOf(cpu.getFinalAX()), device.getDeviceTable().toString(), processScheduling.getRunPCB().getUuid());
                 processFrame.printScreen2(processScheduling);
                 processFrame.printScreen4(memory.getHoles());
-                processFrame.printScreen3(device.getDeviceTable().getA1(),cpu.DeviceTime[0],device.getDeviceTable().getA2(),cpu.DeviceTime[1],device.getDeviceTable().getB1(),cpu.DeviceTime[2],device.getDeviceTable().getB2(),cpu.DeviceTime[3],device.getDeviceTable().getB3(),cpu.DeviceTime[4],device.getDeviceTable().getC1(),
-                        cpu.DeviceTime[5],device.getDeviceTable().getC2(),cpu.DeviceTime[6],device.getDeviceTable().getC3(),cpu.DeviceTime[7]);
+                processFrame.printScreen3(device.getDeviceTable().getA1(), cpu.DeviceTime[0], device.getDeviceTable().getA2(), cpu.DeviceTime[1], device.getDeviceTable().getB1(), cpu.DeviceTime[2], device.getDeviceTable().getB2(), cpu.DeviceTime[3], device.getDeviceTable().getB3(), cpu.DeviceTime[4], device.getDeviceTable().getC1(),
+                        cpu.DeviceTime[5], device.getDeviceTable().getC2(), cpu.DeviceTime[6], device.getDeviceTable().getC3(), cpu.DeviceTime[7]);
                 CPU.lock.unlock();
+                if(cpu.getFlag() == 0){
+                    bool = 1;
+                    timer.stop();
+                }
             }
-        }).start();
+        });
+        timer.start();
     }
 
 }

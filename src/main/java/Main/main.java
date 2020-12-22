@@ -33,7 +33,7 @@ public class main extends JFrame {
         setLayout(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
-    public static void main(String[] args){
+    public static void main(String[] args) throws Exception {
         JFrame frame = new main();
         String plaf="com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
         try{
@@ -65,12 +65,14 @@ public class main extends JFrame {
         lb1.setForeground(Color.white);
         lb1.setBackground(Color.white);
         lb1.setFont(new Font("宋体", Font.BOLD, 14));
+        ViewInitialization v  =new ViewInitialization();
+
         button1.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount()==2){
                     try {
-                        new ViewInitialization();
+                        v.t();
                     } catch (Exception exception) {
                         exception.printStackTrace();
                     }
@@ -118,7 +120,7 @@ public class main extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount()==2){
-                    if (bool == true) {
+                    if (bool == true || ProcessFrame.bool == 1) {
                         processFrame.setVisibleTest(processFrame);
                         try {
                             ProcessFrame.test(processFrame);
