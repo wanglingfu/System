@@ -143,32 +143,160 @@ public class ViewInitialization {
                 currentKeyCode=cmdTextArea.getCurrentKeyCode();
                 //System.out.println(currentKeyCode);
                 if (currentKeyCode == KeyEvent.VK_ENTER){
-                    System.out.println("View");
-                    System.out.println("操作是"+cmdTextArea.getWork());
+                    //System.out.println("View");
+                    //System.out.println("操作是"+cmdTextArea.getWork());
                     if(cmdTextArea.getWork()=="create"){
                         System.out.println(cmdTextArea.getPathString());
                         try {
                             String path=cmdTextArea.getPathString();
+                            System.out.println(path);
                             if(!path.contains(".txt")&&!path.contains(".exe"))
                                 path=path+".txt";
-                            setSelectionNode(path);  //先选中要添加子结点的结点
-                            int p = addFile(path,"default");
-                            switch (p){
-                                case 0:
-                                    updateImage();
-                                    view.updateUI();
-                                    cmdTextArea.append("创建成功！\n");
-                                    break;
-                                case 1:cmdTextArea.append("Please Input correct path!\n"); break;
-                                case 2:cmdTextArea.append("Full disk,failure to add\n"); break;
-                                case 3:cmdTextArea.append("There is also file of the same name and type,failure to add\n");
+                            if(!setSelectionNode(path,1)){ //先选中要添加子结点的结点,并判断输入路径是否正确
+                                cmdTextArea.append("Please Input correct path!\n");
+                                cmdTextArea.append("C:\\Users\\James>");
+                                cmdTextArea.emptyWork();
                             }
-                            cmdTextArea.append("C:\\Users\\James>");
-                            cmdTextArea.emptyWork();
+                            else{
+                                int p = addFile(path,"default");
+                                switch (p){
+                                    case 0:
+                                        cmdTextArea.append("创建成功！\n");
+                                        break;
+                                    case 1:cmdTextArea.append("Please Input correct path!\n"); break;
+                                    case 2:cmdTextArea.append("Full disk,failure to add\n"); break;
+                                    case 3:cmdTextArea.append("There is also file of the same name and type,failure to add\n");
+                                }
+                                cmdTextArea.append("C:\\Users\\James>");
+                                cmdTextArea.emptyWork();
+                            }
                         } catch (Exception exception) {
                             exception.printStackTrace();
                         }
                     }
+                    else if(cmdTextArea.getWork()=="delete"){
+                        try {
+                            String path=cmdTextArea.getPathString();
+                            if(!setSelectionNode(path,0)){  //先选中要添加子结点的结点
+                                cmdTextArea.append("Please Input correct path!\n");
+                                cmdTextArea.append("C:\\Users\\James>");
+                                cmdTextArea.emptyWork();
+                            }
+                            else{
+                                boolean t = deleteItem(path);
+                                if (t == true) {
+                                    cmdTextArea.append("删除成功！\n");
+                                } else {
+                                    cmdTextArea.append("Please Input correct path!\n");
+                                }
+                                cmdTextArea.append("C:\\Users\\James>");
+                                cmdTextArea.emptyWork();
+                            }
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
+                    }
+                    else if(cmdTextArea.getWork()=="open"){
+                            String path=cmdTextArea.getPathString();
+                            if(!setSelectionNode(path,0)){  //先选中要添加子结点的结点
+                                cmdTextArea.append("Please Input correct path!\n");
+                                cmdTextArea.append("C:\\Users\\James>");
+                                cmdTextArea.emptyWork();
+                            }
+                            else{
+                                showTxtFile(jf,contentPane);
+                                cmdTextArea.append("C:\\Users\\James>");
+                                cmdTextArea.emptyWork();
+                            }
+                    }
+                    else if(cmdTextArea.getWork()=="copy"){  //path为“文件路径to目录路径”的形式
+                        try {
+                            String []paths=cmdTextArea.getPathString().split("to");
+                            String filePath=paths[0];
+                            String dirPath=paths[1];
+                            if((!filePath.contains(".txt")&&!filePath.contains(".exe"))||
+                                    dirPath.contains(".txt")||dirPath.contains(".exe")||
+                                    !setSelectionNode(filePath,0)||!setSelectionNode(dirPath,0)){
+                                cmdTextArea.append("Please Input correct path!\n");
+                                cmdTextArea.append("C:\\Users\\James>");
+                                cmdTextArea.emptyWork();
+                            }
+                            else{
+                                String content =fileUtil.getFileContent(filePath);
+                                String fileName=filePath.substring(filePath.lastIndexOf("/")+1,filePath.length());
+                                int p=addFile(dirPath+"/"+fileName,content);
+                                switch (p){
+                                    case 0:
+                                        setSelectionNode(dirPath+"/"+fileName,0);
+                                        cmdTextArea.append("复制成功！\n");
+                                        break;
+                                    case 1:cmdTextArea.append("Please Input correct path!\n"); break;
+                                    case 2:cmdTextArea.append("Full disk,failure to add\n"); break;
+                                    case 3:cmdTextArea.append("There is also file of the same name and type,failure to add\n");
+                                }
+                                cmdTextArea.append("C:\\Users\\James>");
+                                cmdTextArea.emptyWork();
+                            }
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
+                    }
+                    else if(cmdTextArea.getWork()=="mkdir"){
+                        try {
+                            String path=cmdTextArea.getPathString();
+                            if(!setSelectionNode(path,1)){  //先选中要添加子结点的结点
+                                cmdTextArea.append("Please Input correct path!\n");
+                                cmdTextArea.append("C:\\Users\\James>");
+                                cmdTextArea.emptyWork();
+                            }
+                            else{
+                                int p = addDirectory(path.substring(path.lastIndexOf("/")+1,path.length()));
+                                switch (p){
+                                    case 0:
+                                        cmdTextArea.append("创建成功！\n");
+                                        break;
+                                    case 1:cmdTextArea.append("Please Input correct path!\n"); break;
+                                    case 2:cmdTextArea.append("Full disk,failure to add\n"); break;
+                                    case 3:cmdTextArea.append("There is also file of the same name and type,failure to add\n");
+                                }
+                                cmdTextArea.append("C:\\Users\\James>");
+                                cmdTextArea.emptyWork();
+                            }
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
+                    }
+                    else if(cmdTextArea.getWork()=="rmdir"){
+                        try {
+                            String path=cmdTextArea.getPathString();
+                            if(!setSelectionNode(path,0)){  //先选中要添加子结点的结点
+                                cmdTextArea.append("Please Input correct path!\n");
+                                cmdTextArea.append("C:\\Users\\James>");
+                                cmdTextArea.emptyWork();
+                            }
+                            else{
+                                if(selectionNode.getChildCount()>0){  //非空目录
+                                    cmdTextArea.append("The disk is not empty,failure to remove!\n");
+                                    cmdTextArea.append("C:\\Users\\James>");
+                                    cmdTextArea.emptyWork();
+                                }
+                                else{
+                                    boolean t = deleteItem(path);
+                                    if (t == true) {
+                                        cmdTextArea.append("删除成功！\n");
+                                    } else {
+                                        cmdTextArea.append("Please Input correct path!\n");
+                                    }
+                                    cmdTextArea.append("C:\\Users\\James>");
+                                    cmdTextArea.emptyWork();
+                                }
+                            }
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
+                    }
+                    updateImage();
+                    view.updateUI();
                 }
             }
         });
@@ -200,13 +328,6 @@ public class ViewInitialization {
         tree.setCellRenderer(renderer);
         tree.setShowsRootHandles(false); // 设置树节点可编辑
         tree.setEditable(false); // 设置节点选中监听器
-        //tree.addMouseListener(mouseListener);  //结点拖动
-        tree.addTreeSelectionListener(new TreeSelectionListener() {
-            @Override
-            public void valueChanged(TreeSelectionEvent e) {
-                System.out.println("当前被选中的节点: " + e.getPath());
-            }
-        });
         tree.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -353,7 +474,7 @@ public class ViewInitialization {
                     if(getPathString(selectionNode)==""){
 
                     }
-                    deleteItem();
+                    deleteItem(null);
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
@@ -602,37 +723,29 @@ public class ViewInitialization {
         return panel;
     }
 
-    private String[] returnChilds(String s) {
-        if (s == "root")
-            return new String[]{"广东", "福建"};
-        else if (s == "广东")
-            return new String[]{"广州", "深圳"};
-        else if (s == "福建")
-            return new String[]{"泉州", "厦门"};
-        else if(s=="深圳"){
-            return new String[]{"龙岗"};
+    private boolean deleteItem(String path) throws Exception {   //删除文件或目录
+        boolean t=true;
+        int p=0;
+        if(selectionNode==null){
+            if(path!=null){
+                t=fileUtil.deleteFile(path);
+                if(t==false) return false;
+            }
+            else return false;
         }
-        else return null;
-    }
-
-
-    private void deleteItem() throws Exception {   //删除文件或目录
-        if(selectionNode==null)
-            return ;
-        //System.out.println(selectionNode.toString());
         if(selectionNode.toString().contains(".txt")||selectionNode.toString().contains(".exe"))
-            fileUtil.deleteFile(getPathString(selectionNode));  //删除文件
-        else fileUtil.deleteAll(getPathString(selectionNode));  //删除目录
-        //System.out.println(getPathString(selectionNode));
+            t=fileUtil.deleteFile(getPathString(selectionNode));  //删除文件
+        else p=fileUtil.deleteAll(getPathString(selectionNode)); //删除目录
+        if(t==false||p==1) return false;
         selectionNode.removeFromParent();
         tree.updateUI();
         selectionNode=null;
         updateImage();
         view.updateUI();
+        return true;
     }
 
     private int addDirectory(String newNodeString) throws Exception {   //新建目录
-        //System.out.println(getPathString(selectionNode)+'/'+newNodeString);
         int p=fileUtil.makeDirectory(getPathString(selectionNode)+'/'+newNodeString);
         if(p!=0)
             return p;
@@ -665,25 +778,33 @@ public class ViewInitialization {
         return 0;
     }
 
-    private void setSelectionNode(String path){
+    private boolean setSelectionNode(String path,int type){
         path=path.substring(1,path.length());
-        path=path.substring(0,path.lastIndexOf("/"));
+        if(type==1)  //找要创建文件的父目录
+            path=path.substring(0,path.lastIndexOf("/"));
         String []splits=path.split("/",-1);
         DefaultMutableTreeNode node = null;
         DefaultMutableTreeNode parentNode=rootNode;
         for(String s:splits){
-            System.out.println(s);
             for(int i=0;i<parentNode.getChildCount();i++){
                 node=(DefaultMutableTreeNode) parentNode.getChildAt(i);
-                if(node.getUserObject().toString()==s){
+                System.out.println("node:"+node.getUserObject().toString()+" s:"+s);
+                    s=s.trim();
+                    if(node.getUserObject().toString().trim().equals(s)){
+                    System.out.println("找到了："+s);
                     parentNode=node;
                     break;
                 }
+                if(i==parentNode.getChildCount()-1){
+                    System.out.println("i="+i+"没找到该节点"+" ");
+                    return false;
+                }  //没找到相应结点
             }
         }
         selectionNode=node;
         TreeNode[] nodes = node.getPath();
         TreePath paths = new TreePath(nodes);
         tree.setSelectionPath(paths);
+        return true;
     }
 }
