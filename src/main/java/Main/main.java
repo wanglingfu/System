@@ -65,6 +65,22 @@ public class main extends JFrame {
         lb1.setForeground(Color.white);
         lb1.setBackground(Color.white);
         lb1.setFont(new Font("宋体", Font.BOLD, 14));
+
+        JButton button4=new JButton();
+        button4.setBounds(20, 150, 50, 50);
+        ImageIcon logo4=new ImageIcon("src/main/resources/sb.jpg");
+        button4.setIcon(logo4);
+        frame.add(button4);
+        button4.setBackground(Color.white);
+        JLabel lb4=new JLabel("进程");
+        lb4.setBounds(30,210,100,20);
+        frame.add(lb4);
+        frame.setLayout(null);
+        lb4.setForeground(Color.white);
+        lb4.setBackground(Color.white);
+        lb4.setFont(new Font("宋体", Font.BOLD, 14));
+
+        ProcessFrame processFrame = new ProcessFrame();
         ViewInitialization v  =new ViewInitialization();
 
         button1.addMouseListener(new MouseListener() {
@@ -102,20 +118,6 @@ public class main extends JFrame {
 
         //进程管理
 
-        JButton button4=new JButton();
-        button4.setBounds(20, 150, 50, 50);
-        ImageIcon logo4=new ImageIcon("src/main/resources/sb.jpg");
-        button4.setIcon(logo4);
-        frame.add(button4);
-        button4.setBackground(Color.white);
-        JLabel lb4=new JLabel("进程");
-        lb4.setBounds(30,210,100,20);
-        frame.add(lb4);
-        frame.setLayout(null);
-        lb4.setForeground(Color.white);
-        lb4.setBackground(Color.white);
-        lb4.setFont(new Font("宋体", Font.BOLD, 14));
-        ProcessFrame processFrame = new ProcessFrame();
         button4.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {

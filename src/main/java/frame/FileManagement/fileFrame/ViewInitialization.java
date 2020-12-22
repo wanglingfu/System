@@ -22,7 +22,7 @@ public class ViewInitialization {
 
     public ViewInitialization() throws Exception {
         jf = new JFrame("文件资源管理器");
-        jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        jf.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         jf.setLocationRelativeTo(null);
         jf.pack();
         jf.setVisible(false);
