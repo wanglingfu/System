@@ -8,10 +8,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -29,6 +26,7 @@ public class ViewInitialization {
         surface(1800, 1000, jf);
     }
 
+    private int currentKeyCode;
     private JFrame jf;
     private JPanel contentPane;
     private JMenuBar menu;
@@ -36,6 +34,7 @@ public class ViewInitialization {
     private JButton button2;
     private JPanel catalog;
     private JPanel commandLine;
+    private CmdTextArea cmdTextArea;
     private JPanel view;
     private JPanel right;
     private JPanel bottom;
@@ -48,6 +47,7 @@ public class ViewInitialization {
     private TreePath movePath;
     private FileUtil fileUtil;
     private JButton buttons[];
+    private DefaultMutableTreeNode rootNode;
 
 
     private void initial() throws Exception { //初始化操作
@@ -62,20 +62,17 @@ public class ViewInitialization {
         right = new JPanel();
         bottom = new JPanel();
         left = new JPanel();
+        cmdTextArea=new CmdTextArea();
     }
 
     private void surface(int width, int height, JFrame jf) throws Exception {
         initial();
         jf.setContentPane(contentPane);
         setView();
-        //toolBar(30);
-        //设置右边间隙
         contentPane.add(right, BorderLayout.EAST);
         right.setPreferredSize(new Dimension(10, 0));
-        //设置底部间隙
         contentPane.add(bottom, BorderLayout.SOUTH);
         bottom.setPreferredSize(new Dimension(0, 10));
-        //设置左边间隙
         contentPane.add(left, BorderLayout.WEST);
         left.setPreferredSize(new Dimension(10, 0));
         jf.setSize(width, height);
@@ -112,7 +109,7 @@ public class ViewInitialization {
             buttonsAttribute[4] = 2;
         }
         else if (selectionNode != null) {
-            System.out.println(getPathString(selectionNode));
+            //System.out.println(getPathString(selectionNode));
             ArrayList<Integer> nowOccupied = fileUtil.getFileBlock(getPathString(selectionNode));
             for (int i : nowOccupied) {
                 buttonsAttribute[i] = 2;
@@ -135,17 +132,55 @@ public class ViewInitialization {
     }
 
 
-    private JComponent command(){
+    private JComponent command() throws Exception {
+
         commandLine=new JPanel(new BorderLayout());
-        frame.FileManagement.fileFrame.CmdTextArea cmdText=new frame.FileManagement.fileFrame.CmdTextArea();
-        cmdText.addKeyListener(cmdText);
-        cmdText.addCaretListener(cmdText);
-        cmdText.setFont(new Font("宋体", Font.PLAIN, 20));
-        cmdText.append("Please Input \"cmd\" To Get Administrator Permissions >");
-        cmdText.requestFocus();
-        cmdText.setCaretPosition(cmdText.getText().length());
-        commandLine.add(cmdText,BorderLayout.CENTER);
-        return commandLine;
+        cmdTextArea.addKeyListener(cmdTextArea);
+        cmdTextArea.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                super.keyTyped(e);
+                currentKeyCode=cmdTextArea.getCurrentKeyCode();
+                //System.out.println(currentKeyCode);
+                if (currentKeyCode == KeyEvent.VK_ENTER){
+                    System.out.println("View");
+                    System.out.println("操作是"+cmdTextArea.getWork());
+                    if(cmdTextArea.getWork()=="create"){
+                        System.out.println(cmdTextArea.getPathString());
+                        try {
+                            String path=cmdTextArea.getPathString();
+                            if(!path.contains(".txt")&&!path.contains(".exe"))
+                                path=path+".txt";
+                            setSelectionNode(path);  //先选中要添加子结点的结点
+                            int p = addFile(path,"default");
+                            switch (p){
+                                case 0:
+                                    updateImage();
+                                    view.updateUI();
+                                    cmdTextArea.append("创建成功！\n");
+                                    break;
+                                case 1:cmdTextArea.append("Please Input correct path!\n"); break;
+                                case 2:cmdTextArea.append("Full disk,failure to add\n"); break;
+                                case 3:cmdTextArea.append("There is also file of the same name and type,failure to add\n");
+                            }
+                            cmdTextArea.append("C:\\Users\\James>");
+                            cmdTextArea.emptyWork();
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
+        cmdTextArea.addCaretListener(cmdTextArea);
+        cmdTextArea.setFont(new Font("宋体", Font.PLAIN, 20));
+        cmdTextArea.append("Please Input \"cmd\" To Get Administrator Permissions >");
+        cmdTextArea.requestFocus();
+        cmdTextArea.setCaretPosition(cmdTextArea.getText().length());
+        commandLine.add(cmdTextArea,BorderLayout.CENTER);
+        JScrollPane scrollPane=new JScrollPane(commandLine,ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setViewportView(commandLine);
+        return scrollPane;
     }
 
     private JComponent catalog() throws Exception { //目录视图
@@ -216,7 +251,7 @@ public class ViewInitialization {
         return catalogPanel;
     }
 
-    public String getPathString(DefaultMutableTreeNode node) { //根据节点以字符串形式返回路径,如果是根路径返回空串
+    public String getPathString(DefaultMutableTreeNode node){ //根据节点以字符串形式返回路径,如果是根路径返回空串
         String path = "";
         String previous = "";
         if(node==null)
@@ -236,7 +271,7 @@ public class ViewInitialization {
         Queue<DefaultMutableTreeNode> nodeQueue=new LinkedList<DefaultMutableTreeNode>();
         stringQueue.offer(root);
         DefaultMutableTreeNode nowNode;
-        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(root);
+        rootNode= new DefaultMutableTreeNode(root);
         nodeQueue.offer(rootNode);
         nowNode=rootNode;
         while(!stringQueue.isEmpty()){
@@ -435,7 +470,7 @@ public class ViewInitialization {
                             if (radioBtn01.isSelected())
                                 fileNameString = fileNameString + ".txt";
                             else fileNameString = fileNameString + ".exe";
-                            int p = addFile(fileNameString, fileText);
+                            int p = addFile(getPathString(selectionNode)+'/'+fileNameString, fileText);
                             if(p==0){
                                 updateImage();
                                 view.updateUI();
@@ -484,7 +519,7 @@ public class ViewInitialization {
         splitPane.setContinuousLayout(true);
         // 设置分隔条的初始位置
         splitViewCommand.setDividerLocation(600);
-        splitPane.setDividerLocation(150);
+        splitPane.setDividerLocation(300);
         contentPane.add(splitPane, BorderLayout.CENTER);
     }
 
@@ -597,7 +632,7 @@ public class ViewInitialization {
     }
 
     private int addDirectory(String newNodeString) throws Exception {   //新建目录
-        System.out.println(getPathString(selectionNode)+'/'+newNodeString);
+        //System.out.println(getPathString(selectionNode)+'/'+newNodeString);
         int p=fileUtil.makeDirectory(getPathString(selectionNode)+'/'+newNodeString);
         if(p!=0)
             return p;
@@ -613,10 +648,11 @@ public class ViewInitialization {
         return 0;
     }
 
-    private int addFile(String newNodeString,String content) throws Exception {   //新建文件
-        int p=fileUtil.createFile(getPathString(selectionNode)+'/'+newNodeString,content);
+    private int addFile(String newNodeString,String content) throws Exception{   //新建文件
+        int p=fileUtil.createFile(newNodeString,content);
         if(p!=0)
             return p;
+        newNodeString=newNodeString.substring(newNodeString.lastIndexOf('/')+1,newNodeString.length());
         DefaultMutableTreeNode newNode=new DefaultMutableTreeNode(newNodeString);
         newNode.setAllowsChildren(false);   //不允许在文件下创建目录项
         selectionNode.add(newNode);
@@ -629,4 +665,25 @@ public class ViewInitialization {
         return 0;
     }
 
+    private void setSelectionNode(String path){
+        path=path.substring(1,path.length());
+        path=path.substring(0,path.lastIndexOf("/"));
+        String []splits=path.split("/",-1);
+        DefaultMutableTreeNode node = null;
+        DefaultMutableTreeNode parentNode=rootNode;
+        for(String s:splits){
+            System.out.println(s);
+            for(int i=0;i<parentNode.getChildCount();i++){
+                node=(DefaultMutableTreeNode) parentNode.getChildAt(i);
+                if(node.getUserObject().toString()==s){
+                    parentNode=node;
+                    break;
+                }
+            }
+        }
+        selectionNode=node;
+        TreeNode[] nodes = node.getPath();
+        TreePath paths = new TreePath(nodes);
+        tree.setSelectionPath(paths);
+    }
 }

@@ -4,10 +4,13 @@ import java.awt.event.KeyListener;
 import javax.swing.JTextArea;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import frame.FileManagement.*;
 
 public class CmdTextArea extends JTextArea implements KeyListener,    //命令行界面
         CaretListener {
 
+    private String work=null;
+    private String path;
     private boolean permission =false;
     private static final long serialVersionUID = 1L;
     private StringBuffer textBuffer = new StringBuffer();
@@ -15,13 +18,30 @@ public class CmdTextArea extends JTextArea implements KeyListener,    //命令�
     private boolean isAllowedInputArea = false;
     private int currentKeyCode = 0;
     private boolean isConsume = false;
+    private FileUtil fileUtil=new FileUtil();
 
-    public CmdTextArea() {
+    public CmdTextArea() throws Exception {
         super();
     }
 
+    public void emptyWork(){
+        work=null;
+    }
+
+    public String getWork(){
+        return work;
+    }
+
+    public int getCurrentKeyCode(){
+        return currentKeyCode;
+    }
+
+    public String getPathString(){
+        return path;
+    }
+
     @Override
-    public void keyTyped(KeyEvent e) {
+    public void keyTyped(KeyEvent e){
         if (isConsume) {
             e.consume();
             return;
@@ -33,81 +53,99 @@ public class CmdTextArea extends JTextArea implements KeyListener,    //命令�
             textBuffer.append("\n");
             if(permission){
                 if(input.equals("exit")){
+                    work=null;
                     changePermission();
                     this.append("(Exit successfully)\n");
                     this.append("Please Input \"cmd\" To Get Administrator Permissions >");
                 }
                 else if(input.startsWith("create")){
                     String path=getPath(input);
+                    if(path!=null){  //路径中不能有超过3个字符的
+                        String []splits=path.split("/",-1);
+                        for(String s:splits){
+                            if(s.length()>3){
+                                path=null;
+                            }
+                        }
+                    }
                     if(path==null){ //格式错误
+                        work=null;
                         this.append("Invalid instructions\n");
                         this.append("C:\\Users\\James>");
                     }
                     else{
-
+                        work="create";
+                        this.path=path;
                     }
                 }
                 else if(input.startsWith("delete")){
                     String path=getPath(input);
                     if(path==null){ //格式错误
+                        work=null;
                         this.append("Invalid instructions\n");
                         this.append("C:\\Users\\James>");
                     }
                     else{
-
+                        work="delete";
+                        this.path=path;
                     }
-
                 }
                 else if(input.startsWith("open")){
                     String path=getPath(input);
                     if(path==null){ //格式错误
+                        work=null;
                         this.append("Invalid instructions\n");
                         this.append("C:\\Users\\James>");
                     }
                     else{
-
+                        work="open";
+                        this.path=path;
                     }
-
                 }
                 else if(input.startsWith("copy")){
                     String path=getPath(input);
                     if(path==null){ //格式错误
+                        work=null;
                         this.append("Invalid instructions\n");
                         this.append("C:\\Users\\James>");
                     }
                     else{
-
+                        work="copy";
+                        this.path=path;
                     }
-
                 }
                 else if(input.startsWith("makedir")){
                     String path=getPath(input);
                     if(path==null){ //格式错误
+                        work=null;
                         this.append("Invalid instructions\n");
                         this.append("C:\\Users\\James>");
                     }
                     else{
-
+                        work="makedir";
+                        this.path=path;
                     }
-
                 }
                 else if(input.startsWith("remove")){
                     String path=getPath(input);
                     if(path==null){ //格式错误
+                        work=null;
                         this.append("Invalid instructions\n");
                         this.append("C:\\Users\\James>");
                     }
                     else{
-
+                        work="remove";
+                        this.path=path;
                     }
-
                 }
                 else{
+                    work=null;
                     this.append("Invalid instructions\n");
                     this.append("C:\\Users\\James>");
                 }
             }
             else{
+                work=null;
                 if(input.equals("cmd")){
                     changePermission();
                     this.append("(You are allow to manage documents through command prompt now)\n");
