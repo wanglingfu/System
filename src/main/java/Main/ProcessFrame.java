@@ -273,7 +273,7 @@ public class ProcessFrame extends JFrame {
         }
     }
     public static  void setVisibleTest(ProcessFrame processFrame){
-                processFrame.setVisible(true);
+        processFrame.setVisible(true);
     }
     public static void test(ProcessFrame processFrame) throws Exception {
         try {
@@ -317,7 +317,7 @@ public class ProcessFrame extends JFrame {
             cpu.time();
         },1,1,TimeUnit.SECONDS);
         int timerDelay = 10;
-         timer = new Timer(timerDelay, new ActionListener() {
+        timer = new Timer(timerDelay, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 bool = 0;

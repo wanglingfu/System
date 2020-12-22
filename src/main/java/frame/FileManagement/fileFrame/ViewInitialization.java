@@ -1,5 +1,7 @@
 package frame.FileManagement.fileFrame;
 import frame.FileManagement.*;
+import javafx.scene.Node;
+
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -17,17 +19,18 @@ import java.util.Queue;
 
 public class ViewInitialization {
 
+
     public ViewInitialization() throws Exception {
         jf = new JFrame("文件资源管理器");
         jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jf.setLocationRelativeTo(null);
         jf.pack();
-        jf.setVisible(true);
+        jf.setVisible(false);
         surface(1800, 1000, jf);
     }
 
     private int currentKeyCode;
-    private JFrame jf;
+    private static JFrame jf;
     private JPanel contentPane;
     private JMenuBar menu;
     private JButton button1;
@@ -49,7 +52,9 @@ public class ViewInitialization {
     private JButton buttons[];
     private DefaultMutableTreeNode rootNode;
 
-
+    public static void t(){
+        jf.setVisible(true);
+    }
     private void initial() throws Exception { //初始化操作
         fileUtil=new FileUtil();
         contentPane = new JPanel();
