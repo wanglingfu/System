@@ -294,6 +294,11 @@ public class ProcessFrame extends JFrame {
         ArrayList<String> exeFiles = fileUtil.getExeFiles();
         CPU cpu = new CPU(exeFiles.size(), processScheduling,processScheduling.getIdlePCB().getUuid());
         CreatProcess creatProcess = new CreatProcess(exeFiles,processScheduling,fileUtil);
+        processFrame.printScreen(String.valueOf(cpu.SystemTime), String.valueOf(cpu.TimeSlice), String.valueOf(cpu.getAX()), cpu.getIR(), String.valueOf(cpu.getFinalAX()), device.getDeviceTable().toString(), processScheduling.getRunPCB().getUuid());
+        processFrame.printScreen2(processScheduling);
+        processFrame.printScreen4(memory.getHoles());
+        processFrame.printScreen3(device.getDeviceTable().getA1(), cpu.DeviceTime[0], device.getDeviceTable().getA2(), cpu.DeviceTime[1], device.getDeviceTable().getB1(), cpu.DeviceTime[2], device.getDeviceTable().getB2(), cpu.DeviceTime[3], device.getDeviceTable().getB3(), cpu.DeviceTime[4], device.getDeviceTable().getC1(),
+                cpu.DeviceTime[5], device.getDeviceTable().getC2(), cpu.DeviceTime[6], device.getDeviceTable().getC3(), cpu.DeviceTime[7]);
         ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
                 2,
                 5,
@@ -315,6 +320,9 @@ public class ProcessFrame extends JFrame {
         ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(5);
         scheduledExecutorService.scheduleAtFixedRate(()->{
             cpu.time();
+            if(cpu.getFlag() == 0){
+                Thread.currentThread().stop();
+            }
         },1,1,TimeUnit.SECONDS);
         int timerDelay = 10;
         timer = new Timer(timerDelay, new ActionListener() {

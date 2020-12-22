@@ -70,9 +70,6 @@ public class CreatProcess{
             }
             String fileContent = fileUtil.getFileContent(file.get(i));
             byte[] byteFile = Util.getByteFile(fileContent);
-            for (byte b : byteFile) {
-                System.out.println(Util.byteToString(b));
-            }
             boolean b = processScheduling.create(byteFile);
             if(b){
                 file.remove(i);
