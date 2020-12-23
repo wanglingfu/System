@@ -91,6 +91,7 @@ public class PCB {
     }
     public PCB(String uuid){
         this.uuid = uuid;
+        AX = 0;
     }
 
 }

@@ -1,10 +1,9 @@
 package frame.FileManagement.fileFrame;
 import frame.FileManagement.*;
-import javafx.scene.Node;
-
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.table.JTableHeader;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeNode;
@@ -18,7 +17,6 @@ import java.util.Queue;
 
 
 public class ViewInitialization {
-
 
     public ViewInitialization() throws Exception {
         jf = new JFrame("文件资源管理器");
@@ -109,17 +107,17 @@ public class ViewInitialization {
     private void updateImage() {   //更新按钮信息
         int buttonsAttribute[] = fileUtil.getFAT();
         for(int a:buttonsAttribute)
-        //被占用磁盘块是1，被当前目录项占用是2，空闲为0
-        if(getPathString(selectionNode)==""){
-            buttonsAttribute[4] = 2;
-        }
-        else if (selectionNode != null) {
-            //System.out.println(getPathString(selectionNode));
-            ArrayList<Integer> nowOccupied = fileUtil.getFileBlock(getPathString(selectionNode));
-            for (int i : nowOccupied) {
-                buttonsAttribute[i] = 2;
+            //被占用磁盘块是1，被当前目录项占用是2，空闲为0
+            if(getPathString(selectionNode)==""){
+                buttonsAttribute[4] = 2;
             }
-        }
+            else if (selectionNode != null) {
+                //System.out.println(getPathString(selectionNode));
+                ArrayList<Integer> nowOccupied = fileUtil.getFileBlock(getPathString(selectionNode));
+                for (int i : nowOccupied) {
+                    buttonsAttribute[i] = 2;
+                }
+            }
         //for(int i=0;i<256;i++) System.out.print(buttonsAttribute[i]+" ");
         for (int i = 0; i < 256; i++) {
             if (buttonsAttribute[i] == 0) {
@@ -163,7 +161,12 @@ public class ViewInitialization {
                                 cmdTextArea.emptyWork();
                             }
                             else{
-                                int p = addFile(path,"default");
+                                int p;
+                                if(path.contains(".exe")){
+                                    p=addFile(path,"end");
+                                }
+                                else
+                                    p = addFile(path,"default");
                                 switch (p){
                                     case 0:
                                         cmdTextArea.append("创建成功！\n");
@@ -202,17 +205,17 @@ public class ViewInitialization {
                         }
                     }
                     else if(cmdTextArea.getWork()=="open"){
-                            String path=cmdTextArea.getPathString();
-                            if(!setSelectionNode(path,0)){  //先选中要添加子结点的结点
-                                cmdTextArea.append("Please Input correct path!\n");
-                                cmdTextArea.append("C:\\Users\\James>");
-                                cmdTextArea.emptyWork();
-                            }
-                            else{
-                                showTxtFile(jf,contentPane);
-                                cmdTextArea.append("C:\\Users\\James>");
-                                cmdTextArea.emptyWork();
-                            }
+                        String path=cmdTextArea.getPathString();
+                        if(!setSelectionNode(path,0)){  //先选中要添加子结点的结点
+                            cmdTextArea.append("Please Input correct path!\n");
+                            cmdTextArea.append("C:\\Users\\James>");
+                            cmdTextArea.emptyWork();
+                        }
+                        else{
+                            showTxtFile(jf,contentPane);
+                            cmdTextArea.append("C:\\Users\\James>");
+                            cmdTextArea.emptyWork();
+                        }
                     }
                     else if(cmdTextArea.getWork()=="copy"){  //path为“文件路径to目录路径”的形式
                         try {
@@ -356,7 +359,7 @@ public class ViewInitialization {
                             rootPopupMune.show(e.getComponent(), e.getX(), e.getY());
                         }
                         else if (isFile(selectionNode))
-                             filePopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                            filePopupMenu.show(e.getComponent(), e.getX(), e.getY());
                         else listPopupMenu.show(e.getComponent(), e.getX(), e.getY());
                     } else {
                         selectionNode = null;
@@ -433,10 +436,10 @@ public class ViewInitialization {
         listPopupMenu.add(createMenuItem("新建目录", "新建目录"));
         listPopupMenu.add(createMenuItem("新建文件", "新建文件"));
         listPopupMenu.add(createMenuItem("删除", "删除"));
-        listPopupMenu.add(createMenuItem("属性", "目录属性"));
+        listPopupMenu.add(createMenuItem("属性", "属性"));
         filePopupMenu.add(createMenuItem("打开", "打开文件"));
         filePopupMenu.add(createMenuItem("删除", "删除"));
-        filePopupMenu.add(createMenuItem("属性", "文件属性"));
+        filePopupMenu.add(createMenuItem("属性", "属性"));
     }
 
     private boolean isFile(DefaultMutableTreeNode node) { //判断是目录还是文件
@@ -472,26 +475,58 @@ public class ViewInitialization {
                 showDirectoryCreation();
             }
             else if (action.equals("新建文件")) {
-                    showFileCreation(jf, contentPane);
+                showFileCreation(jf, contentPane);
             }
             else if (action.equals("删除")) {
                 try {
-                    if(getPathString(selectionNode)==""){
-
-                    }
                     deleteItem(null);
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
-            } else if (action.equals("目录属性")){
-                System.out.println(getPathString(selectionNode));
             } else if (action.equals("打开文件")){
                 showTxtFile(jf, contentPane);
-            } else if (action.equals("文件属性")){
-                System.out.println(getPathString(selectionNode));
+            } else if (action.equals("属性")){
+                showDiskTable(jf,contentPane);
             }
         }
     };
+
+    private void showDiskTable(Frame owner, Component parentComponent){
+        final JDialog dialog = new JDialog(owner,selectionNode.getUserObject().toString()+"空间占用表", true);
+        JPanel mainPanel=new JPanel(new BorderLayout());
+        ArrayList<Integer> nowOccupied = fileUtil.getFileBlock(getPathString(selectionNode));
+        Object[] columnNames = {"磁盘块","值"};
+        //表格所有行数据
+        Object[][] rowData=new Object[nowOccupied.size()][2];
+        for(int i=0;i<nowOccupied.size();i++){
+            if(i<nowOccupied.size()-1){
+                rowData[i][0]=nowOccupied.get(i);
+                rowData[i][1]=nowOccupied.get(i+1);
+            }
+            else{
+                rowData[i][0]=nowOccupied.get(i);
+                rowData[i][1]=1;
+            }
+        }
+        // 创建一个表格，指定所有行数据和表头
+        JTable table = new JTable(rowData, columnNames);
+        JTableHeader head = table.getTableHeader();
+        head.setFont(new Font("黑体",Font.BOLD,20));
+        table.setRowHeight(25);
+        table.setFont(new Font("宋体",Font.BOLD,20));
+        // 把 表头 添加到容器顶部（使用普通的中间容器添加表格时，表头 和 内容 需要分开添加）
+        mainPanel.add(table.getTableHeader(), BorderLayout.NORTH);
+        // 把 表格内容 添加到容器中心
+        mainPanel.add(table, BorderLayout.CENTER);
+        dialog.setSize(300,400);
+        // 设置对话框大小不可改变
+        dialog.setResizable(true);
+        dialog.setLocationRelativeTo(parentComponent);
+        // 设置对话框的内容面板
+        dialog.setContentPane(mainPanel);
+        // 显示对话框
+        dialog.setVisible(true);
+    }
 
     private void showDirectoryCreation(){
         try {
@@ -682,7 +717,7 @@ public class ViewInitialization {
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-              String newContent=textArea.getText();
+                String newContent=textArea.getText();
                 try {
                     fileUtil.deleteFile(getPathString(selectionNode));
                     fileUtil.createFile(getPathString(selectionNode),newContent);
@@ -794,8 +829,8 @@ public class ViewInitialization {
             for(int i=0;i<parentNode.getChildCount();i++){
                 node=(DefaultMutableTreeNode) parentNode.getChildAt(i);
                 System.out.println("node:"+node.getUserObject().toString()+" s:"+s);
-                    s=s.trim();
-                    if(node.getUserObject().toString().trim().equals(s)){
+                s=s.trim();
+                if(node.getUserObject().toString().trim().equals(s)){
                     System.out.println("找到了："+s);
                     parentNode=node;
                     break;

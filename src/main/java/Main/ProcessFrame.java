@@ -261,13 +261,11 @@ public class ProcessFrame extends JFrame {
         int ss = 4;
         for (int i = 0; i < holes.size(); i++){
             Hole hole = holes.get(i);
-            System.out.println(hole.getUid());
             if(hole.getUid() != null)
             {
                 string = hole.getUid().substring(9,13);
             }
             Button button = new Button(string);
-            //button.set
             if (hole.isFree()){
                 button.setBackground(Color.BLACK);
             }
