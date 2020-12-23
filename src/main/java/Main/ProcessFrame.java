@@ -31,6 +31,7 @@ import java.util.concurrent.*;
 public class ProcessFrame extends JFrame {
     private static Timer timer;
     public static int bool = 0;
+    private  String string = null;
     private static final long serialVersionUID = 1L;
     private static int dp_method=0;
     private final JLabel jLabelTime =new JLabel();  //系统时钟
@@ -227,7 +228,8 @@ public class ProcessFrame extends JFrame {
         }
     }
     public void printScreen3(String a1, int a1time,String a2, int a2time,String b1,int b1time, String b2,
-                             int b2time,String b3,int b3time, String c1,int c1time, String c2,int c2time, String c3,int c3time){
+                             int b2time,String b3,int b3time, String c1,int c1time, String c2,int c2time,
+                             String c3,int c3time){
         jTextAreaDevice.setText("");
         if(a1time < 0)
             a1time = 0;
@@ -259,7 +261,12 @@ public class ProcessFrame extends JFrame {
         int ss = 4;
         for (int i = 0; i < holes.size(); i++){
             Hole hole = holes.get(i);
-            Button button = new Button(hole.getUid());
+            System.out.println(hole.getUid());
+            if(hole.getUid() != null)
+            {
+                string = hole.getUid().substring(9,13);
+            }
+            Button button = new Button(string);
             //button.set
             if (hole.isFree()){
                 button.setBackground(Color.BLACK);

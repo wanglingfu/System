@@ -87,7 +87,7 @@ public class Memory {
         ProcessAddress pcb = null;
             boolean flag = false;
             for(int i =0; i < pcbs.size(); i++){
-                if(pcbs.get(i).getId().equals(id) == true){
+                if(id.equals(pcbs.get(i).getId())== true){
                     pcb = pcbs.get(i);
                     flag = true;
                     break;
