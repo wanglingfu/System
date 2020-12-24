@@ -35,13 +35,13 @@ public class main extends JFrame {
     }
     public static void main(String[] args) throws Exception {
         JFrame frame = new main();
-        String plaf="com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
+        /*String plaf="com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
         try{
             UIManager.setLookAndFeel(plaf);
             SwingUtilities.updateComponentTreeUI(frame);
         }catch(Exception e){
             JOptionPane.showMessageDialog(null, e);
-        }
+        }*/
         frame.setVisible(true);
         frame.setLayout(null);
         //背景

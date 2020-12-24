@@ -36,7 +36,7 @@ public class Memory {
     public void getMemory(int size,int location,String id,Hole hole) {  //size为申请大小 location为分配分区的下标
                                                                 // hole为location对应的分区
         if (hole.getSize() - size >= MIN_SIZE) {
-            Hole newHole = new Hole(hole.getHead() + size, hole.getSize() - size);
+            Hole newHole = new Hole(null,hole.getHead() + size, hole.getSize() - size);
             holes.add(location + 1, newHole);
             hole.setSize(size);
             hole.setUid(id);

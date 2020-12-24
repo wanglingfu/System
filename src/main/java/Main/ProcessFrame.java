@@ -260,6 +260,7 @@ public class ProcessFrame extends JFrame {
         jLabel1MainMemory.removeAll();
         int ss = 4;
         for (int i = 0; i < holes.size(); i++){
+            string = null;
             Hole hole = holes.get(i);
             if(hole.getUid() != null)
             {

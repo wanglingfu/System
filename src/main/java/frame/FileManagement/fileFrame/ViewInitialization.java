@@ -53,6 +53,8 @@ public class ViewInitialization {
     public static void t(){
         jf.setVisible(true);
     }
+
+
     private void initial() throws Exception { //初始化操作
         fileUtil=new FileUtil();
         contentPane = new JPanel();
@@ -533,29 +535,33 @@ public class ViewInitialization {
             String inputContent = JOptionPane.showInputDialog(jf,
                     "新建目录命名：(要求小于三个字符)\n",
                     "新建项命名",3);
-            int flag=1;
-            for(int i=0;i<inputContent.length();i++){
-                if(!Character.isUpperCase(inputContent.charAt(i))&&!Character.isLowerCase(inputContent.charAt(i))){
-                    JOptionPane.showMessageDialog(jf, "目录名称有误！", "提示", JOptionPane.WARNING_MESSAGE);
-                    flag=0;
-                    break;
-                }
-            }
-            if(flag==1){
-                if(inputContent.length()==0)
-                    JOptionPane.showMessageDialog(jf, "目录名称不能为空！", "提示", JOptionPane.WARNING_MESSAGE);
-                else if(inputContent.length()>3)
-                    JOptionPane.showMessageDialog(jf, "目录名称不能大于3个字符！", "提示", JOptionPane.WARNING_MESSAGE);
-                else {
-                    int p = addDirectory(inputContent);
-                    if(p==0){
-                        updateImage();
-                        view.updateUI();
+            if(inputContent==null)
+                return ;
+            else{
+                int flag=1;
+                for(int i=0;i<inputContent.length();i++){
+                    if(!Character.isUpperCase(inputContent.charAt(i))&&!Character.isLowerCase(inputContent.charAt(i))){
+                        JOptionPane.showMessageDialog(jf, "目录名称有误！", "提示", JOptionPane.WARNING_MESSAGE);
+                        flag=0;
+                        break;
                     }
-                    else if (p == 2)
-                        JOptionPane.showMessageDialog(jf, "磁盘已满，无法添加！", "提示", JOptionPane.WARNING_MESSAGE);
-                    else if (p == 3)
-                        JOptionPane.showMessageDialog(jf, "同级下有同名同类型文件，无法添加！", "提示", JOptionPane.WARNING_MESSAGE);
+                }
+                if(flag==1){
+                    if(inputContent.length()==0)
+                        JOptionPane.showMessageDialog(jf, "目录名称不能为空！", "提示", JOptionPane.WARNING_MESSAGE);
+                    else if(inputContent.length()>3)
+                        JOptionPane.showMessageDialog(jf, "目录名称不能大于3个字符！", "提示", JOptionPane.WARNING_MESSAGE);
+                    else {
+                        int p = addDirectory(inputContent);
+                        if(p==0){
+                            updateImage();
+                            view.updateUI();
+                        }
+                        else if (p == 2)
+                            JOptionPane.showMessageDialog(jf, "磁盘已满，无法添加！", "提示", JOptionPane.WARNING_MESSAGE);
+                        else if (p == 3)
+                            JOptionPane.showMessageDialog(jf, "同级下有同名同类型文件，无法添加！", "提示", JOptionPane.WARNING_MESSAGE);
+                    }
                 }
             }
         } catch (Exception exception) {
